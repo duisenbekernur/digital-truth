@@ -84,6 +84,14 @@
   <main>
     <!-- Экран 0: Splash/Hook -->
     <section id="splash" class="panel" style="text-align:center; padding:40px 24px">
+      <video id="introVideo" width="100%" height="100vh" style="position:fixed; top:0; left:0; width:100vw; height:100vh; object-fit:cover; z-index:10" playsinline>
+        <source src="1110.mp4" type="video/mp4">
+      </video>
+      <div id="videoPlayBtn" style="position:fixed; top:0; left:0; width:100vw; height:100vh; display:flex; align-items:center; justify-content:center; z-index:11; background:rgba(0,0,0,.3); cursor:pointer">
+        <div style="width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,.3); border:3px solid white; display:flex; align-items:center; justify-content:center">
+          <span style="color:white; font-size:50px; margin-left:8px">▶</span>
+        </div>
+      </div>
       <div class="hero" style="justify-content:center; margin-bottom:16px">
         <div class="badge">Новая миссия • v2.0</div>
       </div>
@@ -269,7 +277,7 @@
     <section id="onboard-consent" class="panel" style="display:none">
       <h2 class="title">Проверка данных агента</h2>
       <p style="color:var(--muted); font-size:14px; margin-bottom:16px">Прогресс: Шаг 3 из 3</p>
-      
+
       <!-- Резюме -->
       <div style="background:#0c121b; border:1px solid #223047; border-radius:10px; padding:12px; margin-bottom:16px">
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:13px">
@@ -525,7 +533,7 @@ function showOnboardConsent(){
   hideAllSections();
   const form = document.getElementById("agentForm");
   const fd = new FormData(form);
-  
+
   agentData = {
     callsign: document.getElementById("callsign").value || "Агент",
     gender: fd.get("gender") || "—",
@@ -559,7 +567,6 @@ function showOnboardConsent(){
 }
 
 function completeOnboarding(){
-  agentData.completedAt = new Date().toISOString();
   localStorage.setItem("agentData", JSON.stringify(agentData));
   toast(`Идентификация завершена. Добро пожаловать в миссию, ${agentData.callsign}!`);
   hideAllSections();
@@ -572,7 +579,7 @@ function updateFormValidation(){
   const gender = [...document.querySelectorAll('input[name="gender"]')].some(r=>r.checked);
   const age = [...document.querySelectorAll('input[name="age"]')].some(r=>r.checked);
   const region = document.getElementById("region").value;
-  
+
   const isValid = callsign && gender && age && region;
   document.getElementById("btnFormNext").disabled = !isValid;
 }
@@ -804,11 +811,42 @@ $("#btnSkip").addEventListener("click", ()=>{ toast("Дело пропущено
 $("#btnRestart").addEventListener("click", restart);
 $("#btnShare").addEventListener("click", shareResult);
 
+// ========== INTRO VIDEO ==========
+function initIntroVideo(){
+  const introVideo = document.getElementById("introVideo");
+  const playBtn = document.getElementById("videoPlayBtn");
+
+  if(introVideo && playBtn){
+    introVideo.currentTime = 0;
+    introVideo.style.display = "block";
+    playBtn.style.display = "flex";
+
+    function startVideo(){
+      introVideo.play();
+      playBtn.style.display = "none";
+    }
+
+    playBtn.addEventListener("click", startVideo);
+
+    introVideo.addEventListener("ended", ()=>{
+      introVideo.style.display = "none";
+      playBtn.style.display = "none";
+      showOnboardWelcome();
+    }, { once: true });
+
+    // Try autoplay
+    introVideo.play().catch(() => {
+      // Autoplay failed, user must click
+    });
+  }
+}
+
 // ========== INIT ==========
 // Show onboarding if not completed
 if(!agentData || !agentData.completedAt){
   hideAllSections();
   $("#splash").style.display = "block";
+  initIntroVideo();
 } else {
   hideAllSections();
   $("#start").style.display = "block";
