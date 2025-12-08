@@ -1,857 +1,2845 @@
 <!doctype html>
 <html lang="ru">
+
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Digital Truth: Спаси Правду</title>
-<style>
-  :root{
-    --bg:#0b0f14; --card:#0f1621; --ink:#eaf2ff; --muted:#9bb0cc;
-    --acc:#53e2ae; --warn:#ff7a7a; --accent2:#7aa9ff; --shadow:rgba(0,0,0,.35);
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
-    background: radial-gradient(1200px 700px at 70% -10%, #132033 0%, #0b0f14 45%);
-    color:var(--ink);
-  }
-  header{
-    padding:18px 20px; display:flex; align-items:center; justify-content:space-between;
-    border-bottom:1px solid #1f2a3a; backdrop-filter: blur(6px); position:sticky; top:0; z-index:5;
-    background:linear-gradient(180deg, rgba(15,22,33,.9), rgba(15,22,33,.6));
-  }
-  header h1{margin:0; font-size:18px; letter-spacing:.5px}
-  #rep, #caseNo {font-size:14px; color:var(--muted)}
-  main{max-width:980px; margin:24px auto; padding:0 16px 48px}
-  .panel{
-    background:var(--card); border:1px solid #1e2a3b; border-radius:14px; box-shadow:0 10px 30px var(--shadow);
-    padding:18px; margin-bottom:16px;
-  }
-  .hero{display:flex; gap:16px; align-items:center}
-  .hero .badge{font-size:12px; color:#0b0f14; background:linear-gradient(135deg, var(--acc), #8ef8cd);
-    padding:6px 10px; border-radius:999px; font-weight:600}
-  .title{font-size:22px; margin:6px 0 2px}
-  .subtitle{font-size:14px; color:var(--muted); margin:0}
-  .grid{display:grid; gap:12px}
-  @media(min-width:860px){ .grid{grid-template-columns:1.1fr 1fr} }
-  .evidence{display:grid; gap:10px}
-  .card{
-    background:#0c121b; border:1px solid #1e2a3b; border-radius:12px; padding:12px;
-  }
-  .meta{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:6px}
-  .tag{font-size:11px; color:var(--muted); border:1px dashed #2a3a55; padding:2px 6px; border-radius:6px}
-  .text{font-size:15px; line-height:1.45}
-  .controls{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap}
-  button{
-    cursor:pointer; border:1px solid #24354d; background:#101826; color:var(--ink);
-    padding:10px 14px; border-radius:10px; font-weight:600
-  }
-  button.primary{background:linear-gradient(135deg, var(--accent2), #5fe1ff); color:#09111c; border:none}
-  button.truth{border-color:#2b4; background:rgba(83,226,174,.1)}
-  button.lie{border-color:#b33; background:rgba(255,122,122,.1)}
-  button.ghost{background:transparent}
-  button:disabled{opacity:.55; cursor:not-allowed}
-  .choice{display:grid; gap:10px}
-  .choice .opt{display:flex; gap:10px; align-items:flex-start; padding:12px; border:1px solid #223047; border-radius:10px; background:#0c121b}
-  .opt input{transform:translateY(2px)}
-  .footerRow{display:flex; gap:10px; justify-content:flex-end; margin-top:12px; flex-wrap:wrap}
-  .scoreline{font-size:14px; color:var(--muted)}
-  .toast{position:fixed; right:16px; bottom:16px; background:#0f1a28; border:1px solid #20324a; color:var(--ink);
-         padding:10px 12px; border-radius:10px; box-shadow:0 10px 30px var(--shadow); opacity:0; transform:translateY(8px);
-         transition:.25s}
-  .toast.show{opacity:1; transform:translateY(0)}
-  .end{
-    text-align:center; padding:24px 16px; display:grid; gap:12px; place-items:center
-  }
-  .end h2{margin:0}
-  .rank{font-size:13px; color:#0b0f14; background:linear-gradient(135deg, var(--acc), #c0ffd9); padding:6px 10px; border-radius:999px; font-weight:700}
-  .kbd{font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:12px; background:#0b1220; padding:2px 6px; border:1px solid #1e2a3b; border-radius:6px; color:var(--muted)}
-   .opt-radio{display:flex; gap:8px; align-items:center; cursor:pointer; font-size:14px}
-   .opt-radio input{accent-color:var(--acc); cursor:pointer; margin:0}
-   input[type="text"], input[type="email"], select{transition:.2s; outline:none}
-   input[type="text"]:focus, input[type="email"]:focus, select:focus{border-color:var(--acc); box-shadow:0 0 0 2px rgba(83,226,174,.1)}
-</style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Digital Truth</title>
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg: #0b0f14;
+            --card: #0f1621;
+            --ink: #eaf2ff;
+            --muted: #9bb0cc;
+            --acc: #53e2ae;
+            --warn: #ff7a7a;
+            --accent2: #7aa9ff;
+            --shadow: rgba(0, 0, 0, .35);
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+            background: radial-gradient(1200px 700px at 70% -10%, #132033 0%, #0b0f14 45%);
+            color: var(--ink);
+        }
+
+        header {
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #1f2a3a;
+            backdrop-filter: blur(6px);
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            background: linear-gradient(180deg, rgba(15, 22, 33, .9), rgba(15, 22, 33, .6));
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 18px;
+            letter-spacing: .5px
+        }
+
+        #rep,
+        #caseNo {
+            font-size: 14px;
+            color: var(--muted)
+        }
+
+        main {
+            max-width: 980px;
+            margin: 24px auto;
+            padding: 0 16px 48px
+        }
+
+        .panel {
+            background: var(--card);
+            border: 1px solid #1e2a3b;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px var(--shadow);
+            padding: 18px;
+            margin-bottom: 16px;
+        }
+
+        .hero {
+            display: flex;
+            gap: 16px;
+            align-items: center
+        }
+
+        .hero .badge {
+            font-size: 12px;
+            color: #0b0f14;
+            background: linear-gradient(135deg, var(--acc), #8ef8cd);
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-weight: 600
+        }
+
+        .title {
+            font-size: 22px;
+            margin: 6px 0 2px
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--muted);
+            margin: 0
+        }
+
+        .grid {
+            display: grid;
+            gap: 12px
+        }
+
+        @media(min-width:860px) {
+            .grid {
+                grid-template-columns: 1.1fr 1fr
+            }
+        }
+
+        .evidence {
+            display: grid;
+            gap: 10px
+        }
+
+        .card {
+            background: #0c121b;
+            border: 1px solid #1e2a3b;
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 6px
+        }
+
+        .tag {
+            font-size: 11px;
+            color: var(--muted);
+            border: 1px dashed #2a3a55;
+            padding: 2px 6px;
+            border-radius: 6px
+        }
+
+        .text {
+            font-size: 15px;
+            line-height: 1.45
+        }
+
+        .controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap
+        }
+
+        button {
+            cursor: pointer;
+            border: 1px solid #24354d;
+            background: #101826;
+            color: var(--ink);
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-weight: 600
+        }
+
+        button.primary {
+            background: linear-gradient(135deg, var(--accent2), #5fe1ff);
+            color: #09111c;
+            border: none
+        }
+
+        button.truth {
+            border-color: #2b4;
+            background: rgba(83, 226, 174, .1)
+        }
+
+        button.lie {
+            border-color: #b33;
+            background: rgba(255, 122, 122, .1)
+        }
+
+        button.ghost {
+            background: transparent
+        }
+
+        button:disabled {
+            opacity: .55;
+            cursor: not-allowed
+        }
+
+        .choice {
+            display: grid;
+            gap: 10px
+        }
+
+        .choice .opt {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 12px;
+            border: 1px solid #223047;
+            border-radius: 10px;
+            background: #0c121b
+        }
+
+        .opt input {
+            transform: translateY(2px)
+        }
+
+        .footerRow {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 12px;
+            flex-wrap: wrap
+        }
+
+        .scoreline {
+            font-size: 14px;
+            color: var(--muted)
+        }
+
+        .toast {
+            position: fixed;
+            right: 16px;
+            bottom: 16px;
+            background: #0f1a28;
+            border: 1px solid #20324a;
+            color: var(--ink);
+            padding: 10px 12px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px var(--shadow);
+            opacity: 0;
+            transform: translateY(8px);
+            transition: .25s
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        .end {
+            text-align: center;
+            padding: 24px 16px;
+            display: grid;
+            gap: 12px;
+            place-items: center
+        }
+
+        .end h2 {
+            margin: 0
+        }
+
+        .rank {
+            font-size: 13px;
+            color: #0b0f14;
+            background: linear-gradient(135deg, var(--acc), #c0ffd9);
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-weight: 700
+        }
+
+        .kbd {
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 12px;
+            background: #0b1220;
+            padding: 2px 6px;
+            border: 1px solid #1e2a3b;
+            border-radius: 6px;
+            color: var(--muted)
+        }
+
+        .opt-radio {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            cursor: pointer;
+            font-size: 14px
+        }
+
+        .opt-radio input {
+            accent-color: var(--acc);
+            cursor: pointer;
+            margin: 0
+        }
+
+        input[type="text"],
+        input[type="email"],
+        select {
+            transition: .2s;
+            outline: none
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        select:focus {
+            border-color: var(--acc);
+            box-shadow: 0 0 0 2px rgba(83, 226, 174, .1)
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .admin-section {
+            background: #0c121b;
+            border: 1px solid #1e2a3b;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .admin-section h3 {
+            margin: 0 0 12px 0;
+            font-size: 18px;
+            color: #ffc107;
+            border-bottom: 1px solid #1e2a3b;
+            padding-bottom: 8px;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-top: 12px;
+            overflow-x: auto;
+            display: block;
+        }
+
+        .admin-table thead,
+        .admin-table tbody {
+            display: block;
+        }
+
+        .admin-table thead {
+            width: 100%;
+        }
+
+        .admin-table tbody {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .admin-table th {
+            background: #0f1621;
+            color: var(--muted);
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #1e2a3b;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            position: sticky;
+            top: 0;
+        }
+
+        .admin-table td {
+            padding: 8px;
+            border-bottom: 1px solid #1e2a3b;
+            color: var(--ink);
+            word-break: break-word;
+        }
+
+        .admin-table tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        .admin-table tr:hover {
+            background: rgba(255, 193, 7, .05);
+        }
+
+        .admin-stat {
+            display: inline-block;
+            background: rgba(255, 193, 7, .1);
+            border: 1px solid rgba(255, 193, 7, .3);
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin: 4px;
+            font-size: 13px;
+        }
+
+        .admin-stat strong {
+            color: #ffc107;
+            display: block;
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 193, 7, .3);
+            border-top-color: #ffc107;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+    </style>
 </head>
+
 <body>
-  <header>
-    <h1>Digital Truth: Спаси Правду</h1>
-    <div style="display:flex; gap:16px; align-items:center">
-      <div id="caseNo">Дело — 0 / 0</div>
-      <div id="rep">Репутация: 0</div>
-    </div>
-  </header>
-
-  <main>
-    <!-- Экран 0: Splash/Hook -->
-    <section id="splash" class="panel" style="text-align:center; padding:40px 24px">
-      <video id="introVideo" width="100%" height="100vh" style="position:fixed; top:0; left:0; width:100vw; height:100vh; object-fit:cover; z-index:10" playsinline>
-        <source src="1110.mp4" type="video/mp4">
-      </video>
-      <div id="videoPlayBtn" style="position:fixed; top:0; left:0; width:100vw; height:100vh; display:flex; align-items:center; justify-content:center; z-index:11; background:rgba(0,0,0,.3); cursor:pointer">
-        <div style="width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,.3); border:3px solid white; display:flex; align-items:center; justify-content:center">
-          <span style="color:white; font-size:50px; margin-left:8px">▶</span>
+    <header>
+        <h1 id="mainTitle"></h1>
+        <div style="display:flex; gap:16px; align-items:center">
+            <div id="caseNo"></div>
+            <div id="rep"></div>
+            <select id="langToggle"
+                style="padding:4px 10px; border-radius:8px; font-size:14px; background:#101826; color:var(--ink); border:1px solid #24354d">
+                <option value="ru" id="langRu"></option>
+                <option value="kk" id="langKk"></option>
+            </select>
         </div>
-      </div>
-      <div class="hero" style="justify-content:center; margin-bottom:16px">
-        <div class="badge">Новая миссия • v2.0</div>
-      </div>
-      <h2 class="title" style="font-size:28px">Digital Truth: Идентификация агента</h2>
-      <p class="subtitle" style="margin-bottom:24px">Доступ к базе "Digital Shield" возможен только после регистрации агента.</p>
-      <button class="primary" id="btnOnboard" style="padding:12px 24px; font-size:16px">Начать идентификацию</button>
-    </section>
+    </header>
 
-    <!-- Экран 1: Объяснение зачем -->
-    <section id="onboard-welcome" class="panel" style="display:none">
-      <h2 class="title">Добро пожаловать, Агент</h2>
-      <div style="background:#0c121b; border-left:3px solid var(--acc); padding:12px 14px; border-radius:6px; margin:16px 0; line-height:1.6; font-size:15px">
-        <p style="margin:6px 0">• Мы тестируем вашу цифровую интуицию и навык факт-чека.</p>
-        <p style="margin:6px 0">• Регистрация нужна, чтобы настроить миссии и собрать анонимную статистику.</p>
-        <p style="margin:6px 0">• Это займёт &lt; 1 минуты.</p>
-      </div>
-      <div class="footerRow" style="justify-content:flex-start">
-        <button class="primary" id="btnFormStart">Заполнить паспортичку</button>
-      </div>
-    </section>
+    <main>
+        <!-- Экран 0: Splash/Hook -->
+        <section id="splash" class="panel" style="text-align:center; padding:40px 24px">
+            <video id="introVideo" width="100%" height="100vh"
+                style="position:fixed; top:0; left:0; width:100vw; height:100vh; object-fit:cover; z-index:10"
+                playsinline>
+                <source src="1110.mp4" type="video/mp4">
+            </video>
+            <div id="videoPlayBtn"
+                style="position:fixed; top:0; left:0; width:100vw; height:100vh; display:flex; align-items:center; justify-content:center; z-index:11; background:rgba(0,0,0,.3); cursor:pointer">
+                <div
+                    style="width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,.3); border:3px solid white; display:flex; align-items:center; justify-content:center">
+                    <span style="color:white; font-size:50px; margin-left:8px">▶</span>
+                </div>
+            </div>
+            <div class="hero" style="justify-content:center; margin-bottom:16px">
+                <div class="badge" id="splashBadgeEl"></div>
+            </div>
+            <h2 class="title" id="splashTitleEl" style="font-size:28px"></h2>
+            <p class="subtitle" id="splashSubtitleEl" style="margin-bottom:24px"></p>
+            <button class="primary" id="btnOnboard" style="padding:12px 24px; font-size:16px"></button>
+        </section>
 
-    <!-- Экран 2: Форма "Паспорт агента" -->
-    <section id="onboard-form" class="panel" style="display:none">
-      <h2 class="title">Паспорт агента</h2>
-      <p style="color:var(--muted); font-size:14px; margin-bottom:16px">Прогресс: Шаг 2 из 3</p>
-      <form id="agentForm" style="display:grid; gap:14px">
-        <!-- Позывной -->
-        <div>
-          <label style="display:block; font-weight:600; margin-bottom:6px">
-            Позывной агента <span style="color:var(--warn)">*</span>
-          </label>
-          <input type="text" id="callsign" placeholder="Пример: Agent Nova" maxlength="32"
-                 style="width:100%; padding:10px 12px; background:#0c121b; border:1px solid #223047; border-radius:10px; color:var(--ink); font-size:14px">
-          <small style="color:var(--muted); font-size:12px; margin-top:4px; display:block">Это ваш публичный ник; личных данных не просим.</small>
+        <!-- Экран 1: Объяснение зачем -->
+        <section id="onboard-welcome" class="panel" style="display:none">
+            <h2 class="title" id="onboardWelcomeTitleEl"></h2>
+            <div
+                style="background:#0c121b; border-left:3px solid var(--acc); padding:12px 14px; border-radius:6px; margin:16px 0; line-height:1.6; font-size:15px">
+                <p style="margin:6px 0" id="onboardText1El"></p>
+                <p style="margin:6px 0" id="onboardText2El"></p>
+                <p style="margin:6px 0" id="onboardText3El"></p>
+            </div>
+            <div class="footerRow" style="justify-content:flex-start">
+                <button class="primary" id="btnFormStart"></button>
+            </div>
+        </section>
+
+        <!-- Экран 2: Форма "Паспорт агента" -->
+        <section id="onboard-form" class="panel" style="display:none">
+            <h2 class="title" id="formTitleEl"></h2>
+            <p style="color:var(--muted); font-size:14px; margin-bottom:16px" id="formProgressEl"></p>
+            <form id="agentForm" style="display:grid; gap:14px">
+                <!-- Позывной -->
+                <div>
+                    <label style="display:block; font-weight:600; margin-bottom:6px">
+                        <span id="formCallsignEl"></span> <span style="color:var(--warn)">*</span>
+                    </label>
+                    <input type="text" id="callsign" maxlength="32"
+                        style="width:100%; padding:10px 12px; background:#0c121b; border:1px solid #223047; border-radius:10px; color:var(--ink); font-size:14px">
+                    <small style="color:var(--muted); font-size:12px; margin-top:4px; display:block"
+                        id="formCallsignSmallEl"></small>
+                </div>
+
+                <!-- Пол -->
+                <div>
+                    <label style="display:block; font-weight:600; margin-bottom:8px">
+                        <span id="formGenderEl"></span> <span style="color:var(--warn)">*</span>
+                        <span style="color:var(--muted); font-weight:400; font-size:12px" id="formGenderNoteEl"></span>
+                    </label>
+                    <div style="display:grid; gap:6px">
+                        <label class="opt-radio"><input type="radio" name="gender" value="female" required> <span
+                                id="genderFemaleEl"></span></label>
+                        <label class="opt-radio"><input type="radio" name="gender" value="male" required> <span
+                                id="genderMaleEl"></span></label>
+                        <label class="opt-radio"><input type="radio" name="gender" value="nonbinary" required> <span
+                                id="genderNonbinaryEl"></span></label>
+                        <label class="opt-radio"><input type="radio" name="gender" value="skip" required> <span
+                                id="genderSkipEl"></span></label>
+                        <label class="opt-radio" style="position:relative">
+                            <input type="radio" name="gender" value="other" required> <span
+                                id="genderOtherLabelEl"></span>
+                            <input type="text" id="genderOther" maxlength="20"
+                                style="margin-left:24px; padding:6px 8px; width:150px; background:#0c121b; border:1px solid #223047; border-radius:6px; color:var(--ink); font-size:12px; display:none">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Возраст -->
+                <div>
+                    <label style="display:block; font-weight:600; margin-bottom:8px">
+                        <span id="formAgeEl"></span> <span style="color:var(--warn)">*</span>
+                    </label>
+                    <div style="display:grid; gap:6px">
+                        <label class="opt-radio"><input type="radio" name="age" value="under18" required> <span
+                                id="ageUnder18El"></span></label>
+                        <label class="opt-radio"><input type="radio" name="age" value="18-25" required> <span
+                                id="age18_25El"></span></label>
+                        <label class="opt-radio"><input type="radio" name="age" value="26-35" required> <span
+                                id="age26_35El"></span></label>
+                        <label class="opt-radio"><input type="radio" name="age" value="36-45" required> <span
+                                id="age36_45El"></span></label>
+                        <label class="opt-radio"><input type="radio" name="age" value="46plus" required> <span
+                                id="age46plusEl"></span></label>
+                    </div>
+                </div>
+
+                <!-- Регион -->
+                <div>
+                    <label style="display:block; font-weight:600; margin-bottom:6px">
+                        <span id="formRegionEl"></span> <span style="color:var(--warn)">*</span>
+                    </label>
+                    <select id="region" required
+                        style="width:100%; padding:10px 12px; background:#0c121b; border:1px solid #223047; border-radius:10px; color:var(--ink); font-size:14px">
+                        <option value="">—</option>
+                        <option value="nur-sultan" id="regionNurSultanEl"></option>
+                        <option value="almaty" id="regionAlmatyEl"></option>
+                        <option value="shymkent" id="regionShymkentEl"></option>
+                        <option value="karaganda" id="regionKaragandaEl"></option>
+                        <option value="aktobe" id="regionAktobeEl"></option>
+                        <option value="kostanay" id="regionKostanayEl"></option>
+                        <option value="aktau" id="regionAktauEl"></option>
+                        <option value="atyrau" id="regionAtyauEl"></option>
+                        <option value="pavlodar" id="regionPavlodarEl"></option>
+                        <option value="ekibastuz" id="regionEkibastuzEl"></option>
+                        <option value="petropavlovsk" id="regionPetropavlovskEl"></option>
+                        <option value="oral" id="regionOralEl"></option>
+                        <option value="kokshetau" id="regionKokshetauEl"></option>
+                        <option value="semey" id="regionSemeyEl"></option>
+                        <option value="oskemen" id="regionOskemenEl"></option>
+                        <option value="kyzylorda" id="regionKyzylordaEl"></option>
+                        <option value="taraz" id="regionTarazEl"></option>
+                        <option value="taldykorgan" id="regionTaldykorganEl"></option>
+                        <option value="turkestan" id="regionTurkestanEl"></option>
+                        <option value="zhanaozen" id="regionZhanaoenEl"></option>
+                        <option value="zhezkazgan" id="regionZhezkazganEl"></option>
+                        <option value="karatau" id="regionKaratauEl"></option>
+                    </select>
+                </div>
+
+
+                <div class="footerRow" style="margin-top:20px; justify-content:space-between">
+                    <button type="button" class="ghost" id="btnFormBack"></button>
+                    <button type="button" class="primary" id="btnFormNext"></button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Экран 3: Согласие -->
+        <section id="onboard-consent" class="panel" style="display:none">
+            <h2 class="title" id="consentTitleEl"></h2>
+            <p style="color:var(--muted); font-size:14px; margin-bottom:16px" id="consentProgressEl"></p>
+
+            <!-- Резюме -->
+            <div
+                style="background:#0c121b; border:1px solid #223047; border-radius:10px; padding:12px; margin-bottom:16px">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:13px">
+                    <div><span style="color:var(--muted)" id="summaryCallsignLabelEl"></span> <span
+                            id="summaryCallsign">—</span></div>
+                    <div><span style="color:var(--muted)" id="summaryGenderLabelEl"></span> <span
+                            id="summaryGender">—</span></div>
+                    <div><span style="color:var(--muted)" id="summaryAgeLabelEl"></span> <span id="summaryAge">—</span>
+                    </div>
+                    <div><span style="color:var(--muted)" id="summaryRegionLabelEl"></span> <span
+                            id="summaryRegion">—</span></div>
+                </div>
+            </div>
+
+            <!-- Объяснение данных -->
+            <div
+                style="background:rgba(83,226,174,.05); border-left:3px solid var(--acc); padding:12px; border-radius:6px; margin-bottom:16px">
+                <p style="margin:0; font-size:14px; line-height:1.5" id="consentExplainEl"></p>
+            </div>
+
+            <!-- Чекбоксы согласия -->
+            <form id="consentForm" style="display:grid; gap:10px; margin-bottom:16px">
+                <label style="display:flex; gap:10px; align-items:flex-start; cursor:pointer">
+                    <input type="checkbox" id="consentData" style="margin-top:3px">
+                    <span style="font-size:14px; line-height:1.4" id="consentDataTextEl"></span>
+                </label>
+                <label style="display:flex; gap:10px; align-items:flex-start; cursor:pointer">
+                    <input type="checkbox" id="consentAge" style="margin-top:3px">
+                    <span style="font-size:14px; line-height:1.4" id="consentAgeTextEl"></span>
+                </label>
+            </form>
+
+            <!-- Линк "Подробнее" -->
+            <p style="text-align:center; margin:12px 0">
+                <button type="button" class="ghost" id="btnMoreInfo" style="text-decoration:underline; padding:0"
+                    id="btnMoreInfoText"></button>
+            </p>
+
+            <div class="footerRow" style="justify-content:space-between; margin-top:20px">
+                <button type="button" class="ghost" id="btnConsentBack"></button>
+                <button type="button" class="primary" id="btnActivate" disabled></button>
+            </div>
+        </section>
+
+        <!-- Модальное окно "Подробнее" -->
+        <div id="infoModal"
+            style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:100; overflow:auto; padding:20px">
+            <div
+                style="background:var(--card); border:1px solid #1e2a3b; border-radius:14px; max-width:500px; margin:40px auto; padding:20px">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px">
+                    <h3 style="margin:0" id="modalTitleEl"></h3>
+                    <button type="button" class="ghost" id="btnCloseModal"
+                        style="padding:4px 8px; font-size:16px">×</button>
+                </div>
+                <div style="font-size:13px; line-height:1.6; color:var(--ink)" id="modalContentEl"></div>
+                <div class="footerRow" style="justify-content:center; margin-top:16px">
+                    <button type="button" class="primary" id="btnCloseInfo"></button>
+                </div>
+            </div>
         </div>
 
-        <!-- Пол -->
-        <div>
-          <label style="display:block; font-weight:600; margin-bottom:8px">
-            Пол <span style="color:var(--warn)">*</span>
-            <span style="color:var(--muted); font-weight:400; font-size:12px">(для анализа восприятия)</span>
-          </label>
-          <div style="display:grid; gap:6px">
-            <label class="opt-radio"><input type="radio" name="gender" value="female" required> Женский</label>
-            <label class="opt-radio"><input type="radio" name="gender" value="male" required> Мужской</label>
-            <label class="opt-radio"><input type="radio" name="gender" value="nonbinary" required> Небинарный</label>
-            <label class="opt-radio"><input type="radio" name="gender" value="skip" required> Не указывать</label>
-            <label class="opt-radio" style="position:relative">
-              <input type="radio" name="gender" value="other" required> Другое
-              <input type="text" id="genderOther" placeholder="Укажите" maxlength="20"
-                     style="margin-left:24px; padding:6px 8px; width:150px; background:#0c121b; border:1px solid #223047; border-radius:6px; color:var(--ink); font-size:12px; display:none">
-            </label>
-          </div>
+        <!-- Модальное окно "Админ Аналитика" -->
+        <div id="adminModal"
+            style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:200; overflow:auto; padding:20px">
+            <div
+                style="background:var(--card); border:1px solid #1e2a3b; border-radius:14px; max-width:1200px; margin:20px auto; padding:24px; max-height:90vh; overflow-y:auto">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px">
+                    <h2 style="margin:0; color:#ffc107">📊 Админ Панель - Аналитика</h2>
+                    <button type="button" class="ghost" id="btnCloseAdminModal"
+                        style="padding:8px 12px; font-size:18px; color:var(--muted)">×</button>
+                </div>
+                <div id="adminContent" style="display:grid; gap:20px">
+                    <div style="text-align:center; padding:20px; color:var(--muted)">
+                        <div class="spinner" style="display:inline-block; width:40px; height:40px; border:4px solid rgba(255,193,7,.3); border-top-color:#ffc107; border-radius:50%; animation:spin 1s linear infinite"></div>
+                        <p style="margin-top:12px">Загрузка данных...</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Возраст -->
-        <div>
-          <label style="display:block; font-weight:600; margin-bottom:8px">
-            Возрастная группа <span style="color:var(--warn)">*</span>
-          </label>
-          <div style="display:grid; gap:6px">
-            <label class="opt-radio"><input type="radio" name="age" value="under18" required> &lt;18 лет</label>
-            <label class="opt-radio"><input type="radio" name="age" value="18-25" required> 18–25 лет</label>
-            <label class="opt-radio"><input type="radio" name="age" value="26-35" required> 26–35 лет</label>
-            <label class="opt-radio"><input type="radio" name="age" value="36-45" required> 36–45 лет</label>
-            <label class="opt-radio"><input type="radio" name="age" value="46plus" required> 46+ лет</label>
-          </div>
-        </div>
+        <!-- Стартовый экран (после онбординга) -->
+        <section id="start" class="panel" style="display:none">
+            <div class="hero">
+                <div class="badge" id="startBadgeEl"></div>
+            </div>
+            <h2 class="title" id="startTitleEl"></h2>
+            <p class="subtitle" id="startSubtitleEl"></p>
+            <div class="footerRow" style="justify-content:flex-start; margin-top:16px">
+                <button class="primary" id="btnStart"></button>
+                <button class="ghost" id="btnHow"></button>
+                <button class="ghost" id="btnAdminAnalytics" style="display:none; background:rgba(255,193,7,.1); border-color:#ffc107; color:#ffc107">📊 Аналитика</button>
+            </div>
+        </section>
 
-        <!-- Регион -->
-        <div>
-          <label style="display:block; font-weight:600; margin-bottom:6px">
-            Регион / Город <span style="color:var(--warn)">*</span>
-          </label>
-          <select id="region" required style="width:100%; padding:10px 12px; background:#0c121b; border:1px solid #223047; border-radius:10px; color:var(--ink); font-size:14px">
-            <option value="">—</option>
-            <option value="russia">Россия</option>
-            <option value="ukraine">Украина</option>
-            <option value="belarus">Беларусь</option>
-            <option value="kazakhstan">Казахстан</option>
-            <option value="other-cis">Другие страны СНГ</option>
-            <option value="europe">Европа</option>
-            <option value="americas">Америки</option>
-            <option value="asia">Азия</option>
-            <option value="africa">Африка</option>
-            <option value="other">Другое</option>
-          </select>
-        </div>
+        <!-- Экран дела -->
+        <section id="case" class="grid" style="display:none">
+            <div class="panel">
+                <div class="meta">
+                    <span class="tag" id="caseTag"></span>
+                    <span class="tag" id="caseDifficulty"></span>
+                </div>
+                <h3 class="title" id="caseTitle"></h3>
+                <p class="subtitle" id="caseNarrative"></p>
 
-        <!-- Образование -->
-        <div>
-          <label style="display:block; font-weight:600; margin-bottom:6px">
-            Уровень образования (опц.)
-          </label>
-          <select id="education" style="width:100%; padding:10px 12px; background:#0c121b; border:1px solid #223047; border-radius:10px; color:var(--ink); font-size:14px">
-            <option value="">—</option>
-            <option value="secondary">Среднее</option>
-            <option value="vocational">Среднее специальное</option>
-            <option value="student">Студент</option>
-            <option value="bachelor">Высшее (бакалавр)</option>
-            <option value="master">Высшее (магистр, PhD)</option>
-            <option value="other">Другое</option>
-          </select>
-        </div>
+                <h4 style="margin:12px 0 8px" id="caseEvidenceTitleEl"></h4>
+                <div class="evidence" id="evList"></div>
 
-        <!-- Активность онлайн -->
-        <div>
-          <label style="display:block; font-weight:600; margin-bottom:8px">
-            Онлайн-активность в день (опц.)
-          </label>
-          <div style="display:grid; gap:6px">
-            <label class="opt-radio"><input type="radio" name="activity" value="under2h"> &lt;2ч</label>
-            <label class="opt-radio"><input type="radio" name="activity" value="2-5h"> 2–5ч</label>
-            <label class="opt-radio"><input type="radio" name="activity" value="5-8h"> 5–8ч</label>
-            <label class="opt-radio"><input type="radio" name="activity" value="8plus"> 8+ часов</label>
-          </div>
-        </div>
+                <div class="footerRow">
+                    <span class="scoreline" id="evScore"></span>
+                </div>
+            </div>
 
-        <!-- Платформа -->
-        <div>
-          <label style="display:block; font-weight:600; margin-bottom:8px">
-            Любимая платформа (опц.)
-          </label>
-          <div style="display:grid; gap:6px">
-            <label class="opt-radio"><input type="radio" name="platform" value="instagram"> Instagram</label>
-            <label class="opt-radio"><input type="radio" name="platform" value="tiktok"> TikTok</label>
-            <label class="opt-radio"><input type="radio" name="platform" value="telegram"> Telegram</label>
-            <label class="opt-radio"><input type="radio" name="platform" value="youtube"> YouTube</label>
-            <label class="opt-radio"><input type="radio" name="platform" value="x"> X (Twitter)</label>
-            <label class="opt-radio"><input type="radio" name="platform" value="vk"> VK</label>
-            <label class="opt-radio"><input type="radio" name="platform" value="other"> Другое</label>
-          </div>
-        </div>
+            <div class="panel">
+                <h4 style="margin:8px 0" id="caseDecisionTitleEl"></h4>
+                <div class="choice" id="choiceBox"></div>
+                <div class="footerRow">
+                    <button id="btnCheck" class="primary" disabled></button>
+                    <button id="btnSkip" class=""></button>
+                </div>
+                <div style="margin-top:8px; font-size:13px; color:var(--muted)" id="caseTipEl"></div>
+            </div>
+        </section>
 
-        <!-- Проверка фактов -->
-        <div>
-          <label style="display:block; font-weight:600; margin-bottom:8px">
-            Как часто ты проверяешь факты? (опц.)
-          </label>
-          <div style="display:grid; gap:6px">
-            <label class="opt-radio"><input type="radio" name="factcheck" value="always"> Всегда</label>
-            <label class="opt-radio"><input type="radio" name="factcheck" value="sometimes"> Иногда</label>
-            <label class="opt-radio"><input type="radio" name="factcheck" value="rarely"> Редко</label>
-            <label class="opt-radio"><input type="radio" name="factcheck" value="never"> Никогда</label>
-          </div>
-        </div>
+        <!-- Финал -->
+        <section id="end" class="panel end" style="display:none">
+            <div class="rank" id="rank"></div>
+            <h2 id="endTitle"></h2>
+            <p id="endText"></p>
+            <div class="footerRow" style="justify-content:center">
+                <button class="primary" id="btnRestart"></button>
+                <button id="btnShare"></button>
+            </div>
+        </section>
+    </main>
 
-        <!-- Роль в сети -->
-        <div>
-          <label style="display:block; font-weight:600; margin-bottom:8px">
-            Твоя роль в сети (опц.)
-          </label>
-          <div style="display:grid; gap:6px">
-            <label class="opt-radio"><input type="radio" name="role" value="observer"> Наблюдатель</label>
-            <label class="opt-radio"><input type="radio" name="role" value="active"> Активный</label>
-            <label class="opt-radio"><input type="radio" name="role" value="creator"> Создатель</label>
-            <label class="opt-radio"><input type="radio" name="role" value="analyst"> Аналитик</label>
-            <label class="opt-radio"><input type="radio" name="role" value="anon"> Аноним</label>
-          </div>
-        </div>
+    <div id="toast" class="toast"></div>
 
-        <!-- Цель участия -->
-        <div>
-          <label style="display:block; font-weight:600; margin-bottom:8px">
-            Цель участия (опц.)
-          </label>
-          <div style="display:grid; gap:6px">
-            <label class="opt-radio"><input type="radio" name="goal" value="play"> Играю</label>
-            <label class="opt-radio"><input type="radio" name="goal" value="challenge"> Проверить себя</label>
-            <label class="opt-radio"><input type="radio" name="goal" value="fakes"> Тема фейков интересует</label>
-            <label class="opt-radio"><input type="radio" name="goal" value="research"> Участвую в исследовании</label>
-          </div>
-        </div>
+    <script>
+        /** ======== SUPABASE CONFIGURATION ======== */
+        // ⚠️ ВАЖНО: Замените эти значения на ваши реальные из Supabase Dashboard
+        const SUPABASE_URL = 'https://oilktmiqbqeopdddrgwm.supabase.co'; // Например: 'https://xxxxx.supabase.co'
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9pbGt0bWlxYnFlb3BkZGRyZ3dtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1NzY1NjUsImV4cCI6MjA4MDE1MjU2NX0.0D9pggpIuQZH5j60tkVmFG_64MczKIUjkEm7eq9LI6U'; // Ваш публичный anon key
 
-        <div class="footerRow" style="margin-top:20px; justify-content:space-between">
-          <button type="button" class="ghost" id="btnFormBack">Назад</button>
-          <button type="button" class="primary" id="btnFormNext">Далее</button>
-        </div>
-      </form>
-    </section>
+        // Инициализация Supabase клиента
+        let supabase = null;
+        if (SUPABASE_URL !== 'YOUR_SUPABASE_URL' && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY') {
+            try {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                console.log('✅ Supabase клиент инициализирован:', SUPABASE_URL);
+            } catch (error) {
+                console.error('❌ Ошибка инициализации Supabase:', error);
+            }
+        } else {
+            console.warn('⚠️ Supabase не настроен. Укажите SUPABASE_URL и SUPABASE_ANON_KEY в коде.');
+        }
 
-    <!-- Экран 3: Согласие -->
-    <section id="onboard-consent" class="panel" style="display:none">
-      <h2 class="title">Проверка данных агента</h2>
-      <p style="color:var(--muted); font-size:14px; margin-bottom:16px">Прогресс: Шаг 3 из 3</p>
+        /** ======== SUPABASE FUNCTIONS ======== */
+        // Сохранение данных онбординга
+        async function saveAgentDataToSupabase(agentData) {
+            if (!supabase) {
+                console.warn('Supabase не настроен, используем localStorage');
+                localStorage.setItem("agentData", JSON.stringify(agentData));
+                return { success: true, fallback: true };
+            }
 
-      <!-- Резюме -->
-      <div style="background:#0c121b; border:1px solid #223047; border-radius:10px; padding:12px; margin-bottom:16px">
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:13px">
-          <div><span style="color:var(--muted)">Позывной:</span> <span id="summaryCallsign">—</span></div>
-          <div><span style="color:var(--muted)">Пол:</span> <span id="summaryGender">—</span></div>
-          <div><span style="color:var(--muted)">Возраст:</span> <span id="summaryAge">—</span></div>
-          <div><span style="color:var(--muted)">Регион:</span> <span id="summaryRegion">—</span></div>
-        </div>
-      </div>
+            try {
+                const existingAgentId = localStorage.getItem("agentId");
+                const dataToSave = {
+                    callsign: agentData.callsign,
+                    gender: agentData.gender,
+                    age: agentData.age,
+                    region: agentData.region,
+                    gender_other: agentData.gender === 'other' ? document.getElementById("genderOther")?.value : null,
+                    completed_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                };
 
-      <!-- Объяснение данных -->
-      <div style="background:rgba(83,226,174,.05); border-left:3px solid var(--acc); padding:12px; border-radius:6px; margin-bottom:16px">
-        <p style="margin:0; font-size:14px; line-height:1.5">
-          <strong>О данных простыми словами:</strong><br>
-          Мы собираем только анонимные ответы и игровые действия (выборы, время реакции, ошибки/успехи). Личных данных (ФИО, телефон и т.п.) — нет.
-        </p>
-      </div>
+                let data, error;
 
-      <!-- Чекбоксы согласия -->
-      <form id="consentForm" style="display:grid; gap:10px; margin-bottom:16px">
-        <label style="display:flex; gap:10px; align-items:flex-start; cursor:pointer">
-          <input type="checkbox" id="consentData" style="margin-top:3px">
-          <span style="font-size:14px; line-height:1.4">Я согласен(сна) на обработку моих анонимных данных для исследовательских целей и улучшения игры.</span>
-        </label>
-        <label style="display:flex; gap:10px; align-items:flex-start; cursor:pointer">
-          <input type="checkbox" id="consentAge" style="margin-top:3px">
-          <span style="font-size:14px; line-height:1.4">Мне 16 лет и больше. <span style="color:var(--muted)">*</span></span>
-        </label>
-      </form>
+                if (existingAgentId) {
+                    // Обновляем существующего агента
+                    console.log('Обновление существующего агента:', existingAgentId);
+                    const result = await supabase
+                        .from('agents')
+                        .update(dataToSave)
+                        .eq('id', existingAgentId)
+                        .select()
+                        .single();
+                    data = result.data;
+                    error = result.error;
+                } else {
+                    // Создаем нового агента
+                    console.log('Создание нового агента');
+                    dataToSave.created_at = new Date().toISOString();
+                    const result = await supabase
+                        .from('agents')
+                        .insert([dataToSave])
+                        .select()
+                        .single();
+                    data = result.data;
+                    error = result.error;
+                }
 
-      <!-- Линк "Подробнее" -->
-      <p style="text-align:center; margin:12px 0">
-        <button type="button" class="ghost" id="btnMoreInfo" style="text-decoration:underline; padding:0">Подробнее о защите данных</button>
-      </p>
+                if (error) throw error;
 
-      <div class="footerRow" style="justify-content:space-between; margin-top:20px">
-        <button type="button" class="ghost" id="btnConsentBack">Назад</button>
-        <button type="button" class="primary" id="btnActivate" disabled>Активировать профиль агента</button>
-      </div>
-    </section>
+                // Сохраняем ID агента
+                if (data && data.id) {
+                    localStorage.setItem("agentId", data.id);
+                    console.log('Agent ID сохранен:', data.id);
+                }
 
-    <!-- Модальное окно "Подробнее" -->
-    <div id="infoModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:100; overflow:auto; padding:20px">
-      <div style="background:var(--card); border:1px solid #1e2a3b; border-radius:14px; max-width:500px; margin:40px auto; padding:20px">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px">
-          <h3 style="margin:0">Как мы обрабатываем ваши данные</h3>
-          <button type="button" class="ghost" id="btnCloseModal" style="padding:4px 8px; font-size:16px">×</button>
-        </div>
-        <div style="font-size:13px; line-height:1.6; color:var(--ink)">
-          <p><strong>Кто обрабатывает данные:</strong> команда проекта "Digital Truth".</p>
-          <p><strong>Что собираем:</strong> пол, возрастной диапазон, регион, ответы на вопросы и игровые действия (время реакции, решения, успех/ошибка).</p>
-          <p><strong>Цель:</strong> исследование восприятия цифровой информации и улучшение механик игры.</p>
-          <p><strong>Правовая основа:</strong> добровольное согласие участника.</p>
-          <p><strong>Срок хранения:</strong> до окончания исследования (не более 24 месяцев), затем данные удаляются или остаются только в полностью агрегированном виде.</p>
-          <p><strong>Передача третьим лицам:</strong> только в виде обезличенной статистики.</p>
-          <p style="color:var(--muted); font-size:12px">За вопросами или отзывом согласия: support@digitaltruth.game</p>
-        </div>
-        <div class="footerRow" style="justify-content:center; margin-top:16px">
-          <button type="button" class="primary" id="btnCloseInfo">Понял</button>
-        </div>
-      </div>
-    </div>
+                // Также сохраняем в localStorage для офлайн-доступа
+                localStorage.setItem("agentData", JSON.stringify(agentData));
 
-    <!-- Стартовый экран (после онбординга) -->
-    <section id="start" class="panel" style="display:none">
-      <div class="hero">
-        <div class="badge">Цифровой спасотряд • v2.0</div>
-      </div>
-      <h2 class="title">Ты — детектив фактов</h2>
-      <p class="subtitle">Классифицируй: <span class="kbd">Правда</span> или <span class="kbd">Ложь</span>. Затем прими решение — <b>кого спасти</b>. Набери репутацию и получи похвалу Совета.</p>
-      <div class="footerRow" style="justify-content:flex-start; margin-top:16px">
-        <button class="primary" id="btnStart">Начать расследование</button>
-        <button class="ghost" id="btnHow">Правила</button>
-      </div>
-    </section>
+                console.log('Данные агента успешно сохранены в Supabase:', data);
+                return { success: true, data, id: data.id };
+            } catch (error) {
+                console.error('Ошибка сохранения данных онбординга:', error);
+                // Fallback на localStorage
+                localStorage.setItem("agentData", JSON.stringify(agentData));
+                return { success: false, error: error.message, fallback: true };
+            }
+        }
 
-    <!-- Экран дела -->
-    <section id="case" class="grid" style="display:none">
-      <div class="panel">
-        <div class="meta">
-          <span class="tag" id="caseTag">Incident • </span>
-          <span class="tag" id="caseDifficulty">Уровень</span>
-        </div>
-        <h3 class="title" id="caseTitle">Заголовок дела</h3>
-        <p class="subtitle" id="caseNarrative">Описание</p>
+        // Сохранение игровой сессии (обновление или создание)
+        async function saveGameSessionToSupabase(gameData) {
+            if (!supabase) {
+                console.warn('Supabase не настроен, игровая сессия не сохранена');
+                return { success: false, fallback: true };
+            }
 
-        <h4 style="margin:12px 0 8px">Доказательства:</h4>
-        <div class="evidence" id="evList"></div>
+            try {
+                const agentId = localStorage.getItem("agentId");
+                if (!agentId) {
+                    console.warn('Agent ID не найден, игровая сессия не сохранена');
+                    return { success: false, error: 'Agent ID not found' };
+                }
 
-        <div class="footerRow">
-          <span class="scoreline" id="evScore">Отмечено: 0 / 0</span>
-        </div>
-      </div>
+                const sessionId = localStorage.getItem("gameSessionId");
+                const sessionData = {
+                    agent_id: agentId,
+                    reputation: gameData.rep || 0,
+                    total_cases: gameData.cases?.length || 0,
+                    current_case_index: gameData.idx || 0,
+                    answers: gameData.answers || {},
+                    cases_played: gameData.cases?.map(c => ({
+                        tag: c.tag,
+                        difficulty: c.difficulty,
+                        title: c.title
+                    })) || [],
+                    updated_at: new Date().toISOString(),
+                    completed: gameData.idx >= (gameData.cases?.length || 0)
+                };
 
-      <div class="panel">
-        <h4 style="margin:8px 0">Решение: кого спасти?</h4>
-        <div class="choice" id="choiceBox"></div>
-        <div class="footerRow">
-          <button id="btnCheck" class="primary" disabled>Проверить дело</button>
-          <button id="btnSkip" class="">Пропустить</button>
-        </div>
-        <div style="margin-top:8px; font-size:13px; color:var(--muted)">Совет: отметь все доказательства как <i>Правда</i> или <i>Ложь</i>, затем выбери, кого спасать.</div>
-      </div>
-    </section>
+                // Если есть started_at из gameData, используем его, иначе текущее время
+                if (gameData.startedAt) {
+                    sessionData.started_at = gameData.startedAt;
+                } else if (!sessionId) {
+                    sessionData.started_at = new Date().toISOString();
+                }
 
-    <!-- Финал -->
-    <section id="end" class="panel end" style="display:none">
-      <div class="rank" id="rank">Ранг</div>
-      <h2 id="endTitle">Миссия завершена</h2>
-      <p id="endText">Текст</p>
-      <div class="footerRow" style="justify-content:center">
-        <button class="primary" id="btnRestart">Сыграть ещё</button>
-        <button id="btnShare">Скопировать результат</button>
-      </div>
-    </section>
-  </main>
+                let data, error;
 
-  <div id="toast" class="toast"></div>
+                if (sessionId) {
+                    // Обновляем существующую сессию
+                    console.log('Обновление игровой сессии:', sessionId);
+                    const result = await supabase
+                        .from('game_sessions')
+                        .update(sessionData)
+                        .eq('id', sessionId)
+                        .select()
+                        .single();
+                    data = result.data;
+                    error = result.error;
+                } else {
+                    // Создаем новую сессию
+                    console.log('Создание новой игровой сессии');
+                    if (!sessionData.started_at) {
+                        sessionData.started_at = new Date().toISOString();
+                    }
+                    const result = await supabase
+                        .from('game_sessions')
+                        .insert([sessionData])
+                        .select()
+                        .single();
+                    data = result.data;
+                    error = result.error;
+                    
+                    // Сохраняем ID сессии
+                    if (data && data.id) {
+                        localStorage.setItem("gameSessionId", data.id);
+                        console.log('Game Session ID сохранен:', data.id);
+                    }
+                }
 
-<script>
-/** ======== ДАННЫЕ СЮЖЕТОВ (можно расширять) ======== */
-const CASES = [
-  {
-    tag: "Фейк-новости",
-    difficulty: "Лёгкий",
-    title: "Взлом аккаунта или отмазка?",
-    narrative: "Девушка заявляет, что её аккаунт рассылал скам из-за взлома. Система фиксирует входы с её обычного устройства и IP.",
-    evidence: [
-      { text: "Лог входов с неизменного IP за последние 7 дней", isTruth: true, hint: "Стабильный IP снижает вероятность взлома." },
-      { text: "Посты со скам-ссылками написаны в её обычное время активности", isTruth: true, hint: "Временные паттерны совпадают." },
-      { text: "Скрин «ошибки входа» без метаданных и даты", isTruth: false, hint: "Скрин легко подделать, нет EXIF/даты." },
-    ],
-    choices: [
-      { id:"victim", label:"Спасти девушку: блок не накладывать" },
-      { id:"system", label:"Спасти систему: наложить ограничение и предупредить подписчиков" }
-    ],
-    correctChoice: "system",
-    praise: "Верно. Ты защитил аудиторию и не дал манипуляции распространиться."
-  },
-  {
-    tag: "Поддельные профили",
-    difficulty: "Средний",
-    title: "Инфлюенсер или клон?",
-    narrative: "Аккаунт якобы известного стримера просит донаты на «срочное лечение» через сомнительный кошелек.",
-    evidence: [
-      { text: "Домен ссылки зарегистрирован 2 дня назад", isTruth: true, hint:"Свежий домен — красный флаг."},
-      { text: "Официальный аккаунт отрицает сбор средств", isTruth: true, hint:"Прямое опровержение."},
-      { text: "Фото со сторис совпадает, но найдено в гугле год назад", isTruth: true, hint:"Реюз старого медиа."},
-      { text: "Знак верификации отсутствует", isTruth: true, hint:"Нет подтверждения личности."},
-    ],
-    choices: [
-      { id:"clone", label:"Спасти аудиторию: пометить как фишинг и оповестить" },
-      { id:"donate", label:"Спасти сбор: разместить ссылку" }
-    ],
-    correctChoice: "clone",
-    praise: "Чисто! Клон обезврежен, доверие сохранено."
-  },
-  {
-    tag: "Дипфейк",
-    difficulty: "Средний",
-    title: "Видео-скандал",
-    narrative: "Рассылается ролик, где топ-менеджер якобы признаёт махинации. Команда утверждает, что это дипфейк.",
-    evidence: [
-      { text: "Несовпадение теней и мигания глаз", isTruth: true, hint:"Классические признаки дипфейка."},
-      { text: "Аудиодорожка содержит артефакты стыковки", isTruth: true, hint:"Слышны склейки."},
-      { text: "Оригинал речи найден и он другой", isTruth: true, hint:"Источник опровергает ролик."},
-      { text: "Мета-данные файла удалены", isTruth: true, hint:"Подозрительно для оригинала."}
-    ],
-    choices: [
-      { id:"manager", label:"Спасти человека: пометить видео как дипфейк" },
-      { id:"viral", label:"Спасти вирусность: оставить как есть" }
-    ],
-    correctChoice: "manager",
-    praise: "Уважуха. Репутацию невиновного сохранили."
-  },
-  {
-    tag: "Кибербуллинг",
-    difficulty: "Сложный",
-    title: "Хейт-кампания",
-    narrative: "О студентке распространяют «факты» с анонимного форума. Скриншоты без источника, эмоции накалены.",
-    evidence: [
-      { text: "Скриншоты без прямых ссылок/архива", isTruth: false, hint:"Без ссылки — ноль доверия."},
-      { text: "Набор одинаковых ошибок в орфографии у разных аккаунтов", isTruth: true, hint:"Один автор — несколько масок."},
-      { text: "Нет совпадений в официальных реестрах", isTruth: true, hint:"Факты не подтверждаются."}
-    ],
-    choices: [
-      { id:"student", label:"Спасти студентку: снять публикации, приложить разбор" },
-      { id:"mob", label:"Спасти толпу: оставить контент от «свободы слова»" }
-    ],
-    correctChoice: "student",
-    praise: "Ты разрубил буллинг по правилам фактчека."
-  },
-  {
-    tag: "Игровое мошенничество",
-    difficulty: "Сложный",
-    title: "Дроп-схема",
-    narrative: "Игрок хвастается «легальным багом» для дропа скинов и продаёт гайд.",
-    evidence: [
-      { text: "Жалобы от 15 пользователей на кражу аккаунтов после «гайда»", isTruth: true, hint:"Косвенное, но сильное доказ."},
-      { text: "Видео-демо — монтаж с резкими склейками", isTruth: true, hint:"Подлог очевиден."},
-      { text: "Разработчик подтверждает, что такого бага нет", isTruth: true, hint:"Первичный источник всё решает."},
-      { text: "Автор «гайда» скрывает дату регистрации кошелька", isTruth: true, hint:"Признак мошенничества."},
-    ],
-    choices: [
-      { id:"community", label:"Спасти сообщество: бан схемы и предупреждение" },
-      { id:"seller", label:"Спасти продавца: разрешить продажи" }
-    ],
-    correctChoice: "community",
-    praise: "Комьюнити благодарно. Экономику спасли."
-  }
-];
+                if (error) throw error;
 
-/** ======== СОСТОЯНИЕ И ЛОГИКА ======== */
-let state = {
-  idx: 0,
-  rep: 0,
-  answers: {} // { evIndex: true/false }, choiceId
-};
+                console.log('Игровая сессия успешно сохранена в Supabase:', data);
+                return { success: true, data, sessionId: data.id };
+            } catch (error) {
+                console.error('Ошибка сохранения игровой сессии:', error);
+                console.error('Детали ошибки:', JSON.stringify(error, null, 2));
+                return { success: false, error: error.message };
+            }
+        }
 
-const $ = sel => document.querySelector(sel);
-const $all = sel => document.querySelectorAll(sel);
+        // Сохранение завершенной игры
+        async function saveGameResultToSupabase(gameResult) {
+            if (!supabase) {
+                console.warn('Supabase не настроен, результат игры не сохранен');
+                return { success: false, fallback: true };
+            }
 
-// ========== ONBOARDING STATE ==========
-let agentData = JSON.parse(localStorage.getItem("agentData") || "null");
+            try {
+                const agentId = localStorage.getItem("agentId");
+                if (!agentId) {
+                    console.warn('Agent ID не найден, результат не сохранен');
+                    return { success: false, error: 'Agent ID not found' };
+                }
 
-function hideAllSections(){
-  ["splash", "onboard-welcome", "onboard-form", "onboard-consent", "start", "case", "end"].forEach(id=>{
-    const el = $(`#${id}`);
-    if(el) el.style.display = "none";
-  });
-}
+                const resultData = {
+                    agent_id: agentId,
+                    final_reputation: gameResult.rep || 0,
+                    total_cases: gameResult.totalCases || 0,
+                    max_reputation: gameResult.maxRep || 0,
+                    accuracy_ratio: gameResult.ratio || 0,
+                    rank: gameResult.rank || 'unknown',
+                    completed_at: new Date().toISOString()
+                };
 
-function toast(msg){
-  const t = $("#toast"); t.textContent = msg; t.classList.add("show");
-  setTimeout(()=>t.classList.remove("show"), 2300);
-}
+                console.log('Сохранение результата игры:', resultData);
 
-// ========== ONBOARDING FLOW ==========
-function showOnboardWelcome(){
-  hideAllSections();
-  $("#onboard-welcome").style.display = "block";
-}
+                const { data, error } = await supabase
+                    .from('game_results')
+                    .insert([resultData])
+                    .select()
+                    .single();
 
-function showOnboardForm(){
-  hideAllSections();
-  $("#onboard-form").style.display = "block";
-  // Reset form
-  $("#agentForm").reset();
-  updateFormValidation();
-}
+                if (error) throw error;
 
-function showOnboardConsent(){
-  hideAllSections();
-  const form = document.getElementById("agentForm");
-  const fd = new FormData(form);
+                // Обновляем сессию как завершенную
+                const sessionId = localStorage.getItem("gameSessionId");
+                if (sessionId) {
+                    await supabase
+                        .from('game_sessions')
+                        .update({ completed: true, updated_at: new Date().toISOString() })
+                        .eq('id', sessionId);
+                    localStorage.removeItem("gameSessionId"); // Очищаем после завершения
+                }
 
-  agentData = {
-    callsign: document.getElementById("callsign").value || "Агент",
-    gender: fd.get("gender") || "—",
-    age: fd.get("age") || "—",
-    region: fd.get("region") || "—",
-    education: fd.get("education"),
-    activity: fd.get("activity"),
-    platform: fd.get("platform"),
-    factcheck: fd.get("factcheck"),
-    role: fd.get("role"),
-    goal: fd.get("goal"),
-  };
+                console.log('Результат игры успешно сохранен в Supabase:', data);
+                return { success: true, data, resultId: data.id };
+            } catch (error) {
+                console.error('Ошибка сохранения результата игры:', error);
+                console.error('Детали ошибки:', JSON.stringify(error, null, 2));
+                return { success: false, error: error.message };
+            }
+        }
 
-  // Update summary
-  const genderLabels = { female: "Женский", male: "Мужской", nonbinary: "Небинарный", skip: "Не указан", other: document.getElementById("genderOther").value };
-  const ageLabels = { "under18": "<18", "18-25": "18–25", "26-35": "26–35", "36-45": "36–45", "46plus": "46+" };
-  const regionOptions = document.getElementById("region").options;
-  const regionLabel = regionOptions[regionOptions.selectedIndex]?.textContent || "—";
+        // ========== АДМИН ФУНКЦИИ ==========
+        // Получение всей аналитики из БД
+        async function getAllAnalytics() {
+            if (!supabase) {
+                return { success: false, error: 'Supabase не настроен' };
+            }
 
-  $("#summaryCallsign").textContent = agentData.callsign;
-  $("#summaryGender").textContent = genderLabels[agentData.gender] || agentData.gender;
-  $("#summaryAge").textContent = ageLabels[agentData.age] || agentData.age;
-  $("#summaryRegion").textContent = regionLabel;
+            try {
+                console.log('Загрузка аналитики из Supabase...');
 
-  // Reset consent checkboxes
-  document.getElementById("consentData").checked = false;
-  document.getElementById("consentAge").checked = false;
-  updateConsentValidation();
+                // Получаем все данные параллельно
+                const [agentsResult, sessionsResult, answersResult, resultsResult] = await Promise.all([
+                    supabase.from('agents').select('*').order('created_at', { ascending: false }),
+                    supabase.from('game_sessions').select('*').order('started_at', { ascending: false }),
+                    supabase.from('case_answers').select('*').order('answered_at', { ascending: false }),
+                    supabase.from('game_results').select('*').order('completed_at', { ascending: false })
+                ]);
 
-  $("#onboard-consent").style.display = "block";
-}
+                // Проверяем ошибки
+                if (agentsResult.error) throw agentsResult.error;
+                if (sessionsResult.error) throw sessionsResult.error;
+                if (answersResult.error) throw answersResult.error;
+                if (resultsResult.error) throw resultsResult.error;
 
-function completeOnboarding(){
-  localStorage.setItem("agentData", JSON.stringify(agentData));
-  toast(`Идентификация завершена. Добро пожаловать в миссию, ${agentData.callsign}!`);
-  hideAllSections();
-  $("#start").style.display = "block";
-  updateHeader();
-}
+                return {
+                    success: true,
+                    agents: agentsResult.data || [],
+                    sessions: sessionsResult.data || [],
+                    answers: answersResult.data || [],
+                    results: resultsResult.data || []
+                };
+            } catch (error) {
+                console.error('Ошибка загрузки аналитики:', error);
+                return { success: false, error: error.message };
+            }
+        }
 
-function updateFormValidation(){
-  const callsign = document.getElementById("callsign").value.trim();
-  const gender = [...document.querySelectorAll('input[name="gender"]')].some(r=>r.checked);
-  const age = [...document.querySelectorAll('input[name="age"]')].some(r=>r.checked);
-  const region = document.getElementById("region").value;
+        // Вычисление социологических метрик
+        function calculateSociologicalMetrics(analytics) {
+            const { agents, sessions, answers, results } = analytics;
 
-  const isValid = callsign && gender && age && region;
-  document.getElementById("btnFormNext").disabled = !isValid;
-}
+            // 1. Демографический анализ
+            const genderDist = {};
+            const ageDist = {};
+            const regionDist = {};
+            
+            agents.forEach(a => {
+                genderDist[a.gender] = (genderDist[a.gender] || 0) + 1;
+                ageDist[a.age] = (ageDist[a.age] || 0) + 1;
+                regionDist[a.region] = (regionDist[a.region] || 0) + 1;
+            });
 
-function updateConsentValidation(){
-  const data = document.getElementById("consentData").checked;
-  const age = document.getElementById("consentAge").checked;
-  document.getElementById("btnActivate").disabled = !(data && age);
-}
+            // 2. Анализ медиаграмотности по демографии
+            const accuracyByGender = {};
+            const accuracyByAge = {};
+            const accuracyByRegion = {};
+            
+            // Создаем мапу agent_id -> agent
+            const agentMap = {};
+            agents.forEach(a => agentMap[a.id] = a);
 
-function showInfoModal(){
-  document.getElementById("infoModal").style.display = "block";
-}
+            results.forEach(r => {
+                const agent = agentMap[r.agent_id];
+                if (!agent) return;
 
-function closeInfoModal(){
-  document.getElementById("infoModal").style.display = "none";
-}
+                const accuracy = (r.accuracy_ratio || 0) * 100;
 
-// ========== GENDER "OTHER" FIELD ==========
-document.addEventListener("DOMContentLoaded", ()=>{
-  const genderOther = document.getElementById("genderOther");
-  document.querySelectorAll('input[name="gender"]').forEach(radio=>{
-    radio.addEventListener("change", ()=>{
-      if(radio.value === "other"){
-        genderOther.style.display = "block";
-        genderOther.focus();
-      } else {
-        genderOther.style.display = "none";
-        genderOther.value = "";
-      }
-    });
-  });
+                if (!accuracyByGender[agent.gender]) {
+                    accuracyByGender[agent.gender] = { sum: 0, count: 0 };
+                }
+                accuracyByGender[agent.gender].sum += accuracy;
+                accuracyByGender[agent.gender].count += 1;
 
-  // Form listeners
-  document.getElementById("callsign").addEventListener("input", updateFormValidation);
-  document.getElementById("region").addEventListener("change", updateFormValidation);
-  document.querySelectorAll('input[name="gender"], input[name="age"]').forEach(el=>{
-    el.addEventListener("change", updateFormValidation);
-  });
+                if (!accuracyByAge[agent.age]) {
+                    accuracyByAge[agent.age] = { sum: 0, count: 0 };
+                }
+                accuracyByAge[agent.age].sum += accuracy;
+                accuracyByAge[agent.age].count += 1;
 
-  // Consent listeners
-  document.getElementById("consentData").addEventListener("change", updateConsentValidation);
-  document.getElementById("consentAge").addEventListener("change", updateConsentValidation);
+                if (!accuracyByRegion[agent.region]) {
+                    accuracyByRegion[agent.region] = { sum: 0, count: 0 };
+                }
+                accuracyByRegion[agent.region].sum += accuracy;
+                accuracyByRegion[agent.region].count += 1;
+            });
 
-  // Modal listeners
-  document.getElementById("btnMoreInfo").addEventListener("click", showInfoModal);
-  document.getElementById("btnCloseModal").addEventListener("click", closeInfoModal);
-  document.getElementById("btnCloseInfo").addEventListener("click", closeInfoModal);
+            // 3. Анализ сложности дел
+            const difficultyStats = {};
+            const tagStats = {};
+            
+            answers.forEach(a => {
+                const diff = a.case_difficulty || 'unknown';
+                const tag = a.case_tag || 'unknown';
+                const points = a.points_earned || 0;
+                const isCorrect = a.choice_made === a.correct_choice;
 
-  // Onboarding button listeners
-  document.getElementById("btnOnboard").addEventListener("click", showOnboardWelcome);
-  document.getElementById("btnFormStart").addEventListener("click", showOnboardForm);
-  document.getElementById("btnFormBack").addEventListener("click", showOnboardWelcome);
-  document.getElementById("btnFormNext").addEventListener("click", showOnboardConsent);
-  document.getElementById("btnConsentBack").addEventListener("click", showOnboardForm);
-  document.getElementById("btnActivate").addEventListener("click", completeOnboarding);
+                if (!difficultyStats[diff]) {
+                    difficultyStats[diff] = { total: 0, points: 0, correct: 0 };
+                }
+                difficultyStats[diff].total += 1;
+                difficultyStats[diff].points += points;
+                if (isCorrect) difficultyStats[diff].correct += 1;
 
-  // Close modal on background click
-  document.getElementById("infoModal").addEventListener("click", (e)=>{
-    if(e.target.id === "infoModal") closeInfoModal();
-  });
-});
+                if (!tagStats[tag]) {
+                    tagStats[tag] = { total: 0, points: 0, correct: 0 };
+                }
+                tagStats[tag].total += 1;
+                tagStats[tag].points += points;
+                if (isCorrect) tagStats[tag].correct += 1;
+            });
 
-function updateHeader(){
-  $("#rep").textContent = `Репутация: ${state.rep}`;
-  $("#caseNo").textContent = `Дело — ${state.idx+1} / ${CASES.length}`;
-}
+            // 4. Поведенческий анализ
+            const completedSessions = sessions.filter(s => s.completed).length;
+            const notCompletedSessions = sessions.filter(s => !s.completed).length;
+            const dropoutRate = sessions.length > 0 ? (notCompletedSessions / sessions.length * 100).toFixed(1) : 0;
 
-function renderCase(){
-  const c = CASES[state.idx];
-  $("#caseTag").textContent = c.tag;
-  $("#caseDifficulty").textContent = c.difficulty;
-  $("#caseTitle").textContent = c.title;
-  $("#caseNarrative").textContent = c.narrative;
+            // 5. Временной анализ
+            const registrationsByDate = {};
+            agents.forEach(a => {
+                if (a.created_at) {
+                    const date = new Date(a.created_at).toLocaleDateString('ru-RU');
+                    registrationsByDate[date] = (registrationsByDate[date] || 0) + 1;
+                }
+            });
 
-  // Evidence list
-  const evBox = $("#evList"); evBox.innerHTML = "";
-  state.answers = { ev: Array(c.evidence.length).fill(null), choice: null };
+            // 6. Общая статистика
+            const totalAgents = agents.length;
+            const totalSessions = sessions.length;
+            const totalAnswers = answers.length;
+            const totalResults = results.length;
+            const activeSessions = sessions.filter(s => !s.completed).length;
+            const avgReputation = results.length > 0 
+                ? (results.reduce((sum, r) => sum + (r.final_reputation || 0), 0) / results.length).toFixed(1)
+                : 0;
+            const avgAccuracy = results.length > 0
+                ? (results.reduce((sum, r) => sum + (r.accuracy_ratio || 0), 0) / results.length * 100).toFixed(1)
+                : 0;
 
-  c.evidence.forEach((ev, i)=>{
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `
-      <div class="meta"><span class="tag">Доказательство #${i+1}</span></div>
+            return {
+                // Демография
+                genderDist,
+                ageDist,
+                regionDist,
+                // Медиаграмотность
+                accuracyByGender,
+                accuracyByAge,
+                accuracyByRegion,
+                // Сложность
+                difficultyStats,
+                tagStats,
+                // Поведение
+                completedSessions,
+                notCompletedSessions,
+                dropoutRate,
+                // Время
+                registrationsByDate,
+                // Общее
+                totalAgents,
+                totalSessions,
+                totalAnswers,
+                totalResults,
+                activeSessions,
+                avgReputation,
+                avgAccuracy
+            };
+        }
+
+        // Отображение аналитики в модальном окне
+        async function showAdminAnalytics() {
+            const modal = $("#adminModal");
+            const content = $("#adminContent");
+            
+            modal.style.display = "block";
+            content.innerHTML = `
+                <div style="text-align:center; padding:20px; color:var(--muted)">
+                    <div class="spinner"></div>
+                    <p style="margin-top:12px">Загрузка данных...</p>
+                </div>
+            `;
+
+            const analytics = await getAllAnalytics();
+
+            if (!analytics.success) {
+                content.innerHTML = `
+                    <div class="admin-section">
+                        <h3>❌ Ошибка</h3>
+                        <p style="color:var(--warn)">${analytics.error || 'Не удалось загрузить данные'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const metrics = calculateSociologicalMetrics(analytics);
+
+            // Формируем HTML с полной социологической аналитикой
+            let html = `
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:12px; margin-bottom:20px">
+                    <div class="admin-stat">
+                        <strong>${metrics.totalAgents}</strong>
+                        <span>Агентов</span>
+                    </div>
+                    <div class="admin-stat">
+                        <strong>${metrics.totalSessions}</strong>
+                        <span>Сессий</span>
+                    </div>
+                    <div class="admin-stat">
+                        <strong>${metrics.activeSessions}</strong>
+                        <span>Активных</span>
+                    </div>
+                    <div class="admin-stat">
+                        <strong>${metrics.totalAnswers}</strong>
+                        <span>Ответов</span>
+                    </div>
+                    <div class="admin-stat">
+                        <strong>${metrics.totalResults}</strong>
+                        <span>Завершено</span>
+                    </div>
+                    <div class="admin-stat">
+                        <strong>${metrics.avgReputation}</strong>
+                        <span>Средняя репутация</span>
+                    </div>
+                    <div class="admin-stat">
+                        <strong>${metrics.avgAccuracy}%</strong>
+                        <span>Средняя точность</span>
+                    </div>
+                    <div class="admin-stat">
+                        <strong>${metrics.dropoutRate}%</strong>
+                        <span>Отказ от игры</span>
+                    </div>
+                </div>
+
+                <!-- ДЕМОГРАФИЧЕСКИЙ АНАЛИЗ -->
+                <div class="admin-section">
+                    <h3>📊 Демографический анализ</h3>
+                    
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:16px; margin-bottom:16px">
+                        <div>
+                            <h4 style="margin:0 0 8px 0; font-size:14px; color:var(--muted)">Распределение по полу</h4>
+                            <table class="admin-table" style="font-size:12px">
+                                <thead>
+                                    <tr>
+                                        <th>Пол</th>
+                                        <th>Количество</th>
+                                        <th>%</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${Object.entries(metrics.genderDist).map(([gender, count]) => {
+                                        const pct = ((count / metrics.totalAgents) * 100).toFixed(1);
+                                        return `<tr>
+                                            <td>${escapeHtml(gender)}</td>
+                                            <td>${count}</td>
+                                            <td>${pct}%</td>
+                                        </tr>`;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div>
+                            <h4 style="margin:0 0 8px 0; font-size:14px; color:var(--muted)">Распределение по возрасту</h4>
+                            <table class="admin-table" style="font-size:12px">
+                                <thead>
+                                    <tr>
+                                        <th>Возраст</th>
+                                        <th>Количество</th>
+                                        <th>%</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${Object.entries(metrics.ageDist).sort((a, b) => {
+                                        const order = {'under18': 1, '18-25': 2, '26-35': 3, '36-45': 4, '46plus': 5};
+                                        return (order[a[0]] || 99) - (order[b[0]] || 99);
+                                    }).map(([age, count]) => {
+                                        const pct = ((count / metrics.totalAgents) * 100).toFixed(1);
+                                        const ageLabel = age === 'under18' ? '<18' : age === '18-25' ? '18-25' : age === '26-35' ? '26-35' : age === '36-45' ? '36-45' : '46+';
+                                        return `<tr>
+                                            <td>${ageLabel}</td>
+                                            <td>${count}</td>
+                                            <td>${pct}%</td>
+                                        </tr>`;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div>
+                            <h4 style="margin:0 0 8px 0; font-size:14px; color:var(--muted)">Распределение по регионам</h4>
+                            <div style="max-height:200px; overflow-y:auto">
+                                <table class="admin-table" style="font-size:12px">
+                                    <thead>
+                                        <tr>
+                                            <th>Регион</th>
+                                            <th>Кол-во</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${Object.entries(metrics.regionDist).sort((a, b) => b[1] - a[1]).map(([region, count]) => {
+                                            return `<tr>
+                                                <td>${escapeHtml(region)}</td>
+                                                <td>${count}</td>
+                                            </tr>`;
+                                        }).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- АНАЛИЗ МЕДИАГРАМОТНОСТИ -->
+                <div class="admin-section">
+                    <h3>🎯 Анализ медиаграмотности</h3>
+                    
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:16px">
+                        <div>
+                            <h4 style="margin:0 0 8px 0; font-size:14px; color:var(--muted)">Точность по полу</h4>
+                            <table class="admin-table" style="font-size:12px">
+                                <thead>
+                                    <tr>
+                                        <th>Пол</th>
+                                        <th>Точность</th>
+                                        <th>Игр</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${Object.entries(metrics.accuracyByGender).map(([gender, data]) => {
+                                        const avg = (data.sum / data.count).toFixed(1);
+                                        return `<tr>
+                                            <td>${escapeHtml(gender)}</td>
+                                            <td><strong>${avg}%</strong></td>
+                                            <td>${data.count}</td>
+                                        </tr>`;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div>
+                            <h4 style="margin:0 0 8px 0; font-size:14px; color:var(--muted)">Точность по возрасту</h4>
+                            <table class="admin-table" style="font-size:12px">
+                                <thead>
+                                    <tr>
+                                        <th>Возраст</th>
+                                        <th>Точность</th>
+                                        <th>Игр</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${Object.entries(metrics.accuracyByAge).sort((a, b) => {
+                                        const order = {'under18': 1, '18-25': 2, '26-35': 3, '36-45': 4, '46plus': 5};
+                                        return (order[a[0]] || 99) - (order[b[0]] || 99);
+                                    }).map(([age, data]) => {
+                                        const avg = (data.sum / data.count).toFixed(1);
+                                        const ageLabel = age === 'under18' ? '<18' : age === '18-25' ? '18-25' : age === '26-35' ? '26-35' : age === '36-45' ? '36-45' : '46+';
+                                        return `<tr>
+                                            <td>${ageLabel}</td>
+                                            <td><strong>${avg}%</strong></td>
+                                            <td>${data.count}</td>
+                                        </tr>`;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div>
+                            <h4 style="margin:0 0 8px 0; font-size:14px; color:var(--muted)">Точность по регионам (топ-10)</h4>
+                            <div style="max-height:200px; overflow-y:auto">
+                                <table class="admin-table" style="font-size:12px">
+                                    <thead>
+                                        <tr>
+                                            <th>Регион</th>
+                                            <th>Точность</th>
+                                            <th>Игр</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${Object.entries(metrics.accuracyByRegion)
+                                            .sort((a, b) => (b[1].sum / b[1].count) - (a[1].sum / a[1].count))
+                                            .slice(0, 10)
+                                            .map(([region, data]) => {
+                                                const avg = (data.sum / data.count).toFixed(1);
+                                                return `<tr>
+                                                    <td>${escapeHtml(region)}</td>
+                                                    <td><strong>${avg}%</strong></td>
+                                                    <td>${data.count}</td>
+                                                </tr>`;
+                                            }).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- АНАЛИЗ СЛОЖНОСТИ ДЕЛ -->
+                <div class="admin-section">
+                    <h3>📈 Анализ сложности дел</h3>
+                    
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:16px">
+                        <div>
+                            <h4 style="margin:0 0 8px 0; font-size:14px; color:var(--muted)">По уровню сложности</h4>
+                            <table class="admin-table" style="font-size:12px">
+                                <thead>
+                                    <tr>
+                                        <th>Сложность</th>
+                                        <th>Ответов</th>
+                                        <th>Средние очки</th>
+                                        <th>Успех</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${Object.entries(metrics.difficultyStats).map(([diff, stats]) => {
+                                        const avgPoints = (stats.points / stats.total).toFixed(1);
+                                        const successRate = ((stats.correct / stats.total) * 100).toFixed(1);
+                                        return `<tr>
+                                            <td>${escapeHtml(diff)}</td>
+                                            <td>${stats.total}</td>
+                                            <td>${avgPoints}</td>
+                                            <td><strong>${successRate}%</strong></td>
+                                        </tr>`;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div>
+                            <h4 style="margin:0 0 8px 0; font-size:14px; color:var(--muted)">По типам дел</h4>
+                            <div style="max-height:300px; overflow-y:auto">
+                                <table class="admin-table" style="font-size:12px">
+                                    <thead>
+                                        <tr>
+                                            <th>Тип дела</th>
+                                            <th>Ответов</th>
+                                            <th>Средние очки</th>
+                                            <th>Успех</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${Object.entries(metrics.tagStats).sort((a, b) => b[1].total - a[1].total).map(([tag, stats]) => {
+                                            const avgPoints = (stats.points / stats.total).toFixed(1);
+                                            const successRate = ((stats.correct / stats.total) * 100).toFixed(1);
+                                            return `<tr>
+                                                <td>${escapeHtml(tag)}</td>
+                                                <td>${stats.total}</td>
+                                                <td>${avgPoints}</td>
+                                                <td><strong>${successRate}%</strong></td>
+                                            </tr>`;
+                                        }).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ПОВЕДЕНЧЕСКИЙ АНАЛИЗ -->
+                <div class="admin-section">
+                    <h3>🔄 Поведенческий анализ</h3>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px">
+                        <div class="admin-stat">
+                            <strong>${metrics.completedSessions}</strong>
+                            <span>Завершено сессий</span>
+                        </div>
+                        <div class="admin-stat">
+                            <strong>${metrics.notCompletedSessions}</strong>
+                            <span>Не завершено</span>
+                        </div>
+                        <div class="admin-stat">
+                            <strong>${metrics.dropoutRate}%</strong>
+                            <span>Процент отказов</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ВРЕМЕННОЙ АНАЛИЗ -->
+                <div class="admin-section">
+                    <h3>📅 Временной анализ</h3>
+                    <h4 style="margin:0 0 8px 0; font-size:14px; color:var(--muted)">Регистрации по датам (последние 30 дней)</h4>
+                    <div style="max-height:300px; overflow-y:auto">
+                        <table class="admin-table" style="font-size:12px">
+                            <thead>
+                                <tr>
+                                    <th>Дата</th>
+                                    <th>Регистраций</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${Object.entries(metrics.registrationsByDate)
+                                    .sort((a, b) => new Date(b[0].split('.').reverse().join('-')) - new Date(a[0].split('.').reverse().join('-')))
+                                    .slice(0, 30)
+                                    .map(([date, count]) => {
+                                        return `<tr>
+                                            <td>${date}</td>
+                                            <td><strong>${count}</strong></td>
+                                        </tr>`;
+                                    }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ДЕТАЛЬНЫЕ ТАБЛИЦЫ -->
+                <div class="admin-section">
+                    <h3>👥 Все агенты (${analytics.agents.length})</h3>
+                    <div style="overflow-x:auto; max-height:400px; overflow-y:auto">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:200px">Позывной</th>
+                                    <th style="width:100px">Пол</th>
+                                    <th style="width:100px">Возраст</th>
+                                    <th style="width:150px">Регион</th>
+                                    <th style="width:180px">Создан</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${analytics.agents.map(a => `
+                                    <tr>
+                                        <td>${escapeHtml(a.callsign || '—')}</td>
+                                        <td>${escapeHtml(a.gender || '—')}</td>
+                                        <td>${escapeHtml(a.age || '—')}</td>
+                                        <td>${escapeHtml(a.region || '—')}</td>
+                                        <td>${formatDate(a.created_at)}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <h3>🏆 Результаты игр (${analytics.results.length})</h3>
+                    <div style="overflow-x:auto; max-height:400px; overflow-y:auto">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:80px">Репутация</th>
+                                    <th style="width:80px">Дела</th>
+                                    <th style="width:100px">Точность</th>
+                                    <th style="width:150px">Ранг</th>
+                                    <th style="width:180px">Завершено</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${analytics.results.map(r => `
+                                    <tr>
+                                        <td><strong>${r.final_reputation || 0}</strong></td>
+                                        <td>${r.total_cases || 0}</td>
+                                        <td>${((r.accuracy_ratio || 0) * 100).toFixed(1)}%</td>
+                                        <td>${escapeHtml(r.rank || '—')}</td>
+                                        <td>${formatDate(r.completed_at)}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+
+            content.innerHTML = html;
+        }
+
+        // Вспомогательные функции для админ-панели
+        function escapeHtml(text) {
+            if (!text) return '—';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '—';
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleString('ru-RU', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            } catch (e) {
+                return dateString;
+            }
+        }
+
+        // Сохранение ответа на конкретное дело
+        async function saveCaseAnswerToSupabase(caseData) {
+            if (!supabase) {
+                return { success: false, fallback: true };
+            }
+
+            try {
+                const agentId = localStorage.getItem("agentId");
+                if (!agentId) {
+                    console.warn('Agent ID не найден, ответ на дело не сохранен');
+                    return { success: false, error: 'Agent ID not found' };
+                }
+
+                const answerData = {
+                    agent_id: agentId,
+                    case_tag: caseData.tag || 'unknown',
+                    case_title: caseData.title || 'unknown',
+                    case_difficulty: caseData.difficulty || 'unknown',
+                    evidence_answers: caseData.evidenceAnswers || [], // массив ответов на доказательства
+                    choice_made: caseData.choice || '',
+                    correct_choice: caseData.correctChoice || '',
+                    points_earned: caseData.points || 0,
+                    answered_at: new Date().toISOString()
+                };
+
+                console.log('Сохранение ответа на дело:', answerData);
+
+                const { data, error } = await supabase
+                    .from('case_answers')
+                    .insert([answerData])
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                console.log('Ответ на дело успешно сохранен в Supabase:', data);
+                return { success: true, data };
+            } catch (error) {
+                console.error('Ошибка сохранения ответа на дело:', error);
+                console.error('Детали ошибки:', JSON.stringify(error, null, 2));
+                return { success: false, error: error.message };
+            }
+        }
+
+        /** ======== I18N LOCALIZATION ======== */
+        const TRANSLATIONS = {
+            ru: {
+                mainTitle: "Digital Truth: Спаси Правду",
+                langRu: "Русский",
+                langKk: "Қазақша",
+                splashBadge: "Новая миссия • v2.0",
+                splashTitle: "Digital Truth: Идентификация агента",
+                splashSubtitle: "Доступ к базе 'Digital Shield' возможен только после регистрации агента.",
+                splashBtn: "Начать идентификацию",
+                onboardWelcomeTitle: "Добро пожаловать, Агент",
+                onboardWelcomeText1: "• Мы тестируем вашу цифровую интуицию и навык факт-чека.",
+                onboardWelcomeText2: "• Регистрация нужна, чтобы настроить миссии и собрать анонимную статистику.",
+                onboardWelcomeText3: "• Это займёт < 1 минуты.",
+                onboardWelcomeBtn: "Заполнить паспортичку",
+                onboardCompleteMsg: "Добро пожаловать, ${callsign}! Начните расследование.",
+                formTitle: "Паспорт агента",
+                formProgress: "Прогресс: Шаг 2 из 3",
+                formCallsign: "Позывной агента",
+                formCallsignPlaceholder: "Пример: Agent Nova",
+                formCallsignSmall: "Это ваш публичный ник; личных данных не просим.",
+                formGender: "Пол",
+                formGenderNote: "(для анализа восприятия)",
+                formGenderFemale: "Женский",
+                formGenderMale: "Мужской",
+                formGenderNonbinary: "Небинарный",
+                formGenderSkip: "Не указывать",
+                formGenderOther: "Другое",
+                formGenderOtherPlaceholder: "Укажите",
+                formAge: "Возрастная группа",
+                formAgeUnder18: "<18 лет",
+                formAge18_25: "18–25 лет",
+                formAge26_35: "26–35 лет",
+                formAge36_45: "36–45 лет",
+                formAge46plus: "46+ лет",
+                formRegion: "Регион / Город",
+                formBtnBack: "Назад",
+                formBtnNext: "Далее",
+                regionNurSultan: "Нур‑Султан",
+                regionAlmaty: "Алматы",
+                regionShymkent: "Шымкент",
+                regionKaraganda: "Караганда",
+                regionAktobe: "Актобе",
+                regionKostanay: "Костанай",
+                regionAktau: "Актау",
+                regionAtyrau: "Атырау",
+                regionPavlodar: "Павлодар",
+                regionEkibastuz: "Экибастуз",
+                regionPetropavlovsk: "Петропавловск",
+                regionOral: "Уральск",
+                regionKokshetau: "Кокшетау",
+                regionSemey: "Семей",
+                regionOskemen: "Усть-Каменогорск",
+                regionKyzylorda: "Кызылорда",
+                regionTaraz: "Тараз",
+                regionTaldykorgan: "Талдыкорган",
+                regionTurkestan: "Туркестан",
+                regionZhanaozen: "Жанаозен",
+                regionZhezkazgan: "Жезказган",
+                regionKaratau: "Каратау",
+                consentTitle: "Проверка данных агента",
+                consentProgress: "Прогресс: Шаг 3 из 3",
+                consentSummaryCallsign: "Позывной:",
+                consentSummaryGender: "Пол:",
+                consentSummaryAge: "Возраст:",
+                consentSummaryRegion: "Регион:",
+                consentExplainTitle: "О данных простыми словами:",
+                consentExplainText: "Мы собираем только анонимные ответы и игровые действия (выборы, время реакции, ошибки/успехи). Личных данных (ФИО, телефон и т.п.) — нет.",
+                consentData: "Я согласен(сна) на обработку моих анонимных данных для исследовательских целей и улучшения игры.",
+                consentAge: "Мне 16 лет и больше.",
+                consentBtnMoreInfo: "Подробнее о защите данных",
+                consentBtnBack: "Назад",
+                consentBtnActivate: "Активировать профиль агента",
+                onboardCompleteMsg: "Идентификация завершена. Добро пожаловать в миссию, {callsign}!",
+                modalTitle: "Как мы обрабатываем ваши данные",
+                modalWho: "Кто обрабатывает данные:",
+                modalWhoText: "команда проекта 'Digital Truth'.",
+                modalWhat: "Что собираем:",
+                modalWhatText: "пол, возрастной диапазон, регион, ответы на вопросы и игровые действия (время реакции, решения, успех/ошибка).",
+                modalGoal: "Цель:",
+                modalGoalText: "исследование восприятия цифровой информации и улучшение механик игры.",
+                modalLaw: "Правовая основа:",
+                modalLawText: "добровольное согласие участника.",
+                modalTerm: "Срок хранения:",
+                modalTermText: "до окончания исследования (не более 24 месяцев), затем данные удаляются или остаются только в полностью агрегированном виде.",
+                modalThird: "Передача третьим лицам:",
+                modalThirdText: "только в виде обезличенной статистики.",
+                modalContact: "За вопросами или отзывом согласия: support@digitaltruth.game",
+                modalBtn: "Понял",
+                toastCaseClosed: "Дело закрыто: +{points} репутации",
+                toastSkipped: "Дело пропущено",
+                toastCopied: "Скопировано в буфер обмена",
+                toastHintUnavailable: "Подсказка недоступна",
+                toastHow: "Отмечай доказательства как Правда/Ложь и выбери, кого спасти. Баллы = точность + верный выбор.",
+                truthBtn: "Правда",
+                lieBtn: "Ложь",
+                hintBtn: "Подсказка",
+                choiceReputation: "Решение повлияет на репутацию.",
+                endRankNew: "Аналитик-новобранец",
+                endPraiseNew: "Неплохо. База есть — масштабируем качество решений.",
+                endRankFact: "Фактчекер",
+                endPraiseFact: "Ты уверенно отличаешь шум от сигналов.",
+                endRankCurator: "Куратор правды",
+                endPraiseCurator: "Стабильно спасаешь то, что важно — людей и данные.",
+                endRankSavior: "Спаситель правды",
+                endPraiseSavior: "Совет аплодирует стоя. Твой разбор — эталон.",
+                endResult: "Итоговая репутация",
+                startBadge: "Цифровой спасотряд • v2.0",
+                startTitle: "Ты — детектив фактов",
+                startSubtitle: "Классифицируй: <span class=\"kbd\">Правда</span> или <span class=\"kbd\">Ложь</span>. Затем прими решение — <b>кого спасти</b>. Набери репутацию и получи похвалу Совета.",
+                btnStart: "Начать расследование",
+                btnHow: "Правила",
+                btnRestart: "Сыграть ещё",
+                btnShare: "Скопировать результат",
+                caseNo: "Дело — {current} / {total}",
+                rep: "Репутация: {rep}",
+                caseTag: "Инцидент • ",
+                caseDifficulty: "Уровень",
+                caseTitle: "Заголовок дела",
+                caseNarrative: "Описание",
+                caseEvidenceTitle: "Доказательства:",
+                caseDecisionTitle: "Решение: кого спасти?",
+                caseTip: "Совет: отметь все доказательства как <i>Правда</i> или <i>Ложь</i>, затем выбери, кого спасать.",
+                evidence: "Доказательство",
+                evScore: "Отмечено: {done} / {total}",
+                choiceTitle: "Решение: кого спасти?",
+                choiceReputation: "Решение повлияет на репутацию.",
+                btnCheck: "Проверить дело",
+                btnSkip: "Пропустить",
+                endTitle: "Миссия завершена",
+                endText: "Вы завершили расследование",
+                rank: "Ранг",
+            },
+            kk: {
+                mainTitle: "Digital Truth: Шындықты Құтқар",
+                langRu: "Русский",
+                langKk: "Қазақша",
+                splashBadge: "Жаңа миссия • v2.0",
+                splashTitle: "Digital Truth: Агентті сәйкестендіру",
+                splashSubtitle: "'Digital Shield' базасына кіру тек агент тіркелгеннен кейін мүмкін.",
+                splashBtn: "Сәйкестендіруді бастау",
+                onboardWelcomeTitle: "Қош келдіңіз, Агент",
+                onboardWelcomeText1: "• Біз сіздің цифрлық интуицияңызды және фактчекинг дағдыңызды тексереміз.",
+                onboardWelcomeText2: "• Тіркеу миссияны баптау және аноним статистика жинау үшін қажет.",
+                onboardWelcomeText3: "• Бұл < 1 минут алады.",
+                onboardWelcomeBtn: "Паспортты толтыру",
+                onboardCompleteMsg: "Қош келдіңіз, ${callsign}! Тергеуді бастаңыз.",
+                formTitle: "Агент паспорты",
+                formProgress: "Прогресс: 2-қадам 3-тен",
+                formCallsign: "Агенттің лақап аты",
+                formCallsignPlaceholder: "Мысалы: Agent Nova",
+                formCallsignSmall: "Бұл сіздің жария никіңіз; жеке деректер сұралмайды.",
+                formGender: "Жынысы",
+                formGenderNote: "(қабылдауды талдау үшін)",
+                formGenderFemale: "Әйел",
+                formGenderMale: "Ер",
+                formGenderNonbinary: "Бинар емес",
+                formGenderSkip: "Көрсетпеу",
+                formGenderOther: "Басқа",
+                formGenderOtherPlaceholder: "Көрсетіңіз",
+                formAge: "Жас тобы",
+                formAgeUnder18: "<18 жас",
+                formAge18_25: "18–25 жас",
+                formAge26_35: "26–35 жас",
+                formAge36_45: "36–45 жас",
+                formAge46plus: "46+ жас",
+                formRegion: "Аймақ / Қала",
+                formBtnBack: "Артқа",
+                formBtnNext: "Келесі",
+                regionNurSultan: "Нұр‑Сұлтан",
+                regionAlmaty: "Алматы",
+                regionShymkent: "Шымкент",
+                regionKaraganda: "Қарағанды",
+                regionAktobe: "Ақтөбе",
+                regionKostanay: "Қостанай",
+                regionAktau: "Ақтау",
+                regionAtyrau: "Атырау",
+                regionPavlodar: "Павлодар",
+                regionEkibastuz: "Екібастұз",
+                regionPetropavlovsk: "Петропавл",
+                regionOral: "Орал",
+                regionKokshetau: "Көкшетау",
+                regionSemey: "Семей",
+                regionOskemen: "Өскемен",
+                regionKyzylorda: "Қызылорда",
+                regionTaraz: "Тараз",
+                regionTaldykorgan: "Талдықорған",
+                regionTurkestan: "Түркістан",
+                regionZhanaozen: "Жанаозен",
+                regionZhezkazgan: "Жезқазған",
+                regionKaratau: "Қаратау",
+                consentTitle: "Агент деректерін тексеру",
+                consentProgress: "Прогресс: 3-қадам 3-тен",
+                consentSummaryCallsign: "Лақап аты:",
+                consentSummaryGender: "Жынысы:",
+                consentSummaryAge: "Жасы:",
+                consentSummaryRegion: "Аймақ:",
+                consentExplainTitle: "Деректер туралы қарапайым сөзбен:",
+                consentExplainText: "Біз тек аноним жауаптар мен ойын әрекеттерін жинаймыз (таңдау, реакция уақыты, қателер/сәттілік). Жеке деректер (аты-жөні, телефон және т.б.) — жоқ.",
+                consentData: "Менің аноним деректерімді зерттеу және ойынды жақсарту үшін өңдеуге келісемін.",
+                consentAge: "Маған 16 жас және одан көп.",
+                consentBtnMoreInfo: "Деректерді қорғау туралы толығырақ",
+                consentBtnBack: "Артқа",
+                consentBtnActivate: "Агент профилін іске қосу",
+                onboardCompleteMsg: "Сәйкестендіру аяқталды. Миссияға қош келдіңіз, {callsign}!",
+                modalTitle: "Деректеріңізді қалай өңдейміз",
+                modalWho: "Деректерді өңдеуші:",
+                modalWhoText: "'Digital Truth' жобасының командасы.",
+                modalWhat: "Не жинаймыз:",
+                modalWhatText: "жынысы, жас диапазоны, аймақ, сұрақтарға жауап және ойын әрекеттері (реакция уақыты, шешімдер, сәттілік/қате).",
+                modalGoal: "Мақсат:",
+                modalGoalText: "цифрлық ақпаратты қабылдауды зерттеу және ойын механикасын жақсарту.",
+                modalLaw: "Құқықтық негіз:",
+                modalLawText: "қатысушының ерікті келісімі.",
+                modalTerm: "Сақтау мерзімі:",
+                modalTermText: "зерттеу аяқталғанға дейін (24 айдан аспайды), кейін деректер жойылады немесе тек агрегатталған түрде қалады.",
+                modalThird: "Үшінші тұлғаларға беру:",
+                modalThirdText: "тек анонимді статистика түрінде.",
+                modalContact: "Сұрақтар немесе келісімнен бас тарту үшін: support@digitaltruth.game",
+                modalBtn: "Түсінікті",
+                startBadge: "Сандық құтқарушы тобы • v2.0",
+                startTitle: "Сен — факт детективісің",
+                startSubtitle: "Сарапта: <span class=\"kbd\">Шындық</span> немесе <span class=\"kbd\">Жалған</span>. Сосын шешім қабылда — <b>кімді құтқару</b>. Репутация жинап, Кеңестің мақтауын ал.",
+                btnStart: "Тергеуді бастау",
+                btnHow: "Ережелер",
+                btnRestart: "Қайта ойнау",
+                btnShare: "Нәтижені көшіру",
+                caseNo: "Іс — {current} / {total}",
+                rep: "Репутация: {rep}",
+                caseTag: "Оқиға • ",
+                caseDifficulty: "Деңгей",
+                caseTitle: "Іс атауы",
+                caseNarrative: "Сипаттама",
+                caseEvidenceTitle: "Дәлелдер:",
+                caseDecisionTitle: "Шешім: кімді құтқару?",
+                caseTip: "Кеңес: барлық дәлелді <i>Шындық</i> немесе <i>Жалған</i> деп белгіле, сосын кімді құтқаруды таңда.",
+                evidence: "Дәлел",
+                evScore: "Белгіленді: {done} / {total}",
+                choiceTitle: "Шешім: кімді құтқару?",
+                choiceReputation: "Шешім репутацияға әсер етеді.",
+                truthBtn: "Шындық",
+                lieBtn: "Жалған",
+                hintBtn: "Нәр",
+                btnCheck: "Істі тексеру",
+                btnSkip: "Өткізіп жіберу",
+                endTitle: "Миссия аяқталды",
+                endText: "Сіз тергеуді аяқтадыңыз",
+                rank: "Дәреже",
+                toastCaseClosed: "Іс жабылды: +{points} репутация",
+                toastSkipped: "Іс өткізілді",
+                toastCopied: "Буферге көшірілді",
+                toastHintUnavailable: "Кеңес қолжетімсіз",
+                toastHow: "Дәлелдерді Шындық/Жалған деп белгіле, сосын кімді құтқаруды таңда. Ұпай = дәлдік + дұрыс таңдау.",
+                endRankNew: "Жаңа аналитик",
+                endPraiseNew: "Жаман емес. База бар — шешім сапасын арттырамыз.",
+                endRankFact: "Фактчекер",
+                endPraiseFact: "Сен сигнал мен шуды жақсы ажырата аласың.",
+                endRankCurator: "Шындық кураторы",
+                endPraiseCurator: "Маңыздыны — адамдар мен деректерді — тұрақты құтқарасың.",
+                endRankSavior: "Шындықты құтқарушы",
+                endPraiseSavior: "Кеңес қол шапалақтайды. Сенің талдауың — эталон.",
+                endResult: "Қорытынды репутация",
+                // ...existing game translations...
+            }
+        };
+
+        function getLang() {
+            return localStorage.getItem("lang") || "ru";
+        }
+        function setLang(lang) {
+            localStorage.setItem("lang", lang);
+        }
+        function t(key, vars = {}) {
+            const lang = getLang();
+            let str = TRANSLATIONS[lang][key] || TRANSLATIONS["ru"][key] || key;
+            Object.entries(vars).forEach(([k, v]) => {
+                str = str.replace(`{${k}}`, v);
+            });
+            return str;
+        }
+
+        function updateI18nUI() {
+            // Language options
+            $("#langRu").textContent = t("langRu");
+            $("#langKk").textContent = t("langKk");
+
+            // Header
+            const headerTitle = $("#mainTitle");
+            if (headerTitle) headerTitle.textContent = t("mainTitle");
+            updateHeader();
+
+            // Splash screen
+            const splashBadgeEl = $("#splashBadgeEl");
+            if (splashBadgeEl) splashBadgeEl.textContent = t("splashBadge");
+            const splashTitleEl = $("#splashTitleEl");
+            if (splashTitleEl) splashTitleEl.textContent = t("splashTitle");
+            const splashSubtitleEl = $("#splashSubtitleEl");
+            if (splashSubtitleEl) splashSubtitleEl.textContent = t("splashSubtitle");
+            const btnOnboard = $("#btnOnboard");
+            if (btnOnboard) btnOnboard.textContent = t("splashBtn");
+
+            // Onboard welcome
+            const onboardWelcomeTitleEl = $("#onboardWelcomeTitleEl");
+            if (onboardWelcomeTitleEl) onboardWelcomeTitleEl.textContent = t("onboardWelcomeTitle");
+            const onboardText1El = $("#onboardText1El");
+            if (onboardText1El) onboardText1El.textContent = t("onboardWelcomeText1");
+            const onboardText2El = $("#onboardText2El");
+            if (onboardText2El) onboardText2El.textContent = t("onboardWelcomeText2");
+            const onboardText3El = $("#onboardText3El");
+            if (onboardText3El) onboardText3El.textContent = t("onboardWelcomeText3");
+            const btnFormStart = $("#btnFormStart");
+            if (btnFormStart) btnFormStart.textContent = t("onboardWelcomeBtn");
+
+            // Onboard form
+            const formTitleEl = $("#formTitleEl");
+            if (formTitleEl) formTitleEl.textContent = t("formTitle");
+            const formProgressEl = $("#formProgressEl");
+            if (formProgressEl) formProgressEl.textContent = t("formProgress");
+
+            // Form callsign
+            const formCallsignEl = $("#formCallsignEl");
+            if (formCallsignEl) formCallsignEl.textContent = t("formCallsign");
+            const callsign = $("#callsign");
+            if (callsign) callsign.placeholder = t("formCallsignPlaceholder");
+            const formCallsignSmallEl = $("#formCallsignSmallEl");
+            if (formCallsignSmallEl) formCallsignSmallEl.textContent = t("formCallsignSmall");
+
+            // Form gender
+            const formGenderEl = $("#formGenderEl");
+            if (formGenderEl) formGenderEl.textContent = t("formGender");
+            const formGenderNoteEl = $("#formGenderNoteEl");
+            if (formGenderNoteEl) formGenderNoteEl.textContent = t("formGenderNote");
+            const genderFemaleEl = $("#genderFemaleEl");
+            if (genderFemaleEl) genderFemaleEl.textContent = t("formGenderFemale");
+            const genderMaleEl = $("#genderMaleEl");
+            if (genderMaleEl) genderMaleEl.textContent = t("formGenderMale");
+            const genderNonbinaryEl = $("#genderNonbinaryEl");
+            if (genderNonbinaryEl) genderNonbinaryEl.textContent = t("formGenderNonbinary");
+            const genderSkipEl = $("#genderSkipEl");
+            if (genderSkipEl) genderSkipEl.textContent = t("formGenderSkip");
+            const genderOtherLabelEl = $("#genderOtherLabelEl");
+            if (genderOtherLabelEl) genderOtherLabelEl.textContent = t("formGenderOther");
+            const genderOther = $("#genderOther");
+            if (genderOther) genderOther.placeholder = t("formGenderOtherPlaceholder");
+
+            // Form age
+            const formAgeEl = $("#formAgeEl");
+            if (formAgeEl) formAgeEl.textContent = t("formAge");
+            const ageUnder18El = $("#ageUnder18El");
+            if (ageUnder18El) ageUnder18El.textContent = t("formAgeUnder18");
+            const age18_25El = $("#age18_25El");
+            if (age18_25El) age18_25El.textContent = t("formAge18_25");
+            const age26_35El = $("#age26_35El");
+            if (age26_35El) age26_35El.textContent = t("formAge26_35");
+            const age36_45El = $("#age36_45El");
+            if (age36_45El) age36_45El.textContent = t("formAge36_45");
+            const age46plusEl = $("#age46plusEl");
+            if (age46plusEl) age46plusEl.textContent = t("formAge46plus");
+
+            // Form region
+            const formRegionEl = $("#formRegionEl");
+            if (formRegionEl) formRegionEl.textContent = t("formRegion");
+            const regionKeys = ["regionNurSultan", "regionAlmaty", "regionShymkent", "regionKaraganda", "regionAktobe", "regionKostanay", "regionAktau", "regionAtyrau", "regionPavlodar", "regionEkibastuz", "regionPetropavlovsk", "regionOral", "regionKokshetau", "regionSemey", "regionOskemen", "regionKyzylorda", "regionTaraz", "regionTaldykorgan", "regionTurkestan", "regionZhanaozen", "regionZhezkazgan", "regionKaratau"];
+            regionKeys.forEach(key => {
+                const el = $(`#region${key.charAt(6).toUpperCase() + key.slice(7)}El`);
+                if (el) el.textContent = t(key);
+            });
+
+
+            // Form buttons
+            const btnFormBack = $("#btnFormBack");
+            if (btnFormBack) btnFormBack.textContent = t("formBtnBack");
+            const btnFormNext = $("#btnFormNext");
+            if (btnFormNext) btnFormNext.textContent = t("formBtnNext");
+
+            // Pozyvnoy
+            $all("#onboard-form label").forEach(label => {
+                if (label.textContent.includes("Позывной агента") || label.textContent.includes("Агенттің лақап аты")) {
+                    label.innerHTML = `${t("formCallsign")} <span style='color:var(--warn)'>*</span>`;
+                }
+                if (label.textContent.includes("Пол") || label.textContent.includes("Жынысы")) {
+                    label.innerHTML = `${t("formGender")} <span style='color:var(--warn)'>*</span> <span style='color:var(--muted); font-weight:400; font-size:12px'>${t("formGenderNote")}</span>`;
+                }
+                if (label.textContent.includes("Возрастная группа") || label.textContent.includes("Жас тобы")) {
+                    label.innerHTML = `${t("formAge")} <span style='color:var(--warn)'>*</span>`;
+                }
+                if (label.textContent.includes("Регион") || label.textContent.includes("Аймақ")) {
+                    label.innerHTML = `${t("formRegion")} <span style='color:var(--warn)'>*</span>`;
+                }
+            });
+
+
+
+            // Region select
+            const regionOptions = $all("#region option");
+            if (regionOptions) {
+                regionOptions.forEach((opt, i) => {
+                    if (i === 0) opt.textContent = "—";
+                    else if (regionKeys[i - 1]) opt.textContent = t(regionKeys[i - 1]);
+                });
+            }
+
+
+            // Consent screen
+            const consentTitle = $("#onboard-consent .title");
+            if (consentTitle) consentTitle.textContent = t("consentTitle");
+            const consentPs = $all("#onboard-consent > p");
+            if (consentPs && consentPs[0]) consentPs[0].textContent = t("consentProgress");
+
+            const summaryLabels = ["consentSummaryCallsign", "consentSummaryGender", "consentSummaryAge", "consentSummaryRegion"];
+            $all("#onboard-consent .grid div span[style*='color:var(--muted)']").forEach((el, i) => {
+                if (summaryLabels[i]) el.textContent = t(summaryLabels[i]);
+            });
+            $all("#onboard-consent .grid div span[id^='summary']").forEach((el) => { el.textContent = "—"; });
+
+            const explainDiv = $("#onboard-consent div[style*='background:rgba']");
+            if (explainDiv) {
+                const strongEl = explainDiv.querySelector("strong");
+                const pEl = explainDiv.querySelector("p");
+                if (strongEl) strongEl.textContent = t("consentExplainTitle");
+                if (pEl) pEl.textContent = t("consentExplainText");
+            }
+
+            const consentLabels = $all("#consentForm label");
+            if (consentLabels && consentLabels.length >= 2) {
+                const span0 = consentLabels[0].querySelector("span");
+                if (span0) span0.textContent = t("consentData");
+                const ageSpan = consentLabels[1].querySelector("span");
+                if (ageSpan) ageSpan.innerHTML = t("consentAge") + " <span style='color:var(--muted)'>*</span>";
+            }
+
+            const btnMoreInfo = $("#btnMoreInfo");
+            if (btnMoreInfo) btnMoreInfo.textContent = t("consentBtnMoreInfo");
+            const btnConsentBack = $("#btnConsentBack");
+            if (btnConsentBack) btnConsentBack.textContent = t("consentBtnBack");
+            const btnActivate = $("#btnActivate");
+            if (btnActivate) btnActivate.textContent = t("consentBtnActivate");
+
+            // Modal
+            const modalTitle = $("#infoModal h3");
+            if (modalTitle) modalTitle.textContent = t("modalTitle");
+
+            const btnCloseModal = $("#btnCloseModal");
+            if (btnCloseModal) btnCloseModal.textContent = "×";
+
+            const modalPs = $all("#infoModal div[style*='font-size:13px'] p");
+            if (modalPs && modalPs.length >= 7) {
+                modalPs[0].innerHTML = `<strong>${t("modalWho")}</strong> ${t("modalWhoText")}`;
+                modalPs[1].innerHTML = `<strong>${t("modalWhat")}</strong> ${t("modalWhatText")}`;
+                modalPs[2].innerHTML = `<strong>${t("modalGoal")}</strong> ${t("modalGoalText")}`;
+                modalPs[3].innerHTML = `<strong>${t("modalLaw")}</strong> ${t("modalLawText")}`;
+                modalPs[4].innerHTML = `<strong>${t("modalTerm")}</strong> ${t("modalTermText")}`;
+                modalPs[5].innerHTML = `<strong>${t("modalThird")}</strong> ${t("modalThirdText")}`;
+                modalPs[6].textContent = t("modalContact");
+            }
+            const btnCloseInfo = $("#btnCloseInfo");
+            if (btnCloseInfo) btnCloseInfo.textContent = t("modalBtn");
+
+            // Start screen
+            const startBadgeEl = document.querySelector("#start .badge");
+            if (startBadgeEl) startBadgeEl.textContent = t("startBadge");
+            const startTitleEl = document.querySelector("#start .title");
+            if (startTitleEl) startTitleEl.textContent = t("startTitle");
+            const startSubEl = document.querySelector("#start .subtitle");
+            if (startSubEl) startSubEl.innerHTML = t("startSubtitle");
+            const btnStartEl = $("#btnStart");
+            if (btnStartEl) btnStartEl.textContent = t("btnStart");
+            const btnHowEl = $("#btnHow");
+            if (btnHowEl) btnHowEl.textContent = t("btnHow");
+
+            // Case screen
+            const caseEvidTitleEl = $("#caseEvidenceTitleEl");
+            if (caseEvidTitleEl) caseEvidTitleEl.textContent = t("caseEvidenceTitle");
+            const caseDecTitleEl = $("#caseDecisionTitleEl");
+            if (caseDecTitleEl) caseDecTitleEl.textContent = t("caseDecisionTitle");
+            const btnCheckEl = $("#btnCheck");
+            if (btnCheckEl) btnCheckEl.textContent = t("btnCheck");
+            const btnSkipEl = $("#btnSkip");
+            if (btnSkipEl) btnSkipEl.textContent = t("btnSkip");
+            const caseTipEl = $("#caseTipEl");
+            if (caseTipEl) caseTipEl.innerHTML = t("caseTip");
+
+            // End screen
+            const endTitle = $("#endTitle");
+            if (endTitle) endTitle.textContent = t("endTitle");
+            const btnRestart = $("#btnRestart");
+            if (btnRestart) btnRestart.textContent = t("btnRestart");
+            const btnShare = $("#btnShare");
+            if (btnShare) btnShare.textContent = t("btnShare");
+            const rank = $("#rank");
+            if (rank) rank.textContent = t("rank");
+        }
+
+        /** ======== НОВЫЕ КАЗАХСКИЕ КЕЙСЫ (12 шт) ======== */
+        const CASES_ALL_NEW = [
+            {
+                tag: "Фейк-новости",
+                difficulty: "Орташа",
+                title: "Ауруханада вакцинаны жасырын ауыстырып жатыр",
+                narrative: "Желіде қаладағы №5 ауруханада вакцинаны “арзанына ауыстырып жатыр” деген хабар тарап кетті. Пайдаланушылар бір медбике туралы видеоға сүйеніп, “медқызметкерлер өздері айтып қойды” деп таратып жатыр.",
+                evidence: [
+                    {
+                        text: "Бір TikTok видеода медбике 'бұл вакцина мүлде басқаша болып кетті' дейді. Видео астында:'демек, ауыстырып жатыр' деген сұрақ.",
+                        isTruth: false,
+                        hint: "Видео контексттен жұлынып алынған болуы мүмкін. Медбике басқа жағдайды айтады, ал монтаж эмоция тудырады."
+                    },
+                    {
+                        text: "Вакцинаның екінші ампуласында стикер қисайып жабысып тұр — қолдан жасалған сияқты.",
+                        isTruth: false,
+                        hint: "Стикердің қисық болуы міндетті түрде қолдан жасалды дегенді білдірмейді; өндірістік қателер болуы мүмкін."
+                    },
+                    {
+                        text: "Аурухана әкімшілігі вакциналар тек мемлекеттік қоймадан келетінін ресми түрде жариялады.",
+                        isTruth: true,
+                        hint: "Ресми мәлімдеме бар, бірақ адамдар эмоциялық контентке сенуі мүмкін."
+                    },
+                    {
+                        text: "Телеграм-канал: 'Бізге аноним қызметкер айтты, арзан қытай вакцинасын қымбат еуропалыққа ауыстырылады'.",
+                        isTruth: false,
+                        hint: "Аноним көздер — фейк жаңалықтардың жиі қолданатын тактикасы."
+                    },
+                    {
+                        text: "Пікірде адам: 'Менің әкем ауруханада жұмыс істейді, бәрі рас!' — аккаунт профильсіз.",
+                        isTruth: false,
+                        hint: "Фейк пікірлер әлеуметтік растау иллюзиясын жасау үшін арнайы жазылады."
+                    }
+                ],
+                choices: [
+                    { id: "hospital", label: "Спасти аурухананы: фейкті тоқтатып, ақпараттық ескерту жариялау" },
+                    { id: "users", label: "Спасти қолданушыларды: ауруханаға қосымша тексеріс енгізу және ескерту тарату" }
+                ],
+                correctChoice: "hospital",
+                praise: "Дұрыс. Сіз аудиторияны қорғап, манипуляцияның таралуына жол бермедіңіз."
+            },
+
+            {
+                tag: "Фейк-новости",
+                difficulty: "Орташа-күрделі",
+                title: "Kaspi Алақан: жаңа функцияны жасырып отыр ма?",
+                narrative: "Желіде жаңа видео тарады: 'Kaspi Алақан' деген жасырын функция қосылыпты. Автор: 'Алақаныңды камераға қойсаң, Kaspi биометрия арқылы жабық несие лимитін ашады.' Kaspi ресми түрде теріске шығарғанымен, қолданушылардың бір бөлігі 'менде шықты' деп жазып жатыр.",
+                evidence: [
+                    {
+                        text: "Видеода автор алақанын көрсеткеннен кейін лимит ашылғандай эффект қосылған — кадрда 'Бекітілді: 450 000 тг' деген pop-up көрсетіледі.",
+                        isTruth: false,
+                        hint: "Видеоның кей кадрлары кесілген, pop-up дәл сол сәтте шыққаны көрінбейді. Эффект кейін қосылған болуы мүмкін"
+                    },
+                    {
+                        text: "Метадеректерде 'biometric-hand-test' деген файл атауы бар сияқты.",
+                        isTruth: false,
+                        hint: "Файл атауын оңай өзгертуге болады; метадеректер жалған болуы мүмкін."
+                    },
+                    {
+                        text: "Kaspi ресми түрде: 'Бізде алақан биометриясы жоқ' деп хабарлады.",
+                        isTruth: true,
+                        hint: "Ресми мәлімдеме сенімді дерек ретінде қаралуы тиіс."
+                    },
+                    {
+                        text: "Блогер: 'Kaspi Алақан тек кей аккаунттарға қосылды' деп жазған.",
+                        isTruth: false,
+                        hint: "Блогерлер engagement үшін осындай мәлімдеме жасап, жалған әсер тудыруы мүмкін."
+                    },
+                    {
+                        text: "Комментте: 'Мен қазір 200 000 тг алып қойдым, жұмыс істейді' — аккаунт аватарында шетел азаматының фотосы бар.",
+                        isTruth: false,
+                        hint: "Мұндай комментарийлер фейк схемаларда ең жиі қолданылатын сендіруші элемент."
+                    }
+                ],
+                choices: [
+                    { id: "user", label: "Спасти пользователя: ескерту беру ғана" },
+                    { id: "system", label: "Спасти систему: фейкті тоқтатып, шектеу енгізу" }
+                ],
+                correctChoice: "system",
+                praise: "Таза! Клон жойылды, сенім сақталды."
+            },
+
+            {
+                tag: "Соцсети",
+                difficulty: "Орташа-күрделі",
+                title: "Блогердің фейк қайырымдылық жинауы",
+                narrative: "Желіде танымал блогер сырқат балаға ақша жинап жатқанын айтып, шұғыл пост жариялады. Ол баланың суретін, диагнозын және 'шет елге отаға ақша жетпей жатыр' деген мәтін қосқан. Пайдаланушылардың бір бөлігі сенді, ал кейбірі фейк болуы мүмкін деп күмәндануда.",
+                evidence: [
+                    {
+                        text: "Блогер салған сурет басқа елдегі баланың 2021 жылғы фотосымен сәйкес келетіні анықталды.",
+                        isTruth: true,
+                        hint: "Интернеттегі кей суреттер фейк жиналымдарда жиі қайта қолданылады."
+                    },
+                    {
+                        text: "Шот реквизиттері блогердің жеке картасына тіркелген.",
+                        isTruth: true,
+                        hint: "Жеке картаға жинау — алаяқтықтың классикалық белгісі."
+                    },
+                    {
+                        text: "Баланың ата-анасы: 'Біз ақша жинап жатқан жоқпыз, бұл аккаунт бізге қатысы жоқ.' — деген мәлімдеме бар.",
+                        isTruth: true,
+                        hint: "Тікелей ата-ананың айтқаны — сенімді дереккөз."
+                    },
+                    {
+                        text: "Блогер стористе эмоциялық қысым қолданды: 'Маған сеніңіздер. Уақыт аз қалды!'",
+                        isTruth: false,
+                        hint: "Эмоциялық қысым — манипуляцияның негізгі құралы."
+                    },
+                    {
+                        text: "Пікірлерде 3 аккаунт бірдей мәтінмен жазды; аккаунттарта 0 жазылушы бар.",
+                        isTruth: false,
+                        hint: "Клон аккаунттар және бірдей пікірлер — жасанды қолдау белгісі."
+                    }
+                ],
+                choices: [
+                    { id: "audience", label: "Спасти аудиторияны: жинақты тоқтатып, ескерту жариялау" },
+                    { id: "blogger", label: "Спасти блогерді: қосымша тексеріс жүргізу" }
+                ],
+                correctChoice: "audience",
+                praise: "Таза! Фейкті тоқтаттыңыз."
+            },
+
+            {
+                tag: "Алаяқтық",
+                difficulty: "Орташа-күрделі",
+                title: "Telegram-дағы 'өзіңді биткоинмен байыт' чаты",
+                narrative: "Telegram-да 'Bitcoin Club – Күніне 50 000 тг табыс' деген топ пайда болды. Топ әкімшілері 'тек 10 000 теңге депозит салсаң, бір күнде екі есе қылып қайтарамыз' деп уәде береді. Чатта жалған табыс скриндері мен 'мен алып қойдым' деген пікірлер толып тұр.",
+                evidence: [
+                    {
+                        text: "Чатта бірнеше адам бірдей форматта скрин жіберген: 'Бүгін 120 000 тг алдым!' Барлығында дата қиылып тұр.",
+                        isTruth: true,
+                        hint: "Бірдей стильдегі скриндер алаяқ боттардың жиі қолданатын материалы."
+                    },
+                    {
+                        text: "Админ: 'Біз криптоэксперттерміз, Binance-пен серіктеспіз' деп жазады — растайтын құжат жоқ.",
+                        isTruth: true,
+                        hint: "Серіктестік туралы мәлімдемелерді ресми сайттардан тексеру керек."
+                    },
+                    {
+                        text: "Telegram қауіпсіздік ескертуінде: 'High-risk investment scam' деп белгіленген хабарламалар бар.",
+                        isTruth: true,
+                        hint: "Платформаның қауіпсіздік белгілері — қосымша сигнал."
+                    },
+                    {
+                        text: "Аккаунт: 'Мен 30 минутта 50 мың алып қойдым' — stock фото аватарында.",
+                        isTruth: false,
+                        hint: "Сток фото — фейк аккаунттың белгісі."
+                    },
+                    {
+                        text: "Админ: 'Бірінші 5 адамға тегін бонус' дейді.",
+                        isTruth: false,
+                        hint: "'Шұғыл бонус' — классикалық қармақ."
+                    }
+                ],
+                choices: [
+                    { id: "users", label: "Спасти қолданушыларды: чатты фейк деп белгілеу, бұғаттау" },
+                    { id: "admins", label: "Спасти чат әкімдерін: тексеру үшін уақыт беру" }
+                ],
+                correctChoice: "users",
+                praise: "Қауымдастық рахмет айтады."
+            },
+
+            {
+                tag: "Жұмыс",
+                difficulty: "Орташа",
+                title: "Жалақы 700 000, офис жоқ рекрутинг фейкі",
+                narrative: "Желіде 'Ірі халықаралық компанияға онлайн-операторлар қажет. Жалақы – 700 000 тг. Офиске барудың қажеті жоқ. Тек телефон және интернет жеткілікті' деген хабарлама тарап жатыр. Хабарламада рекрутер 'Тек қазір 15 адам қабылдаймыз' деп жазады.",
+                evidence: [
+                    {
+                        text: "Логотип әлемге танымал компанияға ұқсайды, бірақ шрифті мен түстері аздап өзгеше.",
+                        isTruth: true,
+                        hint: "Алаяқтар жиі танымал бренд логотипіне ұқсас фейк нұсқасын қолданады."
+                    },
+                    {
+                        text: "Рекрутер: 'Біз LinkedIn-ге жарнама бере алмай жатырмыз, сондықтан Telegram арқылы қабылдап жатырмыз' дейді.",
+                        isTruth: true,
+                        hint: "Ірі компаниялар әдетте ресми арналарын қолданады; тек Telegram арқылы жұмысқа алу күмән тудырады."
+                    },
+                    {
+                        text: "Компанияның ресми сайтында мұндай вакансия жоқ.",
+                        isTruth: true,
+                        hint: "Ресми сайт — сенімді дереккөз."
+                    },
+                    {
+                        text: "Құжат тапсыру үшін 'тіркеу жарнасы' төлеу талап етіледі.",
+                        isTruth: true,
+                        hint: "Жұмысқа қабылдау үшін жарна талап ету — алаяқтық белгісі."
+                    },
+                    {
+                        text: "Пікірлерде: '700 000 жалақы рас!' 0 жазылушы аккаунттардан.",
+                        isTruth: false,
+                        hint: "Мұндай пікірлер боттар арқылы жасалады."
+                    }
+                ],
+                choices: [
+                    { id: "users", label: "Спасти қолданушыларды: вакансияны алаяқтық деп белгілеу" },
+                    { id: "post", label: "Спасти постын: тексеру үшін уақыт беру" }
+                ],
+                correctChoice: "users",
+                praise: "Пайдаланушыларды қорғау — ең дұрыс шешім."
+            },
+
+            {
+                tag: "Медиаманипуляция",
+                difficulty: "Күрделі",
+                title: "Аноним журналистік материал: 'Шенеунік 12 млн жымқырды'",
+                narrative: "Белгісіз Telegram арнасында 'танымал мемлекеттік басқарма басшысы 12 млн теңгені жымқырды' деген 'журналистік зерттеу' жарияланды. Материалда фото, 'құжат' және аноним дереккөз сөзі бар. Желі қолданушылары шенеунікті бірден кінәлі деп жаза бастады.",
+                evidence: [
+                    {
+                        text: "Материалда 'бізге аноним қызметкер хабарлады' деген сөйлем бар. Нақты аты-жөні жоқ.",
+                        isTruth: true,
+                        hint: "Аноним дереккөз — фейк зерттеулерде ең жиі қолданылатын құрал."
+                    },
+                    {
+                        text: "'Құжат' фотосында мөр бұлыңғыр, дата қолмен өзгертілген сияқты.",
+                        isTruth: true,
+                        hint: "Сапасыз құжат фото — фейк белгісі."
+                    },
+                    {
+                        text: "Мемлекеттік портальда 12 млн теңгелік келісім-шарт мүлде тіркелмеген.",
+                        isTruth: true,
+                        hint: "Мемлекеттік келісім-шарттар реестрінен тексеріңіз."
+                    },
+                    {
+                        text: "Журналист: 'Адам халықтың ақшасын жеп келеді' дейді — эмоцияға негізделген айып.",
+                        isTruth: false,
+                        hint: "Эмоциялық қорытынды — дәлел емес."
+                    },
+                    {
+                        text: "Фактчекинг порталы фотолар мен құжаттардың жалған екенін анықтады.",
+                        isTruth: true,
+                        hint: "Ресми фактчекинг — сенімді дереккөз."
+                    }
+                ],
+                choices: [
+                    { id: "official", label: "Спасти шенеунікті: фейкті тоқтату, жалған айыпты жоққа шығару" },
+                    { id: "material", label: "Спасти материалды: қосымша тексеріс жүргізу" }
+                ],
+                correctChoice: "official",
+                praise: "Фейк материалда сену қауіпті."
+            },
+
+            {
+                tag: "Медиаманипуляция",
+                difficulty: "Күрделі",
+                title: "Тексеріс кезінде жалған хаттама шықты",
+                narrative: "Қаладағы мемлекеттік мекемеде жоспарлы тексеріс жүріп жатқанда, Telegram-да 'Тексерушілер бас маманның 3 млн теңгені мақсатсыз жұмсағанын анықтады' деген хаттаманың фотосы тарады. Хаттама тез таралу қарқынында болып, қолданушылар бас маманды кінәлі деп жаза бастады.",
+                evidence: [
+                    {
+                        text: "Тараған 'хаттама' фотосында бөлім атауы ескі форматпен жазылған. Бұл формат 2020 жылдан бері қолданылмайды.",
+                        isTruth: true,
+                        hint: "Қызметтік хаттамаларда стандарт қатаң сақталады; ескі формат — фейктің белгісі."
+                    },
+                    {
+                        text: "Фотодағы қолтаңба сканерленген белгіге ұқсайды.",
+                        isTruth: true,
+                        hint: "Скандалған қолтаңба — құжаттың жалған екенін көрсетуі мүмкін."
+                    },
+                    {
+                        text: "Ресми комиссия: 'Біз мұндай хаттама жасамадық. Мұрағатта жоқ.' — деді.",
+                        isTruth: true,
+                        hint: "Ресми мәлімдеме — ең сенімді дерек."
+                    },
+                    {
+                        text: "Хабарды таратқан арна: 'Ол адам бұрыннан күмәнді' дейді — факт жоқ.",
+                        isTruth: false,
+                        hint: "Эмоциялық шабуыл — дәлел емес."
+                    },
+                    {
+                        text: "Штрихкод басқа мекемеге тиесілі екені анықталды.",
+                        isTruth: true,
+                        hint: "Әр мекеменің штрихкоды ерекше; мұндай сәйкессіздік — фейк белгісі."
+                    }
+                ],
+                choices: [
+                    { id: "official", label: "Спасти қызметкерді: хаттаманың жалған екенін жариялау" },
+                    { id: "material", label: "Спасти материалды: қосымша тексеріс жүргізу" }
+                ],
+                correctChoice: "official",
+                praise: "Ресми құжат фейк болып шықты — дұрыс шешім."
+            },
+
+            {
+                tag: "Саяси дағдарыс",
+                difficulty: "Күрделі",
+                title: "Қаладағы тәртіпсіздік жайлы жалған 'куәгер видеосы'",
+                narrative: "Елдің батыс өңіріндегі 'Айқал' қаласында түнде жаппай тәртіпсіздік болды деген хабар тарады. Telegram-каналдар 'әскер халыққа оқ атты' деген видеоны бөлісе бастады. Көпшілік бірден шара қолдануды талап етеді, бірақ кей фактілер күмән тудырады.",
+                evidence: [
+                    {
+                        text: "Видеода дыбыс пен кадр синхрон емес: дыбыста 'от' бар, кадрда жарқылы жоқ.",
+                        isTruth: true,
+                        hint: "Фейк видеоларда кадр мен дыбысты бөлек біріктіреді."
+                    },
+                    {
+                        text: "Видеоның бұрышында дата '2021' деп көрсетілген, бірақ бүкіл кадр мәнмәтіндегі сәйкессіздікті көрсетеді.",
+                        isTruth: true,
+                        hint: "Датаның жоғалуы немесе сәйкес еместігі — монтаж белгісі."
+                    },
+                    {
+                        text: "Қалалық әкімдік: 'Қалада ешқандай оқиға болған жоқ' — деп ресми мәлімдеді.",
+                        isTruth: true,
+                        hint: "Ресми органдардың дереу мәлімдемелері тексеріледі."
+                    },
+                    {
+                        text: "Фейк канал: 'Бәрін өз көзімізбен көріп тұрмыз!' — бірақ нақты дәлел жоқ.",
+                        isTruth: false,
+                        hint: "Эмоциялық қорытынды — дәлел емес."
+                    },
+                    {
+                        text: "Fact-checking тобы видеоны анықтап, 2020 жылғы басқа елдегі оқиға екенін дәлелдеді.",
+                        isTruth: true,
+                        hint: "Видеоның қайнарын сәйкестендіру арқылы жалғандығын дәлелдеуге болады."
+                    }
+                ],
+                choices: [
+                    { id: "people", label: "Спасти халықты: фейкті тоқтатып, видеоның таралуын шектеу" },
+                    { id: "info", label: "Спасти ақпаратты: критикалық жағдайда тексеру үшін уақыт беру" }
+                ],
+                correctChoice: "people",
+                praise: "Видеоны фейк деп тоқтату — ең дұрыс шешім."
+            }
+        ];
+        const CASES_ALL = CASES_ALL_NEW; // В будущем можно добавить старые кейсы сюда
+
+        /** ========== RANDOM CASE SELECTION ========== */
+        function shuffleArray(arr) {
+            const copy = [...arr];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function getRandomCases() {
+            const shuffled = shuffleArray(CASES_ALL);
+            return shuffled.slice(0, 4);
+        }
+
+        /** ======== СОСТОЯНИЕ И ЛОГИКА ======== */
+        let state = {
+            idx: 0,
+            rep: 0,
+            answers: {} // { evIndex: true/false }, choiceId
+        };
+
+        const $ = sel => document.querySelector(sel);
+        const $all = sel => document.querySelectorAll(sel);
+
+        // ========== ONBOARDING STATE ==========
+        let agentData = JSON.parse(localStorage.getItem("agentData") || "null");
+
+        function hideAllSections() {
+            ["splash", "onboard-welcome", "onboard-form", "onboard-consent", "start", "case", "end"].forEach(id => {
+                const el = $(`#${id}`);
+                if (el) el.style.display = "none";
+            });
+        }
+
+        function toast(msg) {
+            const t = $("#toast"); t.textContent = msg; t.classList.add("show");
+            setTimeout(() => t.classList.remove("show"), 2300);
+        }
+
+        // ========== ONBOARDING FLOW ==========
+        function showOnboardWelcome() {
+            hideAllSections();
+            $("#onboard-welcome").style.display = "block";
+        }
+
+        function showOnboardForm() {
+            hideAllSections();
+            $("#onboard-form").style.display = "block";
+            // Reset form
+            $("#agentForm").reset();
+            updateFormValidation();
+        }
+
+        function showOnboardConsent() {
+            hideAllSections();
+            const form = document.getElementById("agentForm");
+            const fd = new FormData(form);
+
+            agentData = {
+                callsign: document.getElementById("callsign").value || "Агент",
+                gender: fd.get("gender") || "—",
+                age: fd.get("age") || "—",
+                region: fd.get("region") || "—",
+            };
+
+            // Update summary
+            const genderLabels = { female: "Женский", male: "Мужской", nonbinary: "Небинарный", skip: "Не указан", other: document.getElementById("genderOther").value };
+            const ageLabels = { "under18": "<18", "18-25": "18–25", "26-35": "26–35", "36-45": "36–45", "46plus": "46+" };
+            const regionOptions = document.getElementById("region").options;
+            const regionLabel = regionOptions[regionOptions.selectedIndex]?.textContent || "—";
+
+            $("#summaryCallsign").textContent = agentData.callsign;
+            $("#summaryGender").textContent = genderLabels[agentData.gender] || agentData.gender;
+            $("#summaryAge").textContent = ageLabels[agentData.age] || agentData.age;
+            $("#summaryRegion").textContent = regionLabel;
+
+            // Reset consent checkboxes
+            document.getElementById("consentData").checked = false;
+            document.getElementById("consentAge").checked = false;
+            updateConsentValidation();
+
+            $("#onboard-consent").style.display = "block";
+        }
+
+        async function completeOnboarding() {
+            // Добавляем timestamp
+            agentData.completedAt = new Date().toISOString();
+            
+            console.log('Завершение онбординга, сохранение данных агента...', agentData);
+            
+            // Сохраняем в Supabase
+            const result = await saveAgentDataToSupabase(agentData);
+            
+            if (result.success) {
+                console.log('✅ Данные агента успешно сохранены в Supabase, Agent ID:', result.id);
+                const msg = t("onboardCompleteMsg", { callsign: agentData.callsign });
+                toast(msg);
+            } else {
+                console.error('❌ Ошибка сохранения данных агента:', result.error);
+                // Показываем сообщение даже если Supabase не работает (fallback на localStorage)
+                const msg = t("onboardCompleteMsg", { callsign: agentData.callsign });
+                toast(msg);
+            }
+            
+            hideAllSections();
+            $("#start").style.display = "block";
+            
+            // Показываем кнопку админа, если callsign содержит "admin"
+            const isAdmin = agentData.callsign && agentData.callsign.toLowerCase().includes('admin');
+            $("#btnAdminAnalytics").style.display = isAdmin ? "inline-block" : "none";
+            
+            updateHeader();
+        }
+
+        function updateFormValidation() {
+            const callsign = document.getElementById("callsign").value.trim();
+            const gender = [...document.querySelectorAll('input[name="gender"]')].some(r => r.checked);
+            const age = [...document.querySelectorAll('input[name="age"]')].some(r => r.checked);
+            const region = document.getElementById("region").value;
+
+            const isValid = callsign && gender && age && region;
+            document.getElementById("btnFormNext").disabled = !isValid;
+        }
+
+        function updateConsentValidation() {
+            const data = document.getElementById("consentData").checked;
+            const age = document.getElementById("consentAge").checked;
+            document.getElementById("btnActivate").disabled = !(data && age);
+        }
+
+        function showInfoModal() {
+            document.getElementById("infoModal").style.display = "block";
+        }
+
+        function closeInfoModal() {
+            document.getElementById("infoModal").style.display = "none";
+        }
+
+        // ========== GENDER "OTHER" FIELD ==========
+        document.addEventListener("DOMContentLoaded", () => {
+            // Language setup
+            $("#langToggle").value = getLang();
+            $("#langToggle").addEventListener("change", e => {
+                setLang(e.target.value);
+                updateI18nUI();
+            });
+            updateI18nUI();
+
+            // Form gender handling
+            const genderOther = document.getElementById("genderOther");
+            document.querySelectorAll('input[name="gender"]').forEach(radio => {
+                radio.addEventListener("change", () => {
+                    if (radio.value === "other") {
+                        genderOther.style.display = "block";
+                        genderOther.focus();
+                    } else {
+                        genderOther.style.display = "none";
+                        genderOther.value = "";
+                    }
+                });
+            });
+
+            // Form listeners
+            document.getElementById("callsign").addEventListener("input", updateFormValidation);
+            document.getElementById("region").addEventListener("change", updateFormValidation);
+            document.querySelectorAll('input[name="gender"], input[name="age"]').forEach(el => {
+                el.addEventListener("change", updateFormValidation);
+            });
+
+            // Consent listeners
+            document.getElementById("consentData").addEventListener("change", updateConsentValidation);
+            document.getElementById("consentAge").addEventListener("change", updateConsentValidation);
+
+            // Modal listeners
+            document.getElementById("btnMoreInfo").addEventListener("click", showInfoModal);
+            document.getElementById("btnCloseModal").addEventListener("click", closeInfoModal);
+            document.getElementById("btnCloseInfo").addEventListener("click", closeInfoModal);
+
+            // Onboarding button listeners
+            document.getElementById("btnOnboard").addEventListener("click", showOnboardWelcome);
+            document.getElementById("btnFormStart").addEventListener("click", showOnboardForm);
+            document.getElementById("btnFormBack").addEventListener("click", showOnboardWelcome);
+            document.getElementById("btnFormNext").addEventListener("click", showOnboardConsent);
+            document.getElementById("btnConsentBack").addEventListener("click", showOnboardForm);
+            document.getElementById("btnActivate").addEventListener("click", completeOnboarding);
+
+            // Close modal on background click
+            document.getElementById("infoModal").addEventListener("click", (e) => {
+                if (e.target.id === "infoModal") closeInfoModal();
+            });
+
+            // Game buttons
+            $("#btnStart").addEventListener("click", async () => {
+                // Очищаем предыдущую сессию
+                localStorage.removeItem("gameSessionId");
+                
+                const activeCases = getRandomCases();
+                state = { 
+                    idx: 0, 
+                    rep: 0, 
+                    answers: { ev: [], choice: null }, 
+                    cases: activeCases,
+                    startedAt: new Date().toISOString()
+                };
+                
+                // Сохраняем начало игровой сессии в Supabase
+                console.log('Начало новой игры, сохранение сессии...');
+                const sessionResult = await saveGameSessionToSupabase(state);
+                if (sessionResult.success) {
+                    console.log('Игровая сессия создана:', sessionResult.sessionId);
+                } else {
+                    console.error('Ошибка создания игровой сессии:', sessionResult.error);
+                }
+                
+                updateHeader();
+                $("#start").style.display = "none";
+                $("#case").style.display = "grid";
+                renderCase();
+            });
+
+            $("#btnHow").addEventListener("click", () => {
+                toast(t("toastHow"));
+            });
+
+            // Admin analytics button
+            $("#btnAdminAnalytics").addEventListener("click", () => {
+                showAdminAnalytics();
+            });
+
+            // Close admin modal
+            $("#btnCloseAdminModal").addEventListener("click", () => {
+                $("#adminModal").style.display = "none";
+            });
+
+            // Close admin modal on background click
+            $("#adminModal").addEventListener("click", (e) => {
+                if (e.target.id === "adminModal") {
+                    $("#adminModal").style.display = "none";
+                }
+            });
+
+            $("#evList").addEventListener("click", onEvidenceClick);
+            $("#choiceBox").addEventListener("change", onChoiceChange);
+            $("#btnCheck").addEventListener("click", checkCase);
+            $("#btnSkip").addEventListener("click", () => { toast(t("toastSkipped")); nextCase(); });
+            $("#btnRestart").addEventListener("click", restart);
+            $("#btnShare").addEventListener("click", shareResult);
+        });
+
+        function updateHeader() {
+            $("#rep").textContent = t("rep", { rep: state.rep });
+            const totalCases = state.cases?.length || CASES_ALL.length;
+            $("#caseNo").textContent = t("caseNo", { current: state.idx + 1, total: totalCases });
+        }
+
+        function renderCase() {
+            const c = state.cases[state.idx];
+            $("#caseTag").textContent = c.tag;
+            $("#caseDifficulty").textContent = c.difficulty;
+            $("#caseTitle").textContent = c.title;
+            $("#caseNarrative").textContent = c.narrative;
+
+            // Evidence list
+            const evBox = $("#evList"); evBox.innerHTML = "";
+            state.answers = { ev: Array(c.evidence.length).fill(null), choice: null };
+
+            c.evidence.forEach((ev, i) => {
+                const card = document.createElement("div");
+                card.className = "card";
+                card.innerHTML = `
+      <div class="meta"><span class="tag">${t("evidence")} #${i + 1}</span></div>
       <div class="text">${ev.text}</div>
       <div class="controls">
-        <button class="truth" data-kind="truth" data-i="${i}">Правда</button>
-        <button class="lie" data-kind="lie" data-i="${i}">Ложь</button>
-        <button class="ghost" data-kind="hint" data-i="${i}">Подсказка</button>
+        <button class="truth" data-kind="truth" data-i="${i}">${t("truthBtn")}</button>
+        <button class="lie" data-kind="lie" data-i="${i}">${t("lieBtn")}</button>
+        <button class="ghost" data-kind="hint" data-i="${i}">${t("hintBtn")}</button>
       </div>
     `;
-    evBox.appendChild(card);
-  });
+                evBox.appendChild(card);
+            });
 
-  // Choices
-  const choiceBox = $("#choiceBox"); choiceBox.innerHTML = "";
-  c.choices.forEach((opt)=>{
-    const row = document.createElement("label");
-    row.className = "opt";
-    row.innerHTML = `
+            // Choices
+            const choiceBox = $("#choiceBox"); choiceBox.innerHTML = "";
+            c.choices.forEach((opt) => {
+                const row = document.createElement("label");
+                row.className = "opt";
+                row.innerHTML = `
       <input type="radio" name="who" value="${opt.id}">
       <div><div style="font-weight:700; margin-bottom:4px">${opt.label}</div>
-      <div style="color:var(--muted); font-size:13px">Решение повлияет на репутацию.</div></div>
+      <div style="color:var(--muted); font-size:13px">${t("choiceReputation")}</div></div>
     `;
-    choiceBox.appendChild(row);
-  });
+                choiceBox.appendChild(row);
+            });
 
-  $("#btnCheck").disabled = true;
-  updateEvScore();
-  updateHeader();
-}
+            $("#btnCheck").disabled = true;
+            updateEvScore();
+            updateHeader();
+        }
 
-function updateEvScore(){
-  const c = CASES[state.idx];
-  const done = state.answers.ev.filter(v=>v!==null).length;
-  $("#evScore").textContent = `Отмечено: ${done} / ${c.evidence.length}`;
-  maybeEnableCheck();
-}
+        function updateEvScore() {
+            const c = state.cases[state.idx];
+            const done = state.answers.ev.filter(v => v !== null).length;
+            $("#evScore").textContent = t("evScore", { done, total: c.evidence.length });
+            maybeEnableCheck();
+        }
 
-function maybeEnableCheck(){
-  const c = CASES[state.idx];
-  const allEv = state.answers.ev.every(v=>v!==null);
-  const hasChoice = !!state.answers.choice;
-  $("#btnCheck").disabled = !(allEv && hasChoice);
-}
+        function maybeEnableCheck() {
+            const c = state.cases[state.idx];
+            const allEv = state.answers.ev.every(v => v !== null);
+            const hasChoice = !!state.answers.choice;
+            $("#btnCheck").disabled = !(allEv && hasChoice);
+        }
 
-function onEvidenceClick(e){
-  const btn = e.target.closest("button");
-  if(!btn) return;
-  const i = Number(btn.dataset.i);
-  const kind = btn.dataset.kind;
+        function onEvidenceClick(e) {
+            const btn = e.target.closest("button");
+            if (!btn) return;
+            const i = Number(btn.dataset.i);
+            const kind = btn.dataset.kind;
 
-  if(kind === "hint"){
-    toast(CASES[state.idx].evidence[i].hint || "Подсказка недоступна");
-    return;
-  }
-  // truth/lie
-  state.answers.ev[i] = (kind === "truth");
-  // визуал переключения: выделим активную кнопку
-  const card = btn.parentElement;
-  [...card.querySelectorAll("button.truth,button.lie")].forEach(b=>{
-    b.style.outline = "";
-    b.style.filter = "";
-    b.style.opacity = ".8";
-  });
-  btn.style.outline = "2px solid #88c";
-  btn.style.filter = "brightness(1.1)";
-  btn.style.opacity = "1";
-  updateEvScore();
-}
+            if (kind === "hint") {
+                toast(state.cases[state.idx].evidence[i].hint || "Подсказка недоступна");
+                return;
+            }
+            // truth/lie
+            state.answers.ev[i] = (kind === "truth");
+            // визуал переключения: выделим активную кнопку
+            const card = btn.parentElement;
+            [...card.querySelectorAll("button.truth,button.lie")].forEach(b => {
+                b.style.outline = "";
+                b.style.filter = "";
+                b.style.opacity = ".8";
+            });
+            btn.style.outline = "2px solid #88c";
+            btn.style.filter = "brightness(1.1)";
+            btn.style.opacity = "1";
+            updateEvScore();
+        }
 
-function onChoiceChange(e){
-  if(e.target && e.target.name === "who"){
-    state.answers.choice = e.target.value;
-    maybeEnableCheck();
-  }
-}
+        function onChoiceChange(e) {
+            if (e.target && e.target.name === "who") {
+                state.answers.choice = e.target.value;
+                maybeEnableCheck();
+            }
+        }
 
-function checkCase(){
-  const c = CASES[state.idx];
-  let points = 0;
-  // за каждое верное доказательство +1
-  c.evidence.forEach((ev, i)=>{
-    if(state.answers.ev[i] === ev.isTruth) points += 1;
-  });
-  // за верный выбор +2
-  if(state.answers.choice === c.correctChoice) points += 2;
+        async function checkCase() {
+            const c = state.cases[state.idx];
+            let points = 0;
+            // за каждое верное доказательство +1
+            c.evidence.forEach((ev, i) => {
+                if (state.answers.ev[i] === ev.isTruth) points += 1;
+            });
+            // за верный выбор +2
+            if (state.answers.choice === c.correctChoice) points += 2;
 
-  state.rep += points;
-  toast(`Дело закрыто: +${points} репутации`);
-  nextCase();
-}
+            state.rep += points;
+            
+            // Сохраняем ответ на дело в Supabase
+            const caseAnswerData = {
+                tag: c.tag,
+                title: c.title,
+                difficulty: c.difficulty,
+                evidenceAnswers: state.answers.ev,
+                choice: state.answers.choice,
+                correctChoice: c.correctChoice,
+                points: points
+            };
+            await saveCaseAnswerToSupabase(caseAnswerData);
+            
+            toast(t("toastCaseClosed", { points }));
+            nextCase();
+        }
 
-function nextCase(){
-  state.idx += 1;
-  if(state.idx >= CASES.length){
-    endGame();
-  }else{
-    renderCase();
-  }
-}
+        async function nextCase() {
+            state.idx += 1;
+            // Обновляем сессию в Supabase при переходе к следующему делу
+            if (state.idx < state.cases.length) {
+                await saveGameSessionToSupabase(state);
+            }
+            
+            if (state.idx >= state.cases.length) {
+                await endGame();
+            } else {
+                renderCase();
+            }
+        }
 
-function endGame(){
-  $("#case").style.display = "none";
-  $("#end").style.display = "grid";
-  updateHeader();
+        async function endGame() {
+            $("#case").style.display = "none";
+            $("#end").style.display = "grid";
+            updateHeader();
 
-  const maxRep = CASES.reduce((acc,c)=>acc + c.evidence.length + 2, 0);
-  const ratio = state.rep / maxRep;
+            const maxRep = state.cases.reduce((acc, c) => acc + c.evidence.length + 2, 0);
+            const ratio = state.rep / maxRep;
 
-  let rank = "Аналитик-новобранец";
-  let praise = "Неплохо. База есть — масштабируем качество решений.";
-  if(ratio >= .35){ rank = "Фактчекер"; praise = "Ты уверенно отличаешь шум от сигналов."; }
-  if(ratio >= .6){ rank = "Куратор правды"; praise = "Стабильно спасаешь то, что важно — людей и данные."; }
-  if(ratio >= .8){ rank = "Спаситель правды"; praise = "Совет аплодирует стоя. Твой разбор — эталон.";}
+            let rank, praise;
+            rank = t("endRankNew");
+            praise = t("endPraiseNew");
+            if (ratio >= .35) { rank = t("endRankFact"); praise = t("endPraiseFact"); }
+            if (ratio >= .6) { rank = t("endRankCurator"); praise = t("endPraiseCurator"); }
+            if (ratio >= .8) { rank = t("endRankSavior"); praise = t("endPraiseSavior"); }
 
-  $("#rank").textContent = rank;
-  $("#endTitle").textContent = "Миссия завершена";
-  $("#endText").textContent = `Итоговая репутация: ${state.rep}. ${praise}`;
-}
+            // Сохраняем результат игры в Supabase
+            const gameResultData = {
+                rep: state.rep,
+                totalCases: state.cases.length,
+                maxRep: maxRep,
+                ratio: ratio,
+                rank: rank
+            };
+            await saveGameResultToSupabase(gameResultData);
 
-function shareResult(){
-  const text = `Я прошёл Digital Truth и получил репутацию ${state.rep}! #СпасиПравду`;
-  navigator.clipboard.writeText(text).then(()=>toast("Скопировано в буфер обмена"));
-}
+            $("#rank").textContent = rank;
+            $("#endTitle").textContent = t("endTitle");
+            $("#endText").textContent = `${t("endResult")}: ${state.rep}. ${praise}`;
+        }
 
-function restart(){
-  state = { idx:0, rep:0, answers:{} };
-  $("#end").style.display = "none";
-  $("#start").style.display = "block";
-  updateHeader();
-}
+        function shareResult() {
+            const text = getLang() === "kk"
+                ? `Мен Digital Truth ойынын өтіп, ${state.rep} репутация жинадым! #ШындықтыҚұтқар`
+                : `Я прошёл Digital Truth и получил репутацию ${state.rep}! #СпасиПравду`;
+            navigator.clipboard.writeText(text).then(() => toast(t("toastCopied")));
+        }
 
-/** ======== ИНИЦИАЛИЗАЦИЯ UI ======== */
-$("#btnStart").addEventListener("click", ()=>{
-  $("#start").style.display = "none";
-  $("#case").style.display = "grid";
-  renderCase();
-});
+        function restart() {
+            // Очищаем сессию при перезапуске
+            localStorage.removeItem("gameSessionId");
+            state = { idx: 0, rep: 0, answers: { ev: [], choice: null } };
+            $("#end").style.display = "none";
+            $("#start").style.display = "block";
+            updateHeader();
+        }
 
-$("#btnHow").addEventListener("click", ()=>{
-  toast("Отмечай доказательства как Правда/Ложь и выбери, кого спасти. Баллы = точность + верный выбор.");
-});
 
-$("#evList").addEventListener("click", onEvidenceClick);
-$("#choiceBox").addEventListener("change", onChoiceChange);
-$("#btnCheck").addEventListener("click", checkCase);
-$("#btnSkip").addEventListener("click", ()=>{ toast("Дело пропущено"); nextCase(); });
-$("#btnRestart").addEventListener("click", restart);
-$("#btnShare").addEventListener("click", shareResult);
+        // ========== INTRO VIDEO ==========
+        function initIntroVideo() {
+            const introVideo = document.getElementById("introVideo");
+            const playBtn = document.getElementById("videoPlayBtn");
 
-// ========== INTRO VIDEO ==========
-function initIntroVideo(){
-  const introVideo = document.getElementById("introVideo");
-  const playBtn = document.getElementById("videoPlayBtn");
+            if (introVideo && playBtn) {
+                introVideo.currentTime = 0;
+                introVideo.style.display = "block";
+                playBtn.style.display = "flex";
 
-  if(introVideo && playBtn){
-    introVideo.currentTime = 0;
-    introVideo.style.display = "block";
-    playBtn.style.display = "flex";
+                function startVideo() {
+                    introVideo.play();
+                    playBtn.style.display = "none";
+                }
 
-    function startVideo(){
-      introVideo.play();
-      playBtn.style.display = "none";
-    }
+                playBtn.addEventListener("click", startVideo);
 
-    playBtn.addEventListener("click", startVideo);
+                introVideo.addEventListener("ended", () => {
+                    introVideo.style.display = "none";
+                    playBtn.style.display = "none";
+                    showOnboardWelcome();
+                }, { once: true });
 
-    introVideo.addEventListener("ended", ()=>{
-      introVideo.style.display = "none";
-      playBtn.style.display = "none";
-      showOnboardWelcome();
-    }, { once: true });
+                // Try autoplay
+                introVideo.play().catch(() => {
+                    // Autoplay failed, user must click
+                });
+            }
+        }
 
-    // Try autoplay
-    introVideo.play().catch(() => {
-      // Autoplay failed, user must click
-    });
-  }
-}
-
-// ========== INIT ==========
-// Show onboarding if not completed
-if(!agentData || !agentData.completedAt){
-  hideAllSections();
-  $("#splash").style.display = "block";
-  initIntroVideo();
-} else {
-  hideAllSections();
-  $("#start").style.display = "block";
-}
-updateHeader();
-</script>
+        // ========== INIT ==========
+        // Show onboarding if not completed
+        if (!agentData || !agentData.completedAt) {
+            hideAllSections();
+            $("#splash").style.display = "block";
+            initIntroVideo();
+        } else {
+            hideAllSections();
+            $("#start").style.display = "block";
+            
+            // Показываем кнопку админа, если callsign содержит "admin"
+            const isAdmin = agentData.callsign && agentData.callsign.toLowerCase().includes('admin');
+            $("#btnAdminAnalytics").style.display = isAdmin ? "inline-block" : "none";
+        }
+        updateHeader();
+        updateI18nUI();
+    </script>
 </body>
+
 </html>

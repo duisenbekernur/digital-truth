@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>i18n Test</title>
+<style>
+body { font-family: Arial; margin: 20px; }
+.test { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+.pass { background: #d4edda; }
+.fail { background: #f8d7da; }
+</style>
+</head>
+<body>
+<h1>i18n Localization Test</h1>
+<div id="results"></div>
+
+<script>
+// Embed TRANSLATIONS from digital-truth.html (check if keys exist)
+const TRANSLATIONS = {
+  ru: {
+    mainTitle: "Digital Truth: Спаси Правду",
+    splashBadge: "Новая миссия • v2.0",
+    splashTitle: "Digital Truth: Идентификация агента",
+    startTitle: "Ты — детектив фактов",
+    btnStart: "Начать расследование",
+    caseNo: "Дело — {current} / {total}",
+    rep: "Репутация: {rep}",
+    evidence: "Доказательства:",
+    evScore: "Отмечено: {done} / {total}",
+    choiceReputation: "Решение повлияет на репутацию.",
+    endTitle: "Миссия завершена",
+    rank: "Ранг",
+  },
+  kk: {
+    mainTitle: "Digital Truth: Шындықты Құтқар",
+    splashBadge: "Жаңа миссия • v2.0",
+    splashTitle: "Digital Truth: Агентті сәйкестендіру",
+    startTitle: "Сен — факт детективісің",
+    btnStart: "Тергеуді бастау",
+    caseNo: "Іс — {current} / {total}",
+    rep: "Репутация: {rep}",
+    evidence: "Дәлелдер:",
+    evScore: "Белгіленді: {done} / {total}",
+    choiceReputation: "Шешім репутацияға әсер етеді.",
+    endTitle: "Миссия аяқталды",
+    rank: "Дәреже",
+  }
+};
+
+function getLang() {
+  return localStorage.getItem("lang") || "ru";
+}
+
+function t(key, vars={}) {
+  const lang = getLang();
+  let str = TRANSLATIONS[lang][key] || TRANSLATIONS["ru"][key] || key;
+  Object.entries(vars).forEach(([k,v])=>{
+    str = str.replace(`{${k}}`, v);
+  });
+  return str;
+}
+
+// Test cases
+const tests = [
+  { key: "mainTitle", vars: {}, expected_ru: "Digital Truth: Спаси Правду" },
+  { key: "startTitle", vars: {}, expected_ru: "Ты — детектив фактов" },
+  { key: "caseNo", vars: { current: 1, total: 4 }, expected_ru: "Дело — 1 / 4" },
+  { key: "rep", vars: { rep: 100 }, expected_ru: "Репутация: 100" },
+];
+
+const results = document.getElementById("results");
+let passed = 0, failed = 0;
+
+// Test Russian
+localStorage.setItem("lang", "ru");
+tests.forEach(test => {
+  const result = t(test.key, test.vars);
+  const isPass = result === test.expected_ru;
+  const div = document.createElement("div");
+  div.className = `test ${isPass ? "pass" : "fail"}`;
+  div.innerHTML = `
+    <strong>[RU] ${test.key}</strong><br>
+    Expected: ${test.expected_ru}<br>
+    Got: ${result}<br>
+    Status: ${isPass ? "✓ PASS" : "✗ FAIL"}
+  `;
+  results.appendChild(div);
+  if (isPass) passed++; else failed++;
+});
+
+// Test Kazakh
+localStorage.setItem("lang", "kk");
+const kk_tests = [
+  { key: "mainTitle", vars: {}, expected: "Digital Truth: Шындықты Құтқар" },
+  { key: "startTitle", vars: {}, expected: "Сен — факт детективісің" },
+  { key: "caseNo", vars: { current: 1, total: 4 }, expected: "Іс — 1 / 4" },
+];
+
+kk_tests.forEach(test => {
+  const result = t(test.key, test.vars);
+  const isPass = result === test.expected;
+  const div = document.createElement("div");
+  div.className = `test ${isPass ? "pass" : "fail"}`;
+  div.innerHTML = `
+    <strong>[KK] ${test.key}</strong><br>
+    Expected: ${test.expected}<br>
+    Got: ${result}<br>
+    Status: ${isPass ? "✓ PASS" : "✗ FAIL"}
+  `;
+  results.appendChild(div);
+  if (isPass) passed++; else failed++;
+});
+
+// Summary
+const summary = document.createElement("div");
+summary.style.marginTop = "20px";
+summary.style.padding = "10px";
+summary.style.backgroundColor = failed === 0 ? "#d4edda" : "#f8d7da";
+summary.innerHTML = `<h2>Summary: ${passed} PASSED, ${failed} FAILED</h2>`;
+results.appendChild(summary);
+</script>
+</body>
+</html>
