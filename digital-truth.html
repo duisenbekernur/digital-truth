@@ -1302,6 +1302,34 @@
             }
         }
 
+        // Проверка существования агента в Supabase
+        async function checkAgentExistsInSupabase(agentId) {
+            if (!supabase || !agentId) {
+                return false;
+            }
+
+            try {
+                const { data, error } = await supabase
+                    .from('agents')
+                    .select('id')
+                    .eq('id', agentId)
+                    .single();
+
+                if (error) {
+                    // Если ошибка "не найдено", значит агента нет
+                    if (error.code === 'PGRST116') {
+                        return false;
+                    }
+                    throw error;
+                }
+
+                return !!data;
+            } catch (error) {
+                console.error('Ошибка проверки существования агента:', error);
+                return false;
+            }
+        }
+
         // Загрузка данных агента из Supabase
         async function loadAgentDataFromSupabase() {
             if (!supabase) {
@@ -3913,29 +3941,58 @@
         }
 
         // ========== INIT ==========
-        // Show onboarding if not completed
-        if (!agentData || !agentData.completedAt) {
+        // Функция для очистки localStorage и показа формы регистрации
+        function clearStorageAndShowOnboarding() {
+            console.log('Очистка localStorage и показ формы регистрации');
+            localStorage.removeItem("agentData");
+            localStorage.removeItem("agentId");
+            localStorage.removeItem("agentLevelData");
+            localStorage.removeItem("gameSessionId");
+            agentData = null;
             hideAllSections();
             $("#splash").style.display = "block";
             initIntroVideo();
-        } else {
-            hideAllSections();
-            $("#start").style.display = "block";
-            
-            // Показываем кнопку админа, если callsign содержит "admin"
-            const isAdmin = agentData.callsign && agentData.callsign.toLowerCase().includes('admin');
-            $("#btnAdminAnalytics").style.display = isAdmin ? "inline-block" : "none";
-            
-            // Загружаем данные уровня агента из Supabase
-            loadAgentDataFromSupabase().then(data => {
-                if (data) {
-                    console.log('Данные уровня агента загружены при инициализации');
-                    updateLevelDisplay();
-                }
-            });
         }
-        updateHeader();
-        updateI18nUI();
+
+        // Асинхронная инициализация с проверкой существования агента
+        (async function initApp() {
+            // Show onboarding if not completed
+            if (!agentData || !agentData.completedAt) {
+                hideAllSections();
+                $("#splash").style.display = "block";
+                initIntroVideo();
+            } else {
+                // Проверяем существование агента в Supabase
+                const agentId = localStorage.getItem("agentId");
+                if (agentId && supabase) {
+                    const agentExists = await checkAgentExistsInSupabase(agentId);
+                    if (!agentExists) {
+                        console.warn('Агент не найден в Supabase, очищаем localStorage');
+                        clearStorageAndShowOnboarding();
+                        updateHeader();
+                        updateI18nUI();
+                        return;
+                    }
+                }
+
+                hideAllSections();
+                $("#start").style.display = "block";
+                
+                // Показываем кнопку админа, если callsign содержит "admin"
+                const isAdmin = agentData.callsign && agentData.callsign.toLowerCase().includes('admin');
+                $("#btnAdminAnalytics").style.display = isAdmin ? "inline-block" : "none";
+                
+                // Загружаем данные уровня агента из Supabase
+                loadAgentDataFromSupabase().then(data => {
+                    if (data) {
+                        console.log('Данные уровня агента загружены при инициализации');
+                        updateLevelDisplay();
+                    }
+                });
+            }
+            updateHeader();
+            updateI18nUI();
+        })();
     </script>
 </body>
 
