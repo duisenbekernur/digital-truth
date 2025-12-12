@@ -296,6 +296,189 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Детектив */
+        .detective-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .detective-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+        }
+
+        .detective-avatar {
+            width: 120px;
+            height: 180px;
+            background: rgba(15, 22, 33, 0.9);
+            border: 2px solid rgba(83, 226, 174, 0.3);
+            border-radius: 12px;
+            padding: 10px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .detective-avatar svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .detective-speech {
+            max-width: 250px;
+            animation: speechFadeIn 0.3s ease;
+        }
+
+        @keyframes speechFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .speech-bubble {
+            background: var(--card);
+            border: 1px solid #1e2a3b;
+            border-radius: 12px;
+            padding: 12px 16px;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            right: 30px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid var(--card);
+        }
+
+        .speech-bubble p {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.4;
+            color: var(--ink);
+        }
+
+        /* Анимации детектива */
+        @keyframes detectiveNod {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            30% { transform: translateY(-4px) rotate(1deg) scale(1.02); }
+            60% { transform: translateY(-2px) rotate(-1deg) scale(1.01); }
+        }
+
+        @keyframes detectiveShake {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            20% { transform: translateX(-4px) rotate(-1deg); }
+            40% { transform: translateX(4px) rotate(1deg); }
+            60% { transform: translateX(-2px) rotate(-0.5deg); }
+            80% { transform: translateX(2px) rotate(0.5deg); }
+        }
+
+        @keyframes detectiveThink {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-2px) rotate(-2deg); }
+            50% { transform: translateY(-4px) rotate(-3deg); }
+            75% { transform: translateY(-2px) rotate(-1deg); }
+        }
+
+        @keyframes eyeBlink {
+            0%, 90%, 100% { transform: scaleY(1); }
+            95% { transform: scaleY(0.1); }
+        }
+
+        @keyframes subtleBreathe {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-1px); }
+        }
+
+        @keyframes tabletScan {
+            0% { opacity: 0; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.1); }
+            100% { opacity: 0; transform: scale(0.8); }
+        }
+
+        @keyframes tabletGlow {
+            0%, 100% { filter: drop-shadow(0 0 5px rgba(83, 226, 174, 0.5)); }
+            50% { filter: drop-shadow(0 0 15px rgba(83, 226, 174, 0.9)); }
+        }
+
+        .detective-positive {
+            animation: detectiveNod 0.8s ease;
+        }
+
+        .detective-negative {
+            animation: detectiveShake 0.6s ease;
+        }
+
+        .detective-thinking {
+            animation: detectiveThink 2s ease-in-out infinite;
+        }
+
+        /* Моргание глаз */
+        #detectiveEye1, #detectiveEye2 {
+            animation: eyeBlink 4s ease-in-out infinite;
+            transform-origin: center;
+        }
+
+        #detectiveEye1 {
+            animation-delay: 0s;
+        }
+
+        #detectiveEye2 {
+            animation-delay: 0.1s;
+        }
+
+        /* Легкое дыхание */
+        #detectiveSvg {
+            animation: subtleBreathe 3s ease-in-out infinite;
+        }
+
+        .tablet-scanning {
+            animation: tabletScan 1.5s ease infinite;
+        }
+
+        .tablet-glow {
+            animation: tabletGlow 2s ease infinite;
+        }
+
+        /* Переход между кейсами */
+        .case-transition {
+            position: fixed;
+            inset: 0;
+            background: rgba(11, 15, 20, 0.95);
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            animation: transitionFadeIn 0.4s ease;
+        }
+
+        @keyframes transitionFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .transition-detective {
+            width: 200px;
+            height: 300px;
+        }
+
+        .transition-text {
+            font-size: 24px;
+            color: var(--acc);
+            font-weight: 600;
+            text-align: center;
+        }
+
         .admin-section {
             background: #0c121b;
             border: 1px solid #1e2a3b;
@@ -317,22 +500,11 @@
             border-collapse: collapse;
             font-size: 12px;
             margin-top: 12px;
-            overflow-x: auto;
-            display: block;
-        }
-
-        .admin-table thead,
-        .admin-table tbody {
-            display: block;
+            table-layout: auto;
         }
 
         .admin-table thead {
-            width: 100%;
-        }
-
-        .admin-table tbody {
-            max-height: 400px;
-            overflow-y: auto;
+            background: #0f1621;
         }
 
         .admin-table th {
@@ -356,9 +528,7 @@
         }
 
         .admin-table tr {
-            display: table;
-            width: 100%;
-            table-layout: fixed;
+            display: table-row;
         }
 
         .admin-table tr:hover {
@@ -400,6 +570,7 @@
         <div style="display:flex; gap:16px; align-items:center">
             <div id="caseNo"></div>
             <div id="rep"></div>
+            <div id="levelBadge" style="display:none; font-size:12px; color:var(--acc); background:rgba(83,226,174,.1); padding:4px 10px; border-radius:8px; border:1px solid rgba(83,226,174,.3)"></div>
             <select id="langToggle"
                 style="padding:4px 10px; border-radius:8px; font-size:14px; background:#101826; color:var(--ink); border:1px solid #24354d">
                 <option value="ru" id="langRu"></option>
@@ -647,6 +818,128 @@
 
         <!-- Экран дела -->
         <section id="case" class="grid" style="display:none">
+            <!-- Детектив -->
+            <div id="detectiveContainer" class="detective-panel" style="display:none">
+                <div class="detective-wrapper">
+                    <div id="detectiveAvatar" class="detective-avatar">
+                        <svg id="detectiveSvg" viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <!-- Градиенты для объема -->
+                                <linearGradient id="skinGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#e8c5a0;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#d4a574;stop-opacity:1" />
+                                </linearGradient>
+                                <linearGradient id="jacketGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#2a3a5a;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#1a1f3a;stop-opacity:1" />
+                                </linearGradient>
+                                <linearGradient id="shirtGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#f5f5f5;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#e8e8e8;stop-opacity:1" />
+                                </linearGradient>
+                                <radialGradient id="eyeGradient" cx="50%" cy="30%">
+                                    <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#1a1a1a;stop-opacity:1" />
+                                </radialGradient>
+                            </defs>
+                            
+                            <!-- Ноги (сначала, чтобы были позади) -->
+                            <rect x="75" y="200" width="18" height="55" rx="8" fill="#0a0a0a" opacity="0.9"/>
+                            <rect x="107" y="200" width="18" height="55" rx="8" fill="#0a0a0a" opacity="0.9"/>
+                            <ellipse cx="84" cy="255" rx="9" ry="4" fill="#1a1a1a"/>
+                            <ellipse cx="116" cy="255" rx="9" ry="4" fill="#1a1a1a"/>
+                            
+                            <!-- Тело (пиджак) -->
+                            <rect x="68" y="110" width="64" height="95" rx="8" fill="url(#jacketGradient)" stroke="#2a3a5a" stroke-width="1.5"/>
+                            <!-- Тень на пиджаке -->
+                            <rect x="68" y="110" width="64" height="20" rx="8" fill="#1a1f3a" opacity="0.3"/>
+                            
+                            <!-- Рубашка -->
+                            <rect x="72" y="115" width="56" height="80" rx="4" fill="url(#shirtGradient)"/>
+                            <!-- Воротник -->
+                            <path d="M 72 115 L 100 125 L 128 115" stroke="#d0d0d0" stroke-width="1.5" fill="none"/>
+                            <!-- Пуговицы -->
+                            <circle cx="100" cy="140" r="1.5" fill="#c0c0c0"/>
+                            <circle cx="100" cy="155" r="1.5" fill="#c0c0c0"/>
+                            <circle cx="100" cy="170" r="1.5" fill="#c0c0c0"/>
+                            
+                            <!-- Руки -->
+                            <ellipse cx="60" cy="125" rx="8" ry="12" fill="url(#skinGradient)"/>
+                            <rect x="55" y="125" width="12" height="65" rx="6" fill="url(#skinGradient)"/>
+                            <ellipse cx="140" cy="125" rx="8" ry="12" fill="url(#skinGradient)"/>
+                            <rect x="133" y="125" width="12" height="65" rx="6" fill="url(#skinGradient)"/>
+                            <!-- Кисти рук -->
+                            <ellipse cx="61" cy="190" rx="6" ry="8" fill="url(#skinGradient)"/>
+                            <ellipse cx="139" cy="190" rx="6" ry="8" fill="url(#skinGradient)"/>
+                            
+                            <!-- Планшет -->
+                            <rect id="detectiveTablet" x="82" y="135" width="36" height="48" rx="4" fill="#0a0f1a" stroke="#53e2ae" stroke-width="2" opacity="0.95"/>
+                            <!-- Экран планшета -->
+                            <rect x="85" y="138" width="30" height="42" rx="2" fill="#1a2a3a" opacity="0.8"/>
+                            <!-- Сканирующие линии -->
+                            <line id="tabletScan1" x1="100" y1="145" x2="100" y2="175" stroke="#53e2ae" stroke-width="2" opacity="0" stroke-linecap="round">
+                                <animate attributeName="opacity" values="0;0.8;0" dur="1.5s" repeatCount="indefinite"/>
+                            </line>
+                            <line id="tabletScan2" x1="88" y1="160" x2="112" y2="160" stroke="#53e2ae" stroke-width="2" opacity="0" stroke-linecap="round">
+                                <animate attributeName="opacity" values="0;0.8;0" dur="1.5s" repeatCount="indefinite" begin="0.5s"/>
+                            </line>
+                            <!-- Иконки на планшете -->
+                            <circle cx="92" cy="152" r="2" fill="#53e2ae" opacity="0.6"/>
+                            <circle cx="108" cy="152" r="2" fill="#53e2ae" opacity="0.6"/>
+                            
+                            <!-- Голова -->
+                            <ellipse cx="100" cy="75" rx="38" ry="42" fill="url(#skinGradient)" stroke="#b8956a" stroke-width="1.5"/>
+                            <!-- Тень на лице -->
+                            <ellipse cx="100" cy="85" rx="30" ry="25" fill="#c9a882" opacity="0.3"/>
+                            
+                            <!-- Волосы -->
+                            <path d="M 65 50 Q 70 45 75 50 Q 80 48 85 52 Q 90 50 95 54 Q 100 52 105 54 Q 110 50 115 52 Q 120 48 125 50 Q 130 45 135 50 L 135 65 Q 130 70 125 68 Q 120 70 115 68 Q 110 70 105 68 Q 100 70 95 68 Q 90 70 85 68 Q 80 70 75 68 Q 70 70 65 65 Z" 
+                                  fill="#3a2a1a" opacity="0.9"/>
+                            <!-- Блики на волосах -->
+                            <path d="M 75 55 Q 85 52 95 56 Q 105 54 115 56" stroke="#5a4a3a" stroke-width="1" fill="none" opacity="0.5"/>
+                            
+                            <!-- Брови -->
+                            <path id="detectiveBrow1" d="M 85 68 Q 90 66 95 68" stroke="#2a1a0a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                            <path id="detectiveBrow2" d="M 105 68 Q 110 66 115 68" stroke="#2a1a0a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                            
+                            <!-- Глаза -->
+                            <ellipse id="detectiveEye1" cx="90" cy="76" rx="5" ry="6" fill="url(#eyeGradient)"/>
+                            <ellipse id="detectiveEye2" cx="110" cy="76" rx="5" ry="6" fill="url(#eyeGradient)"/>
+                            <!-- Зрачки -->
+                            <circle id="detectivePupil1" cx="90" cy="76" r="2.5" fill="#1a1a1a"/>
+                            <circle id="detectivePupil2" cx="110" cy="76" r="2.5" fill="#1a1a1a"/>
+                            <!-- Блики в глазах -->
+                            <circle cx="91" cy="75" r="1" fill="#ffffff" opacity="0.8"/>
+                            <circle cx="111" cy="75" r="1" fill="#ffffff" opacity="0.8"/>
+                            
+                            <!-- Нос -->
+                            <path d="M 100 80 Q 98 85 100 88 Q 102 85 100 80" stroke="#b8956a" stroke-width="1.5" fill="none" opacity="0.6"/>
+                            <ellipse cx="98" cy="84" rx="1.5" ry="2" fill="#c9a882" opacity="0.4"/>
+                            <ellipse cx="102" cy="84" rx="1.5" ry="2" fill="#c9a882" opacity="0.4"/>
+                            
+                            <!-- Рот -->
+                            <path id="detectiveMouth" d="M 92 88 Q 100 91 108 88" stroke="#1a1a1a" stroke-width="2" fill="none" stroke-linecap="round"/>
+                            
+                            <!-- Щетина (легкая) -->
+                            <circle cx="88" cy="92" r="1" fill="#9a8a7a" opacity="0.3"/>
+                            <circle cx="95" cy="94" r="1" fill="#9a8a7a" opacity="0.3"/>
+                            <circle cx="105" cy="94" r="1" fill="#9a8a7a" opacity="0.3"/>
+                            <circle cx="112" cy="92" r="1" fill="#9a8a7a" opacity="0.3"/>
+                            
+                            <!-- Умные часы на руке -->
+                            <ellipse cx="139" cy="145" rx="6" ry="8" fill="#1a1a1a" stroke="#53e2ae" stroke-width="1"/>
+                            <rect x="136" y="142" width="6" height="6" rx="1" fill="#0a0f1a"/>
+                            <line x1="138" y1="144" x2="140" y2="146" stroke="#53e2ae" stroke-width="0.5"/>
+                        </svg>
+                    </div>
+                    <div id="detectiveSpeech" class="detective-speech" style="display:none">
+                        <div class="speech-bubble">
+                            <p id="detectiveText"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <div class="panel">
                 <div class="meta">
                     <span class="tag" id="caseTag"></span>
@@ -678,7 +971,7 @@
         <section id="end" class="panel end" style="display:none">
             <div class="rank" id="rank"></div>
             <h2 id="endTitle"></h2>
-            <p id="endText"></p>
+            <p id="endText" style="white-space:pre-line; line-height:1.6"></p>
             <div class="footerRow" style="justify-content:center">
                 <button class="primary" id="btnRestart"></button>
                 <button id="btnShare"></button>
@@ -707,6 +1000,52 @@
             console.warn('⚠️ Supabase не настроен. Укажите SUPABASE_URL и SUPABASE_ANON_KEY в коде.');
         }
 
+        /** ======== LEVEL SYSTEM ======== */
+        // Функция расчета уровня по репутации (аналог SQL функции calculate_level)
+        function calculateLevel(reputation) {
+            let levelNum, levelRu, levelKz, praiseRu, praiseKz;
+            
+            if (reputation >= 17) {
+                levelNum = 5;
+                levelRu = 'Арбитр истины';
+                levelKz = 'Ақиқат арбитрі';
+                praiseRu = 'Ты огромный молодец! Ты — эталон качества и человек, который делает пространство честнее. Мы будем продолжать улучшать логику, стандарты и подход — вместе с тобой.';
+                praiseKz = 'Тамаша жұмыс! Сен — ақпараттық кеңістікті таза ұстайтын негізгі тұлғасың. Біз бұл жүйені сенің деңгейіңе сай одан әрі күшейте береміз.';
+            } else if (reputation >= 13) {
+                levelNum = 4;
+                levelRu = 'Ведущий эксперт по проверке фактов';
+                levelKz = 'Фактіні тексерудің жетекші сарапшысы';
+                praiseRu = 'Ты мощный специалист! Ты уже влияешь на качество всей системы и задаёшь стандарт точности. Дальше — уровень стратегического мышления.';
+                praiseKz = 'Өте мықты мамансың! Сен жүйенің сапасына нақты әсер етіп отырсың. Алда — стратегиялық ойлау деңгейі.';
+            } else if (reputation >= 9) {
+                levelNum = 3;
+                levelRu = 'Фактчекер';
+                levelKz = 'Фактчекер';
+                praiseRu = 'Ты делаешь это отлично! Идёшь уверенной траекторией вверх. Система видит твой вклад, и он становится всё более значимым.';
+                praiseKz = 'Өте жақсы деңгей! Сенің ықпалың артып жатыр, жұмысың айқын көрінеді. Әрі қарай — одан да жоғары жауапкершілік пен сенім.';
+            } else if (reputation >= 5) {
+                levelNum = 2;
+                levelRu = 'Младший аналитик фактов';
+                levelKz = 'Фактіні талдаудың жас аналитигі';
+                praiseRu = 'Супер работа! Ты уверенно набираешь темп. Далее будет сложнее — но и гораздо интереснее.';
+                praiseKz = 'Керемет нәтиже! Қарқының жақсы, сен тұрақты өсудесің. Алда күрделірек тапсырмалар бар — бірақ сен оған дайынсың.';
+            } else {
+                levelNum = 1;
+                levelRu = 'Наблюдатель инфополя';
+                levelKz = 'Ақпарат алаңын бақылаушы';
+                praiseRu = 'Ты молодец! Самое главное — ты в движении. Это база, на которой строится настоящий прогресс. Продолжаем — шаг за шагом ты станешь точнее, быстрее и увереннее.';
+                praiseKz = 'Жарайсың! Ең маңыздысы — сен қозғалыстасың. Осы берік негіз болашақта үлкен нәтижеге жеткізеді. Алға қарай біртіндеп дәлдігің де, сенімділігің де арта береді.';
+            }
+            
+            return {
+                level: levelNum,
+                title_ru: levelRu,
+                title_kz: levelKz,
+                praise_ru: praiseRu,
+                praise_kz: praiseKz
+            };
+        }
+
         /** ======== SUPABASE FUNCTIONS ======== */
         // Сохранение данных онбординга
         async function saveAgentDataToSupabase(agentData) {
@@ -718,6 +1057,10 @@
 
             try {
                 const existingAgentId = localStorage.getItem("agentId");
+                
+                // Рассчитываем начальный уровень (репутация = 0)
+                const initialLevel = calculateLevel(0);
+                
                 const dataToSave = {
                     callsign: agentData.callsign,
                     gender: agentData.gender,
@@ -742,9 +1085,14 @@
                     data = result.data;
                     error = result.error;
                 } else {
-                    // Создаем нового агента
+                    // Создаем нового агента с начальными значениями уровня
                     console.log('Создание нового агента');
                     dataToSave.created_at = new Date().toISOString();
+                    dataToSave.total_reputation = 0;
+                    dataToSave.current_level = initialLevel.level;
+                    dataToSave.level_title_ru = initialLevel.title_ru;
+                    dataToSave.level_title_kz = initialLevel.title_kz;
+                    dataToSave.total_games_completed = 0;
                     const result = await supabase
                         .from('agents')
                         .insert([dataToSave])
@@ -871,6 +1219,9 @@
                     return { success: false, error: 'Agent ID not found' };
                 }
 
+                // Рассчитываем уровень на основе финальной репутации
+                const levelInfo = calculateLevel(gameResult.rep || 0);
+
                 const resultData = {
                     agent_id: agentId,
                     final_reputation: gameResult.rep || 0,
@@ -878,6 +1229,11 @@
                     max_reputation: gameResult.maxRep || 0,
                     accuracy_ratio: gameResult.ratio || 0,
                     rank: gameResult.rank || 'unknown',
+                    level_achieved: levelInfo.level,
+                    level_title_ru: levelInfo.title_ru,
+                    level_title_kz: levelInfo.title_kz,
+                    praise_text_ru: levelInfo.praise_ru,
+                    praise_text_kz: levelInfo.praise_kz,
                     completed_at: new Date().toISOString()
                 };
 
@@ -891,6 +1247,42 @@
 
                 if (error) throw error;
 
+                // Обновляем данные агента: total_reputation, current_level, level_title
+                // Получаем текущие данные агента
+                const { data: agentData, error: agentError } = await supabase
+                    .from('agents')
+                    .select('total_reputation, total_games_completed')
+                    .eq('id', agentId)
+                    .single();
+
+                if (!agentError && agentData) {
+                    const newTotalReputation = (agentData.total_reputation || 0) + (gameResult.rep || 0);
+                    const newTotalGames = (agentData.total_games_completed || 0) + 1;
+                    const newLevelInfo = calculateLevel(newTotalReputation);
+
+                    const { error: updateError } = await supabase
+                        .from('agents')
+                        .update({
+                            total_reputation: newTotalReputation,
+                            current_level: newLevelInfo.level,
+                            level_title_ru: newLevelInfo.title_ru,
+                            level_title_kz: newLevelInfo.title_kz,
+                            total_games_completed: newTotalGames,
+                            updated_at: new Date().toISOString()
+                        })
+                        .eq('id', agentId);
+
+                    if (updateError) {
+                        console.error('Ошибка обновления данных агента:', updateError);
+                    } else {
+                        console.log('Данные агента обновлены:', {
+                            total_reputation: newTotalReputation,
+                            current_level: newLevelInfo.level,
+                            level_title: newLevelInfo.title_ru
+                        });
+                    }
+                }
+
                 // Обновляем сессию как завершенную
                 const sessionId = localStorage.getItem("gameSessionId");
                 if (sessionId) {
@@ -902,11 +1294,47 @@
                 }
 
                 console.log('Результат игры успешно сохранен в Supabase:', data);
-                return { success: true, data, resultId: data.id };
+                return { success: true, data, resultId: data.id, levelInfo };
             } catch (error) {
                 console.error('Ошибка сохранения результата игры:', error);
                 console.error('Детали ошибки:', JSON.stringify(error, null, 2));
                 return { success: false, error: error.message };
+            }
+        }
+
+        // Загрузка данных агента из Supabase
+        async function loadAgentDataFromSupabase() {
+            if (!supabase) {
+                console.warn('Supabase не настроен, используем localStorage');
+                return null;
+            }
+
+            try {
+                const agentId = localStorage.getItem("agentId");
+                if (!agentId) {
+                    console.log('Agent ID не найден в localStorage');
+                    return null;
+                }
+
+                const { data, error } = await supabase
+                    .from('agents')
+                    .select('total_reputation, current_level, level_title_ru, level_title_kz, total_games_completed')
+                    .eq('id', agentId)
+                    .single();
+
+                if (error) throw error;
+
+                if (data) {
+                    console.log('Данные агента загружены из Supabase:', data);
+                    // Сохраняем в localStorage для быстрого доступа
+                    localStorage.setItem("agentLevelData", JSON.stringify(data));
+                    return data;
+                }
+
+                return null;
+            } catch (error) {
+                console.error('Ошибка загрузки данных агента:', error);
+                return null;
             }
         }
 
@@ -1035,7 +1463,43 @@
                 }
             });
 
-            // 6. Общая статистика
+            // 6. Анализ уровней
+            const levelDist = {};
+            const levelByReputation = {};
+            const avgReputationByLevel = {};
+            const totalReputationByLevel = {};
+            const gamesByLevel = {};
+            
+            agents.forEach(a => {
+                const level = a.current_level || 1;
+                const totalRep = a.total_reputation || 0;
+                const games = a.total_games_completed || 0;
+                
+                levelDist[level] = (levelDist[level] || 0) + 1;
+                
+                if (!levelByReputation[level]) {
+                    levelByReputation[level] = [];
+                }
+                levelByReputation[level].push(totalRep);
+                
+                if (!avgReputationByLevel[level]) {
+                    avgReputationByLevel[level] = { sum: 0, count: 0 };
+                }
+                avgReputationByLevel[level].sum += totalRep;
+                avgReputationByLevel[level].count += 1;
+                
+                if (!totalReputationByLevel[level]) {
+                    totalReputationByLevel[level] = 0;
+                }
+                totalReputationByLevel[level] += totalRep;
+                
+                if (!gamesByLevel[level]) {
+                    gamesByLevel[level] = 0;
+                }
+                gamesByLevel[level] += games;
+            });
+
+            // 7. Общая статистика
             const totalAgents = agents.length;
             const totalSessions = sessions.length;
             const totalAnswers = answers.length;
@@ -1046,6 +1510,11 @@
                 : 0;
             const avgAccuracy = results.length > 0
                 ? (results.reduce((sum, r) => sum + (r.accuracy_ratio || 0), 0) / results.length * 100).toFixed(1)
+                : 0;
+            
+            // Средняя общая репутация агентов
+            const avgTotalReputation = agents.length > 0
+                ? (agents.reduce((sum, a) => sum + (a.total_reputation || 0), 0) / agents.length).toFixed(1)
                 : 0;
 
             return {
@@ -1066,6 +1535,11 @@
                 dropoutRate,
                 // Время
                 registrationsByDate,
+                // Уровни
+                levelDist,
+                avgReputationByLevel,
+                totalReputationByLevel,
+                gamesByLevel,
                 // Общее
                 totalAgents,
                 totalSessions,
@@ -1073,7 +1547,8 @@
                 totalResults,
                 activeSessions,
                 avgReputation,
-                avgAccuracy
+                avgAccuracy,
+                avgTotalReputation
             };
         }
 
@@ -1134,6 +1609,10 @@
                     <div class="admin-stat">
                         <strong>${metrics.avgAccuracy}%</strong>
                         <span>Средняя точность</span>
+                    </div>
+                    <div class="admin-stat">
+                        <strong>${metrics.avgTotalReputation}</strong>
+                        <span>Средняя общая репутация</span>
                     </div>
                     <div class="admin-stat">
                         <strong>${metrics.dropoutRate}%</strong>
@@ -1305,6 +1784,71 @@
                     </div>
                 </div>
 
+                <!-- АНАЛИЗ УРОВНЕЙ -->
+                <div class="admin-section">
+                    <h3>⭐ Анализ уровней агентов</h3>
+                    
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:16px">
+                        <div>
+                            <h4 style="margin:0 0 8px 0; font-size:14px; color:var(--muted)">Распределение по уровням</h4>
+                            <table class="admin-table" style="font-size:12px">
+                                <thead>
+                                    <tr>
+                                        <th>Уровень</th>
+                                        <th>Титул</th>
+                                        <th>Агентов</th>
+                                        <th>%</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${[1, 2, 3, 4, 5].map(level => {
+                                        const count = metrics.levelDist[level] || 0;
+                                        const pct = ((count / metrics.totalAgents) * 100).toFixed(1);
+                                        const levelInfo = calculateLevel(level === 1 ? 2 : level === 2 ? 6 : level === 3 ? 10 : level === 4 ? 14 : 18);
+                                        return `<tr>
+                                            <td><strong>${level}</strong></td>
+                                            <td>${levelInfo.title_ru}</td>
+                                            <td>${count}</td>
+                                            <td>${pct}%</td>
+                                        </tr>`;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div>
+                            <h4 style="margin:0 0 8px 0; font-size:14px; color:var(--muted)">Статистика по уровням</h4>
+                            <table class="admin-table" style="font-size:12px">
+                                <thead>
+                                    <tr>
+                                        <th>Уровень</th>
+                                        <th>Средняя репутация</th>
+                                        <th>Всего игр</th>
+                                        <th>Среднее игр/агент</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${[1, 2, 3, 4, 5].map(level => {
+                                        const levelData = metrics.avgReputationByLevel[level];
+                                        const avgRep = levelData && levelData.count > 0 
+                                            ? (levelData.sum / levelData.count).toFixed(1) 
+                                            : '0';
+                                        const totalGames = metrics.gamesByLevel[level] || 0;
+                                        const agentsCount = metrics.levelDist[level] || 1;
+                                        const avgGames = (totalGames / agentsCount).toFixed(1);
+                                        return `<tr>
+                                            <td><strong>${level}</strong></td>
+                                            <td>${avgRep}</td>
+                                            <td>${totalGames}</td>
+                                            <td>${avgGames}</td>
+                                        </tr>`;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- АНАЛИЗ СЛОЖНОСТИ ДЕЛ -->
                 <div class="admin-section">
                     <h3>📈 Анализ сложности дел</h3>
@@ -1420,6 +1964,10 @@
                             <thead>
                                 <tr>
                                     <th style="width:200px">Позывной</th>
+                                    <th style="width:80px">Уровень</th>
+                                    <th style="width:120px">Титул</th>
+                                    <th style="width:100px">Общая репутация</th>
+                                    <th style="width:80px">Игр</th>
                                     <th style="width:100px">Пол</th>
                                     <th style="width:100px">Возраст</th>
                                     <th style="width:150px">Регион</th>
@@ -1427,15 +1975,23 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                ${analytics.agents.map(a => `
+                                ${analytics.agents.map(a => {
+                                    const level = a.current_level || 1;
+                                    const levelInfo = calculateLevel(a.total_reputation || 0);
+                                    return `
                                     <tr>
                                         <td>${escapeHtml(a.callsign || '—')}</td>
+                                        <td><strong>${level}</strong></td>
+                                        <td>${escapeHtml(a.level_title_ru || levelInfo.title_ru || '—')}</td>
+                                        <td>${a.total_reputation || 0}</td>
+                                        <td>${a.total_games_completed || 0}</td>
                                         <td>${escapeHtml(a.gender || '—')}</td>
                                         <td>${escapeHtml(a.age || '—')}</td>
                                         <td>${escapeHtml(a.region || '—')}</td>
                                         <td>${formatDate(a.created_at)}</td>
                                     </tr>
-                                `).join('')}
+                                `;
+                                }).join('')}
                             </tbody>
                         </table>
                     </div>
@@ -1448,6 +2004,8 @@
                             <thead>
                                 <tr>
                                     <th style="width:80px">Репутация</th>
+                                    <th style="width:70px">Уровень</th>
+                                    <th style="width:150px">Титул</th>
                                     <th style="width:80px">Дела</th>
                                     <th style="width:100px">Точность</th>
                                     <th style="width:150px">Ранг</th>
@@ -1455,15 +2013,140 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                ${analytics.results.map(r => `
+                                ${analytics.results.map(r => {
+                                    const level = r.level_achieved || calculateLevel(r.final_reputation || 0).level;
+                                    const levelTitle = r.level_title_ru || calculateLevel(r.final_reputation || 0).title_ru;
+                                    return `
                                     <tr>
                                         <td><strong>${r.final_reputation || 0}</strong></td>
+                                        <td><strong>${level}</strong></td>
+                                        <td>${escapeHtml(levelTitle || '—')}</td>
                                         <td>${r.total_cases || 0}</td>
                                         <td>${((r.accuracy_ratio || 0) * 100).toFixed(1)}%</td>
                                         <td>${escapeHtml(r.rank || '—')}</td>
                                         <td>${formatDate(r.completed_at)}</td>
                                     </tr>
-                                `).join('')}
+                                `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ДЕТАЛЬНАЯ АНАЛИТИКА ПО ОТВЕТАМ -->
+                <div class="admin-section">
+                    <h3>📋 Детальные ответы игроков</h3>
+                    <p style="color:var(--muted); font-size:13px; margin-bottom:16px">
+                        Каждый ответ каждого игрока на каждый кейс с детализацией по доказательствам
+                    </p>
+                    <div style="overflow-x:auto; max-height:600px; overflow-y:auto">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:150px">Игрок</th>
+                                    <th style="width:120px">Кейс</th>
+                                    <th style="width:100px">Сложность</th>
+                                    <th style="width:200px">Ответы на доказательства</th>
+                                    <th style="width:150px">Выбор решения</th>
+                                    <th style="width:100px">Правильный выбор</th>
+                                    <th style="width:80px">Очки</th>
+                                    <th style="width:180px">Время ответа</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${analytics.answers.map(a => {
+                                    const agent = analytics.agents.find(ag => ag.id === a.agent_id);
+                                    const callsign = agent ? agent.callsign : 'Неизвестно';
+                                    
+                                    // Форматируем ответы на доказательства
+                                    const evidenceAnswers = Array.isArray(a.evidence_answers) 
+                                        ? a.evidence_answers.map((ans, idx) => {
+                                            const isCorrect = ans !== null ? (ans ? '✓' : '✗') : '—';
+                                            return `${idx + 1}:${isCorrect}`;
+                                        }).join(' ')
+                                        : '—';
+                                    
+                                    // Определяем правильность выбора
+                                    const choiceCorrect = a.choice_made === a.correct_choice ? '✓ Да' : '✗ Нет';
+                                    const choiceDisplay = a.choice_made || '—';
+                                    
+                                    return `
+                                    <tr>
+                                        <td>${escapeHtml(callsign)}</td>
+                                        <td>${escapeHtml(a.case_title || a.case_tag || '—')}</td>
+                                        <td>${escapeHtml(a.case_difficulty || '—')}</td>
+                                        <td style="font-size:11px; font-family:monospace">${evidenceAnswers}</td>
+                                        <td>${escapeHtml(choiceDisplay)}</td>
+                                        <td>${choiceCorrect}</td>
+                                        <td><strong>${a.points_earned || 0}</strong></td>
+                                        <td>${formatDate(a.answered_at)}</td>
+                                    </tr>
+                                `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- АНАЛИТИКА ПО КЕЙСАМ -->
+                <div class="admin-section">
+                    <h3>📊 Статистика по каждому кейсу</h3>
+                    <div style="overflow-x:auto; max-height:500px; overflow-y:auto">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:200px">Название кейса</th>
+                                    <th style="width:100px">Сложность</th>
+                                    <th style="width:100px">Тип</th>
+                                    <th style="width:80px">Всего ответов</th>
+                                    <th style="width:100px">Правильных выборов</th>
+                                    <th style="width:100px">% успеха</th>
+                                    <th style="width:100px">Средние очки</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${(() => {
+                                    // Группируем ответы по кейсам
+                                    const caseStats = {};
+                                    analytics.answers.forEach(a => {
+                                        const key = `${a.case_title || a.case_tag || 'unknown'}_${a.case_difficulty || 'unknown'}`;
+                                        if (!caseStats[key]) {
+                                            caseStats[key] = {
+                                                title: a.case_title || a.case_tag || 'Неизвестно',
+                                                difficulty: a.case_difficulty || '—',
+                                                tag: a.case_tag || '—',
+                                                total: 0,
+                                                correctChoices: 0,
+                                                totalPoints: 0
+                                            };
+                                        }
+                                        caseStats[key].total += 1;
+                                        if (a.choice_made === a.correct_choice) {
+                                            caseStats[key].correctChoices += 1;
+                                        }
+                                        caseStats[key].totalPoints += (a.points_earned || 0);
+                                    });
+                                    
+                                    return Object.values(caseStats).map(stat => {
+                                        const successRate = stat.total > 0 
+                                            ? ((stat.correctChoices / stat.total) * 100).toFixed(1)
+                                            : '0';
+                                        const avgPoints = stat.total > 0
+                                            ? (stat.totalPoints / stat.total).toFixed(1)
+                                            : '0';
+                                        return `
+                                        <tr>
+                                            <td>${escapeHtml(stat.title)}</td>
+                                            <td>${escapeHtml(stat.difficulty)}</td>
+                                            <td>${escapeHtml(stat.tag)}</td>
+                                            <td><strong>${stat.total}</strong></td>
+                                            <td>${stat.correctChoices}</td>
+                                            <td><strong>${successRate}%</strong></td>
+                                            <td>${avgPoints}</td>
+                                        </tr>
+                                    `;
+                                    }).join('');
+                                })()}
                             </tbody>
                         </table>
                     </div>
@@ -1783,7 +2466,7 @@
                 choiceReputation: "Шешім репутацияға әсер етеді.",
                 truthBtn: "Шындық",
                 lieBtn: "Жалған",
-                hintBtn: "Нәр",
+                hintBtn: "Анықтама",
                 btnCheck: "Істі тексеру",
                 btnSkip: "Өткізіп жіберу",
                 endTitle: "Миссия аяқталды",
@@ -1831,6 +2514,12 @@
             const headerTitle = $("#mainTitle");
             if (headerTitle) headerTitle.textContent = t("mainTitle");
             updateHeader();
+            
+            // Если активен экран кейса, перерисовываем его для обновления локализации кнопок
+            const caseSection = $("#case");
+            if (caseSection && caseSection.style.display !== "none") {
+                renderCase();
+            }
 
             // Splash screen
             const splashBadgeEl = $("#splashBadgeEl");
@@ -2391,6 +3080,7 @@
                 const el = $(`#${id}`);
                 if (el) el.style.display = "none";
             });
+            hideDetective();
         }
 
         function toast(msg) {
@@ -2469,6 +3159,14 @@
             // Показываем кнопку админа, если callsign содержит "admin"
             const isAdmin = agentData.callsign && agentData.callsign.toLowerCase().includes('admin');
             $("#btnAdminAnalytics").style.display = isAdmin ? "inline-block" : "none";
+            
+            // Загружаем данные уровня агента после завершения онбординга
+            loadAgentDataFromSupabase().then(data => {
+                if (data) {
+                    console.log('Данные уровня агента загружены после онбординга');
+                    updateLevelDisplay();
+                }
+            });
             
             updateHeader();
         }
@@ -2612,10 +3310,298 @@
             $("#rep").textContent = t("rep", { rep: state.rep });
             const totalCases = state.cases?.length || CASES_ALL.length;
             $("#caseNo").textContent = t("caseNo", { current: state.idx + 1, total: totalCases });
+            
+            // Обновляем отображение уровня
+            updateLevelDisplay();
+        }
+
+        // Обновление отображения уровня в header
+        function updateLevelDisplay() {
+            const levelBadge = $("#levelBadge");
+            if (!levelBadge) return;
+
+            // Пытаемся загрузить данные уровня из localStorage или Supabase
+            const levelDataStr = localStorage.getItem("agentLevelData");
+            let levelData = null;
+            
+            if (levelDataStr) {
+                try {
+                    levelData = JSON.parse(levelDataStr);
+                } catch (e) {
+                    console.error('Ошибка парсинга agentLevelData:', e);
+                }
+            }
+
+            // Если данных нет, но есть agentId, загружаем из Supabase
+            if (!levelData && supabase) {
+                loadAgentDataFromSupabase().then(data => {
+                    if (data) {
+                        displayLevel(data);
+                    }
+                });
+                return;
+            }
+
+            if (levelData) {
+                displayLevel(levelData);
+            } else {
+                levelBadge.style.display = "none";
+            }
+        }
+
+        // Отображение уровня в badge
+        function displayLevel(levelData) {
+            const levelBadge = $("#levelBadge");
+            if (!levelBadge || !levelData) return;
+
+            const lang = getLang();
+            const levelTitle = lang === "kk" 
+                ? (levelData.level_title_kz || levelData.level_title_ru || "")
+                : (levelData.level_title_ru || "");
+            
+            if (levelTitle && levelData.current_level) {
+                levelBadge.textContent = `${levelData.current_level} ⭐ ${levelTitle}`;
+                levelBadge.style.display = "block";
+            } else {
+                levelBadge.style.display = "none";
+            }
+        }
+
+        // ========== ДЕТЕКТИВ ==========
+        function showDetective() {
+            const container = $("#detectiveContainer");
+            if (container) {
+                container.style.display = "block";
+            }
+        }
+
+        function hideDetective() {
+            const container = $("#detectiveContainer");
+            if (container) {
+                container.style.display = "none";
+            }
+        }
+
+        function detectiveReact(type, text = null) {
+            const avatar = $("#detectiveAvatar");
+            const speech = $("#detectiveSpeech");
+            const speechText = $("#detectiveText");
+            const svg = $("#detectiveSvg");
+            const eye1 = $("#detectiveEye1");
+            const eye2 = $("#detectiveEye2");
+            const pupil1 = $("#detectivePupil1");
+            const pupil2 = $("#detectivePupil2");
+            const brow1 = $("#detectiveBrow1");
+            const brow2 = $("#detectiveBrow2");
+            const mouth = $("#detectiveMouth");
+            const tablet = $("#detectiveTablet");
+            
+            if (!avatar || !svg) return;
+
+            // Убираем предыдущие классы
+            avatar.classList.remove("detective-positive", "detective-negative", "detective-thinking");
+            tablet.classList.remove("tablet-scanning", "tablet-glow");
+
+            const lang = getLang();
+            let message = text;
+
+            switch(type) {
+                case "positive":
+                    avatar.classList.add("detective-positive");
+                    tablet.classList.add("tablet-glow");
+                    // Улыбка
+                    if (mouth) mouth.setAttribute("d", "M 92 89 Q 100 93 108 89");
+                    // Поднятые брови
+                    if (brow1) brow1.setAttribute("d", "M 85 67 Q 90 65 95 67");
+                    if (brow2) brow2.setAttribute("d", "M 105 67 Q 110 65 115 67");
+                    // Глаза шире (радость)
+                    if (eye1) eye1.setAttribute("ry", "7");
+                    if (eye2) eye2.setAttribute("ry", "7");
+                    // Зеленый планшет
+                    if (tablet) {
+                        tablet.setAttribute("fill", "#2b4");
+                        tablet.setAttribute("stroke", "#4d8");
+                    }
+                    if (!message) {
+                        message = lang === "kk" 
+                            ? "Керемет жұмыс! Сен негізгі нүктені байқадың."
+                            : "Отличная работа! Ты заметил главное.";
+                    }
+                    break;
+                case "negative":
+                    avatar.classList.add("detective-negative");
+                    // Грустное лицо
+                    if (mouth) mouth.setAttribute("d", "M 92 90 Q 100 87 108 90");
+                    // Опущенные брови
+                    if (brow1) brow1.setAttribute("d", "M 85 70 Q 90 72 95 70");
+                    if (brow2) brow2.setAttribute("d", "M 105 70 Q 110 72 115 70");
+                    // Глаза уже (разочарование)
+                    if (eye1) eye1.setAttribute("ry", "4");
+                    if (eye2) eye2.setAttribute("ry", "4");
+                    // Зрачки вниз
+                    if (pupil1) pupil1.setAttribute("cy", "78");
+                    if (pupil2) pupil2.setAttribute("cy", "78");
+                    // Красный планшет
+                    if (tablet) {
+                        tablet.setAttribute("fill", "#b33");
+                        tablet.setAttribute("stroke", "#d55");
+                    }
+                    if (!message) {
+                        message = lang === "kk"
+                            ? "Сәл қателестің. Бұны толығырақ қарастырайық."
+                            : "Немного промахнулся. Давай разберём это подробнее.";
+                    }
+                    break;
+                case "thinking":
+                    avatar.classList.add("detective-thinking");
+                    tablet.classList.add("tablet-scanning");
+                    // Нейтральное лицо с легким наклоном
+                    if (mouth) mouth.setAttribute("d", "M 92 88 Q 100 90 108 88");
+                    // Брови сведены
+                    if (brow1) brow1.setAttribute("d", "M 85 68 Q 90 66 95 68");
+                    if (brow2) brow2.setAttribute("d", "M 105 68 Q 110 66 115 68");
+                    // Зрачки в сторону (думает)
+                    if (pupil1) pupil1.setAttribute("cx", "88");
+                    if (pupil2) pupil2.setAttribute("cx", "112");
+                    // Желтый планшет
+                    if (tablet) {
+                        tablet.setAttribute("fill", "#ffc107");
+                        tablet.setAttribute("stroke", "#ffd54f");
+                    }
+                    if (!message) {
+                        message = lang === "kk"
+                            ? "Қызықты көзқарас. Фактілерді тексерейік."
+                            : "Интересная точка зрения. Давай проверим факты.";
+                    }
+                    break;
+                case "transition":
+                    tablet.classList.add("tablet-scanning", "tablet-glow");
+                    // Улыбка
+                    if (mouth) mouth.setAttribute("d", "M 92 89 Q 100 92 108 89");
+                    if (tablet) {
+                        tablet.setAttribute("fill", "#53e2ae");
+                        tablet.setAttribute("stroke", "#7aa9ff");
+                    }
+                    if (!message) {
+                        message = lang === "kk"
+                            ? "Жақсы. Келесі іске көшейік."
+                            : "Отлично. Переходим к следующему кейсу.";
+                    }
+                    break;
+                case "quick":
+                    avatar.classList.add("detective-positive");
+                    // Удивленные глаза
+                    if (eye1) eye1.setAttribute("ry", "8");
+                    if (eye2) eye2.setAttribute("ry", "8");
+                    // Поднятые брови
+                    if (brow1) brow1.setAttribute("d", "M 85 66 Q 90 64 95 66");
+                    if (brow2) brow2.setAttribute("d", "M 105 66 Q 110 64 115 66");
+                    if (!message) {
+                        message = lang === "kk"
+                            ? "Жылдам реакция! Бұл жақсы."
+                            : "Быстро реагируешь! Это хорошо.";
+                    }
+                    break;
+                case "series":
+                    avatar.classList.add("detective-positive");
+                    tablet.classList.add("tablet-glow");
+                    // Широкая улыбка
+                    if (mouth) mouth.setAttribute("d", "M 90 89 Q 100 94 110 89");
+                    // Поднятые брови
+                    if (brow1) brow1.setAttribute("d", "M 85 67 Q 90 65 95 67");
+                    if (brow2) brow2.setAttribute("d", "M 105 67 Q 110 65 115 67");
+                    // Широкие глаза
+                    if (eye1) eye1.setAttribute("ry", "7");
+                    if (eye2) eye2.setAttribute("ry", "7");
+                    if (tablet) {
+                        tablet.setAttribute("fill", "#53e2ae");
+                        tablet.setAttribute("stroke", "#7aa9ff");
+                    }
+                    if (!message) {
+                        message = lang === "kk"
+                            ? "Сен тамаша деңгейдесің! Осылай жалғастыр."
+                            : "Ты на отличном уровне! Продолжай в том же духе.";
+                    }
+                    break;
+            }
+
+            // Показываем реплику
+            if (speech && speechText && message) {
+                speechText.textContent = message;
+                speech.style.display = "block";
+                setTimeout(() => {
+                    if (speech) speech.style.display = "none";
+                }, 3000);
+            }
+
+            // Сбрасываем анимации через некоторое время
+            setTimeout(() => {
+                if (avatar) {
+                    avatar.classList.remove("detective-positive", "detective-negative", "detective-thinking");
+                }
+                if (tablet) {
+                    tablet.classList.remove("tablet-scanning", "tablet-glow");
+                    tablet.setAttribute("fill", "#0a0f1a");
+                    tablet.setAttribute("stroke", "#53e2ae");
+                }
+                // Сбрасываем лицо в нейтральное состояние
+                if (mouth) mouth.setAttribute("d", "M 92 88 Q 100 91 108 88");
+                if (brow1) brow1.setAttribute("d", "M 85 68 Q 90 66 95 68");
+                if (brow2) brow2.setAttribute("d", "M 105 68 Q 110 66 115 68");
+                if (eye1) eye1.setAttribute("ry", "6");
+                if (eye2) eye2.setAttribute("ry", "6");
+                if (pupil1) {
+                    pupil1.setAttribute("cx", "90");
+                    pupil1.setAttribute("cy", "76");
+                }
+                if (pupil2) {
+                    pupil2.setAttribute("cx", "110");
+                    pupil2.setAttribute("cy", "76");
+                }
+            }, 2000);
+        }
+
+        async function showCaseTransition() {
+            const transition = document.createElement("div");
+            transition.className = "case-transition";
+            transition.id = "caseTransition";
+            
+            const lang = getLang();
+            const text = lang === "kk" ? "Келесі іске көшу..." : "Переход к следующему делу...";
+            
+            transition.innerHTML = `
+                <div class="transition-detective">
+                    <svg viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;">
+                        <circle cx="100" cy="80" r="35" fill="#d4a574"/>
+                        <rect x="70" y="115" width="60" height="80" rx="5" fill="#1a1f3a"/>
+                        <rect x="75" y="120" width="50" height="75" rx="3" fill="#e8e8e8"/>
+                        <rect x="85" y="130" width="30" height="40" rx="3" fill="#0a0f1a" stroke="#53e2ae" stroke-width="2" opacity="0.9">
+                            <animate attributeName="opacity" values="0.5;1;0.5" dur="1s" repeatCount="indefinite"/>
+                        </rect>
+                        <line x1="100" y1="140" x2="100" y2="160" stroke="#53e2ae" stroke-width="2">
+                            <animate attributeName="opacity" values="0;1;0" dur="1.5s" repeatCount="indefinite"/>
+                        </line>
+                        <line x1="90" y1="150" x2="110" y2="150" stroke="#53e2ae" stroke-width="2">
+                            <animate attributeName="opacity" values="0;1;0" dur="1.5s" repeatCount="indefinite" begin="0.5s"/>
+                        </line>
+                    </svg>
+                </div>
+                <div class="transition-text">${text}</div>
+            `;
+            
+            document.body.appendChild(transition);
+            
+            // Анимация сканирования
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            transition.remove();
         }
 
         function renderCase() {
             const c = state.cases[state.idx];
+            
+            // Показываем детектива при рендере кейса
+            showDetective();
             $("#caseTag").textContent = c.tag;
             $("#caseDifficulty").textContent = c.difficulty;
             $("#caseTitle").textContent = c.title;
@@ -2623,24 +3609,29 @@
 
             // Evidence list
             const evBox = $("#evList"); evBox.innerHTML = "";
+            // Всегда сбрасываем форму для нового кейса
             state.answers = { ev: Array(c.evidence.length).fill(null), choice: null };
 
             c.evidence.forEach((ev, i) => {
+                const hasAnswer = false; // Всегда false для нового кейса
+                const isTruth = false;
+                const isLie = false;
+                
                 const card = document.createElement("div");
                 card.className = "card";
                 card.innerHTML = `
       <div class="meta"><span class="tag">${t("evidence")} #${i + 1}</span></div>
       <div class="text">${ev.text}</div>
       <div class="controls">
-        <button class="truth" data-kind="truth" data-i="${i}">${t("truthBtn")}</button>
-        <button class="lie" data-kind="lie" data-i="${i}">${t("lieBtn")}</button>
+        <button class="truth" data-kind="truth" data-i="${i}" ${hasAnswer ? 'disabled' : ''} ${isTruth ? 'style="outline:2px solid #88c; filter:brightness(1.1); opacity:1"' : ''}>${t("truthBtn")}</button>
+        <button class="lie" data-kind="lie" data-i="${i}" ${hasAnswer ? 'disabled' : ''} ${isLie ? 'style="outline:2px solid #88c; filter:brightness(1.1); opacity:1"' : ''}>${t("lieBtn")}</button>
         <button class="ghost" data-kind="hint" data-i="${i}">${t("hintBtn")}</button>
       </div>
     `;
                 evBox.appendChild(card);
             });
 
-            // Choices
+            // Choices - сбрасываем выбор
             const choiceBox = $("#choiceBox"); choiceBox.innerHTML = "";
             c.choices.forEach((opt) => {
                 const row = document.createElement("label");
@@ -2653,6 +3644,10 @@
                 choiceBox.appendChild(row);
             });
 
+            // Сбрасываем выбор решения
+            state.answers.choice = null;
+            
+            // Кнопка проверки всегда disabled при начале нового кейса
             $("#btnCheck").disabled = true;
             updateEvScore();
             updateHeader();
@@ -2672,6 +3667,9 @@
             $("#btnCheck").disabled = !(allEv && hasChoice);
         }
 
+        let lastClickTime = 0;
+        let correctStreak = 0;
+
         function onEvidenceClick(e) {
             const btn = e.target.closest("button");
             if (!btn) return;
@@ -2679,17 +3677,47 @@
             const kind = btn.dataset.kind;
 
             if (kind === "hint") {
-                toast(state.cases[state.idx].evidence[i].hint || "Подсказка недоступна");
+                toast(state.cases[state.idx].evidence[i].hint || t("toastHintUnavailable"));
+                detectiveReact("thinking", getLang() === "kk"
+                    ? "Кеңес пайдалы болды ма?"
+                    : "Подсказка помогла?");
                 return;
             }
+            
+            // Проверяем скорость реакции
+            const now = Date.now();
+            const timeSinceLastClick = now - lastClickTime;
+            lastClickTime = now;
+            
             // truth/lie
+            const isCorrect = state.cases[state.idx].evidence[i].isTruth === (kind === "truth");
             state.answers.ev[i] = (kind === "truth");
+            
+            // Реакция детектива на ответ
+            if (timeSinceLastClick < 500 && timeSinceLastClick > 0) {
+                detectiveReact("quick");
+            } else if (isCorrect) {
+                correctStreak += 1;
+                if (correctStreak >= 3) {
+                    detectiveReact("series");
+                    correctStreak = 0;
+                } else {
+                    detectiveReact("positive");
+                }
+            } else {
+                correctStreak = 0;
+                detectiveReact("negative");
+            }
+            
             // визуал переключения: выделим активную кнопку
             const card = btn.parentElement;
-            [...card.querySelectorAll("button.truth,button.lie")].forEach(b => {
+            const allButtons = card.querySelectorAll("button.truth,button.lie");
+            [...allButtons].forEach(b => {
                 b.style.outline = "";
                 b.style.filter = "";
                 b.style.opacity = ".8";
+                // Отключаем все кнопки после выбора
+                b.disabled = true;
             });
             btn.style.outline = "2px solid #88c";
             btn.style.filter = "brightness(1.1)";
@@ -2700,6 +3728,12 @@
         function onChoiceChange(e) {
             if (e.target && e.target.name === "who") {
                 state.answers.choice = e.target.value;
+                // Снимаем выделение с других радиокнопок
+                document.querySelectorAll('input[name="who"]').forEach(radio => {
+                    if (radio !== e.target) {
+                        radio.checked = false;
+                    }
+                });
                 maybeEnableCheck();
             }
         }
@@ -2707,12 +3741,40 @@
         async function checkCase() {
             const c = state.cases[state.idx];
             let points = 0;
+            let correctEvidence = 0;
+            
             // за каждое верное доказательство +1
             c.evidence.forEach((ev, i) => {
-                if (state.answers.ev[i] === ev.isTruth) points += 1;
+                if (state.answers.ev[i] === ev.isTruth) {
+                    points += 1;
+                    correctEvidence += 1;
+                }
             });
             // за верный выбор +2
-            if (state.answers.choice === c.correctChoice) points += 2;
+            const correctChoice = state.answers.choice === c.correctChoice;
+            if (correctChoice) points += 2;
+
+            // Реакция детектива
+            const totalEvidence = c.evidence.length;
+            const evidenceRatio = correctEvidence / totalEvidence;
+            
+            if (correctChoice && evidenceRatio >= 0.8) {
+                // Отличный результат
+                detectiveReact("positive");
+            } else if (correctChoice && evidenceRatio >= 0.5) {
+                // Хороший результат
+                detectiveReact("positive", getLang() === "kk" 
+                    ? "Жақсы жұмыс! Дұрыс бағыттасың."
+                    : "Хорошая работа! Идёшь в правильном направлении.");
+            } else if (!correctChoice && evidenceRatio < 0.5) {
+                // Плохой результат
+                detectiveReact("negative");
+            } else {
+                // Смешанный результат
+                detectiveReact("thinking", getLang() === "kk"
+                    ? "Кейбір нүктелер дұрыс, бірақ қосымша тексеру қажет."
+                    : "Некоторые моменты верны, но нужна дополнительная проверка.");
+            }
 
             state.rep += points;
             
@@ -2729,10 +3791,19 @@
             await saveCaseAnswerToSupabase(caseAnswerData);
             
             toast(t("toastCaseClosed", { points }));
+            
+            // Небольшая задержка перед переходом
+            await new Promise(resolve => setTimeout(resolve, 1500));
             nextCase();
         }
 
         async function nextCase() {
+            // Показываем переход с анимацией детектива
+            if (state.idx < state.cases.length - 1) {
+                detectiveReact("transition");
+                await showCaseTransition();
+            }
+            
             state.idx += 1;
             // Обновляем сессию в Supabase при переходе к следующему делу
             if (state.idx < state.cases.length) {
@@ -2740,6 +3811,7 @@
             }
             
             if (state.idx >= state.cases.length) {
+                hideDetective();
                 await endGame();
             } else {
                 renderCase();
@@ -2754,26 +3826,40 @@
             const maxRep = state.cases.reduce((acc, c) => acc + c.evidence.length + 2, 0);
             const ratio = state.rep / maxRep;
 
-            let rank, praise;
-            rank = t("endRankNew");
-            praise = t("endPraiseNew");
-            if (ratio >= .35) { rank = t("endRankFact"); praise = t("endPraiseFact"); }
-            if (ratio >= .6) { rank = t("endRankCurator"); praise = t("endPraiseCurator"); }
-            if (ratio >= .8) { rank = t("endRankSavior"); praise = t("endPraiseSavior"); }
-
+            // Рассчитываем уровень на основе финальной репутации этой игры
+            const currentGameLevel = calculateLevel(state.rep);
+            
             // Сохраняем результат игры в Supabase
             const gameResultData = {
                 rep: state.rep,
                 totalCases: state.cases.length,
                 maxRep: maxRep,
                 ratio: ratio,
-                rank: rank
+                rank: currentGameLevel.title_ru // Используем титул уровня как rank
             };
-            await saveGameResultToSupabase(gameResultData);
+            const saveResult = await saveGameResultToSupabase(gameResultData);
+            
+            // Получаем обновленные данные агента для отображения общего уровня
+            let totalLevelInfo = currentGameLevel;
+            if (saveResult && saveResult.levelInfo) {
+                // После сохранения загружаем обновленные данные агента
+                const agentData = await loadAgentDataFromSupabase();
+                if (agentData) {
+                    totalLevelInfo = calculateLevel(agentData.total_reputation || state.rep);
+                }
+            }
 
-            $("#rank").textContent = rank;
+            // Отображаем уровень и похвалу
+            const lang = getLang();
+            const levelTitle = lang === "kk" ? totalLevelInfo.title_kz : totalLevelInfo.title_ru;
+            const praise = lang === "kk" ? totalLevelInfo.praise_kz : totalLevelInfo.praise_ru;
+
+            $("#rank").textContent = `${totalLevelInfo.level} ⭐ ${levelTitle}`;
             $("#endTitle").textContent = t("endTitle");
-            $("#endText").textContent = `${t("endResult")}: ${state.rep}. ${praise}`;
+            $("#endText").textContent = `${t("endResult")}: ${state.rep} баллов.\n\n${praise}`;
+            
+            // Обновляем отображение уровня в header
+            updateLevelDisplay();
         }
 
         function shareResult() {
@@ -2786,7 +3872,10 @@
         function restart() {
             // Очищаем сессию при перезапуске
             localStorage.removeItem("gameSessionId");
+            correctStreak = 0;
+            lastClickTime = 0;
             state = { idx: 0, rep: 0, answers: { ev: [], choice: null } };
+            hideDetective();
             $("#end").style.display = "none";
             $("#start").style.display = "block";
             updateHeader();
@@ -2836,6 +3925,14 @@
             // Показываем кнопку админа, если callsign содержит "admin"
             const isAdmin = agentData.callsign && agentData.callsign.toLowerCase().includes('admin');
             $("#btnAdminAnalytics").style.display = isAdmin ? "inline-block" : "none";
+            
+            // Загружаем данные уровня агента из Supabase
+            loadAgentDataFromSupabase().then(data => {
+                if (data) {
+                    console.log('Данные уровня агента загружены при инициализации');
+                    updateLevelDisplay();
+                }
+            });
         }
         updateHeader();
         updateI18nUI();
