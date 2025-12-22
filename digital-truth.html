@@ -988,10 +988,10 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9pbGt0bWlxYnFlb3BkZGRyZ3dtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1NzY1NjUsImV4cCI6MjA4MDE1MjU2NX0.0D9pggpIuQZH5j60tkVmFG_64MczKIUjkEm7eq9LI6U'; // Ваш публичный anon key
 
         // Инициализация Supabase клиента
-        let supabase = null;
+        let supabaseClient = null;
         if (SUPABASE_URL !== 'YOUR_SUPABASE_URL' && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY') {
             try {
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                 console.log('✅ Supabase клиент инициализирован:', SUPABASE_URL);
             } catch (error) {
                 console.error('❌ Ошибка инициализации Supabase:', error);
@@ -1049,7 +1049,7 @@
         /** ======== SUPABASE FUNCTIONS ======== */
         // Сохранение данных онбординга
         async function saveAgentDataToSupabase(agentData) {
-            if (!supabase) {
+            if (!supabaseClient) {
                 console.warn('Supabase не настроен, используем localStorage');
                 localStorage.setItem("agentData", JSON.stringify(agentData));
                 return { success: true, fallback: true };
@@ -1076,7 +1076,7 @@
                 if (existingAgentId) {
                     // Обновляем существующего агента
                     console.log('Обновление существующего агента:', existingAgentId);
-                    const result = await supabase
+                    const result = await supabaseClient
                         .from('agents')
                         .update(dataToSave)
                         .eq('id', existingAgentId)
@@ -1093,7 +1093,7 @@
                     dataToSave.level_title_ru = initialLevel.title_ru;
                     dataToSave.level_title_kz = initialLevel.title_kz;
                     dataToSave.total_games_completed = 0;
-                    const result = await supabase
+                    const result = await supabaseClient
                         .from('agents')
                         .insert([dataToSave])
                         .select()
@@ -1125,7 +1125,7 @@
 
         // Сохранение игровой сессии (обновление или создание)
         async function saveGameSessionToSupabase(gameData) {
-            if (!supabase) {
+            if (!supabaseClient) {
                 console.warn('Supabase не настроен, игровая сессия не сохранена');
                 return { success: false, fallback: true };
             }
@@ -1165,7 +1165,7 @@
                 if (sessionId) {
                     // Обновляем существующую сессию
                     console.log('Обновление игровой сессии:', sessionId);
-                    const result = await supabase
+                    const result = await supabaseClient
                         .from('game_sessions')
                         .update(sessionData)
                         .eq('id', sessionId)
@@ -1179,7 +1179,7 @@
                     if (!sessionData.started_at) {
                         sessionData.started_at = new Date().toISOString();
                     }
-                    const result = await supabase
+                    const result = await supabaseClient
                         .from('game_sessions')
                         .insert([sessionData])
                         .select()
@@ -1207,7 +1207,7 @@
 
         // Сохранение завершенной игры
         async function saveGameResultToSupabase(gameResult) {
-            if (!supabase) {
+            if (!supabaseClient) {
                 console.warn('Supabase не настроен, результат игры не сохранен');
                 return { success: false, fallback: true };
             }
@@ -1239,7 +1239,7 @@
 
                 console.log('Сохранение результата игры:', resultData);
 
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('game_results')
                     .insert([resultData])
                     .select()
@@ -1249,7 +1249,7 @@
 
                 // Обновляем данные агента: total_reputation, current_level, level_title
                 // Получаем текущие данные агента
-                const { data: agentData, error: agentError } = await supabase
+                const { data: agentData, error: agentError } = await supabaseClient
                     .from('agents')
                     .select('total_reputation, total_games_completed')
                     .eq('id', agentId)
@@ -1260,7 +1260,7 @@
                     const newTotalGames = (agentData.total_games_completed || 0) + 1;
                     const newLevelInfo = calculateLevel(newTotalReputation);
 
-                    const { error: updateError } = await supabase
+                    const { error: updateError } = await supabaseClient
                         .from('agents')
                         .update({
                             total_reputation: newTotalReputation,
@@ -1286,7 +1286,7 @@
                 // Обновляем сессию как завершенную
                 const sessionId = localStorage.getItem("gameSessionId");
                 if (sessionId) {
-                    await supabase
+                    await supabaseClient
                         .from('game_sessions')
                         .update({ completed: true, updated_at: new Date().toISOString() })
                         .eq('id', sessionId);
@@ -1304,12 +1304,12 @@
 
         // Проверка существования агента в Supabase
         async function checkAgentExistsInSupabase(agentId) {
-            if (!supabase || !agentId) {
+            if (!supabaseClient || !agentId) {
                 return false;
             }
 
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('agents')
                     .select('id')
                     .eq('id', agentId)
@@ -1332,7 +1332,7 @@
 
         // Загрузка данных агента из Supabase
         async function loadAgentDataFromSupabase() {
-            if (!supabase) {
+            if (!supabaseClient) {
                 console.warn('Supabase не настроен, используем localStorage');
                 return null;
             }
@@ -1344,7 +1344,7 @@
                     return null;
                 }
 
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('agents')
                     .select('total_reputation, current_level, level_title_ru, level_title_kz, total_games_completed')
                     .eq('id', agentId)
@@ -1369,7 +1369,7 @@
         // ========== АДМИН ФУНКЦИИ ==========
         // Получение всей аналитики из БД
         async function getAllAnalytics() {
-            if (!supabase) {
+            if (!supabaseClient) {
                 return { success: false, error: 'Supabase не настроен' };
             }
 
@@ -1378,10 +1378,10 @@
 
                 // Получаем все данные параллельно
                 const [agentsResult, sessionsResult, answersResult, resultsResult] = await Promise.all([
-                    supabase.from('agents').select('*').order('created_at', { ascending: false }),
-                    supabase.from('game_sessions').select('*').order('started_at', { ascending: false }),
-                    supabase.from('case_answers').select('*').order('answered_at', { ascending: false }),
-                    supabase.from('game_results').select('*').order('completed_at', { ascending: false })
+                    supabaseClient.from('agents').select('*').order('created_at', { ascending: false }),
+                    supabaseClient.from('game_sessions').select('*').order('started_at', { ascending: false }),
+                    supabaseClient.from('case_answers').select('*').order('answered_at', { ascending: false }),
+                    supabaseClient.from('game_results').select('*').order('completed_at', { ascending: false })
                 ]);
 
                 // Проверяем ошибки
@@ -2210,7 +2210,7 @@
 
         // Сохранение ответа на конкретное дело
         async function saveCaseAnswerToSupabase(caseData) {
-            if (!supabase) {
+            if (!supabaseClient) {
                 return { success: false, fallback: true };
             }
 
@@ -2235,7 +2235,7 @@
 
                 console.log('Сохранение ответа на дело:', answerData);
 
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('case_answers')
                     .insert([answerData])
                     .select()
@@ -3361,7 +3361,7 @@
             }
 
             // Если данных нет, но есть agentId, загружаем из Supabase
-            if (!levelData && supabase) {
+             if (!levelData && supabaseClient) {
                 loadAgentDataFromSupabase().then(data => {
                     if (data) {
                         displayLevel(data);
@@ -3964,7 +3964,7 @@
             } else {
                 // Проверяем существование агента в Supabase
                 const agentId = localStorage.getItem("agentId");
-                if (agentId && supabase) {
+                 if (agentId && supabaseClient) {
                     const agentExists = await checkAgentExistsInSupabase(agentId);
                     if (!agentExists) {
                         console.warn('Агент не найден в Supabase, очищаем localStorage');
