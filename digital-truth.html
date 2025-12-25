@@ -28,6 +28,29 @@
             font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
             background: radial-gradient(1200px 700px at 70% -10%, #132033 0%, #0b0f14 45%);
             color: var(--ink);
+            position: relative;
+        }
+
+        /* Декоративный фоновый паттерн */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(83, 226, 174, 0.03) 2px, rgba(83, 226, 174, 0.03) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(83, 226, 174, 0.03) 2px, rgba(83, 226, 174, 0.03) 4px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.5;
+        }
+
+        body > * {
+            position: relative;
+            z-index: 2;
         }
 
         header {
@@ -45,14 +68,29 @@
 
         header h1 {
             margin: 0;
-            font-size: 18px;
-            letter-spacing: .5px
+            font-size: 20px;
+            letter-spacing: .5px;
+            font-weight: 700;
+        }
+
+        @media (max-width: 640px) {
+            header h1 {
+                font-size: 18px;
+            }
         }
 
         #rep,
         #caseNo {
-            font-size: 14px;
-            color: var(--muted)
+            font-size: 16px;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        @media (max-width: 640px) {
+            #rep,
+            #caseNo {
+                font-size: 14px;
+            }
         }
 
         main {
@@ -62,12 +100,39 @@
         }
 
         .panel {
-            background: var(--card);
-            border: 1px solid #1e2a3b;
-            border-radius: 14px;
-            box-shadow: 0 10px 30px var(--shadow);
-            padding: 18px;
-            margin-bottom: 16px;
+            background: rgba(15, 22, 33, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(83, 226, 174, 0.15);
+            border-radius: 16px;
+            box-shadow:
+                0 10px 30px var(--shadow),
+                0 0 0 1px rgba(83, 226, 174, 0.05) inset;
+            padding: 24px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @media (max-width: 640px) {
+            .panel {
+                padding: 20px;
+                margin-bottom: 16px;
+            }
+        }
+
+        /* Легкое свечение по краям карточки */
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(83, 226, 174, 0.3) 50%,
+                transparent);
+            opacity: 0.6;
         }
 
         .hero {
@@ -86,14 +151,29 @@
         }
 
         .title {
-            font-size: 22px;
-            margin: 6px 0 2px
+            font-size: 24px;
+            margin: 6px 0 8px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        @media (max-width: 640px) {
+            .title {
+                font-size: 22px;
+            }
         }
 
         .subtitle {
-            font-size: 14px;
+            font-size: 16px;
             color: var(--muted);
-            margin: 0
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 640px) {
+            .subtitle {
+                font-size: 15px;
+            }
         }
 
         .grid {
@@ -113,10 +193,57 @@
         }
 
         .card {
-            background: #0c121b;
-            border: 1px solid #1e2a3b;
-            border-radius: 12px;
-            padding: 12px;
+            background: rgba(12, 18, 27, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(83, 226, 174, 0.1);
+            border-radius: 14px;
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            animation: cardFadeIn 0.4s ease forwards;
+        }
+
+        @keyframes cardFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .card {
+                padding: 16px;
+            }
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg,
+                rgba(83, 226, 174, 0.05) 0%,
+                transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card:hover {
+            border-color: rgba(83, 226, 174, 0.25);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
         }
 
         .meta {
@@ -135,8 +262,15 @@
         }
 
         .text {
-            font-size: 15px;
-            line-height: 1.45
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--ink);
+        }
+
+        @media (max-width: 640px) {
+            .text {
+                font-size: 16px;
+            }
         }
 
         .controls {
@@ -148,28 +282,81 @@
 
         button {
             cursor: pointer;
-            border: 1px solid #24354d;
+            border: 2px solid #24354d;
             background: #101826;
             color: var(--ink);
-            padding: 10px 14px;
-            border-radius: 10px;
-            font-weight: 600
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            min-height: 48px;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(83, 226, 174, 0.2);
+        }
+
+        button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 640px) {
+            button {
+                padding: 16px 24px;
+                min-height: 52px;
+                font-size: 16px;
+                width: 100%;
+            }
         }
 
         button.primary {
             background: linear-gradient(135deg, var(--accent2), #5fe1ff);
             color: #09111c;
-            border: none
+            border: none;
+            box-shadow: 0 4px 16px rgba(122, 169, 255, 0.3);
+        }
+
+        button.primary:hover:not(:disabled) {
+            box-shadow: 0 6px 20px rgba(122, 169, 255, 0.4);
         }
 
         button.truth {
             border-color: #2b4;
-            background: rgba(83, 226, 174, .1)
+            background: linear-gradient(135deg, rgba(83, 226, 174, .15), rgba(83, 226, 174, .08));
+            color: var(--acc);
+            font-weight: 700;
+            box-shadow: 0 0 0 0 rgba(83, 226, 174, 0.4);
+            animation: pulse-truth 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-truth {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(83, 226, 174, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 8px rgba(83, 226, 174, 0);
+            }
+        }
+
+        button.truth:hover:not(:disabled) {
+            background: linear-gradient(135deg, rgba(83, 226, 174, .25), rgba(83, 226, 174, .15));
+            box-shadow: 0 4px 20px rgba(83, 226, 174, 0.4);
         }
 
         button.lie {
             border-color: #b33;
-            background: rgba(255, 122, 122, .1)
+            background: linear-gradient(135deg, rgba(255, 122, 122, .15), rgba(255, 122, 122, .08));
+            color: var(--warn);
+            font-weight: 700;
+        }
+
+        button.lie:hover:not(:disabled) {
+            background: linear-gradient(135deg, rgba(255, 122, 122, .25), rgba(255, 122, 122, .15));
+            box-shadow: 0 4px 20px rgba(255, 122, 122, 0.4);
         }
 
         button.ghost {
@@ -178,7 +365,8 @@
 
         button:disabled {
             opacity: .55;
-            cursor: not-allowed
+            cursor: not-allowed;
+            transform: none !important;
         }
 
         .choice {
@@ -561,10 +749,98 @@
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
+
+        /* Fullscreen Intro Video Styles */
+        #intro-video {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: #0b0f14;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        #intro-video.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #introVideoElement {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #skipIntro {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            z-index: 10000;
+            font-family: Inter, system-ui, sans-serif;
+        }
+
+        #skipIntro:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 640px) {
+            #skipIntro {
+                bottom: 20px;
+                right: 20px;
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+
+        /* Индикатор загрузки видео */
+        #intro-video::before {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(83, 226, 174, 0.2);
+            border-top-color: var(--acc);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 9998;
+        }
+
+        #intro-video.loaded::before {
+            display: none;
+        }
     </style>
 </head>
 
-<body>
+<body style="height: 100vh;">
+    <!-- Fullscreen Intro Video -->
+    <div id="intro-video">
+        <video id="introVideoElement" autoplay muted playsinline>
+            <source src="intro.mp4" type="video/mp4">
+            <!-- Fallback если видео не загрузится -->
+        </video>
+
+        <!-- Кнопка пропуска -->
+        <button id="skipIntro">
+            <span id="skipIntroText"></span>
+        </button>
+    </div>
+
     <header>
         <h1 id="mainTitle"></h1>
         <div style="display:flex; gap:16px; align-items:center">
@@ -579,9 +855,9 @@
         </div>
     </header>
 
-    <main>
+    <main style="height: 100%; max-width: 100%;">
         <!-- Экран 0: Splash/Hook -->
-        <section id="splash" class="panel" style="text-align:center; padding:40px 24px">
+        <section id="splash" class="panel" style="text-align:center; padding:40px 24px; height: 100%">
             <video id="introVideo" width="100%" height="100vh"
                 style="position:fixed; top:0; left:0; width:100vw; height:100vh; object-fit:cover; z-index:10"
                 playsinline>
@@ -604,15 +880,15 @@
 
         <!-- Экран 1: Объяснение зачем -->
         <section id="onboard-welcome" class="panel" style="display:none">
-            <h2 class="title" id="onboardWelcomeTitleEl"></h2>
+            <h2 class="title" id="onboardWelcomeTitleEl" style="color: var(--warn); font-size: 28px; margin-bottom: 20px; text-align: center;"></h2>
             <div
-                style="background:#0c121b; border-left:3px solid var(--acc); padding:12px 14px; border-radius:6px; margin:16px 0; line-height:1.6; font-size:15px">
-                <p style="margin:6px 0" id="onboardText1El"></p>
-                <p style="margin:6px 0" id="onboardText2El"></p>
+                style="background: linear-gradient(135deg, rgba(255, 122, 122, 0.1), rgba(255, 122, 122, 0.05)); border: 1px solid rgba(255, 122, 122, 0.3); border-left: 4px solid var(--warn); padding: 20px 24px; border-radius: 12px; margin:24px 0; line-height:1.8; font-size:18px; text-align: center; box-shadow: 0 4px 16px rgba(255, 122, 122, 0.2);">
+                <p style="margin:10px 0; font-weight: 600; font-size: 19px;" id="onboardText1El"></p>
+                <p style="margin:10px 0; font-size: 18px;" id="onboardText2El"></p>
                 <p style="margin:6px 0" id="onboardText3El"></p>
             </div>
-            <div class="footerRow" style="justify-content:flex-start">
-                <button class="primary" id="btnFormStart"></button>
+            <div class="footerRow" style="justify-content:center">
+                <button class="primary" id="btnFormStart" style="font-size: 18px; padding: 18px 36px; min-height: 56px;"></button>
             </div>
         </section>
 
@@ -2262,11 +2538,11 @@
                 splashTitle: "Digital Truth: Идентификация агента",
                 splashSubtitle: "Доступ к базе 'Digital Shield' возможен только после регистрации агента.",
                 splashBtn: "Начать идентификацию",
-                onboardWelcomeTitle: "Добро пожаловать, Агент",
-                onboardWelcomeText1: "• Мы тестируем вашу цифровую интуицию и навык факт-чека.",
-                onboardWelcomeText2: "• Регистрация нужна, чтобы настроить миссии и собрать анонимную статистику.",
-                onboardWelcomeText3: "• Это займёт < 1 минуты.",
-                onboardWelcomeBtn: "Заполнить паспортичку",
+                onboardWelcomeTitle: "Информационное пространство под угрозой",
+                onboardWelcomeText1: "Фейковые новости распространяются быстрее правды.",
+                onboardWelcomeText2: "Твоя задача — остановить дезинформацию и принять правильные решения.",
+                onboardWelcomeText3: "!!!",
+                onboardWelcomeBtn: "Начать расследование",
                 onboardCompleteMsg: "Добро пожаловать, ${callsign}! Начните расследование.",
                 formTitle: "Паспорт агента",
                 formProgress: "Прогресс: Шаг 2 из 3",
@@ -2366,6 +2642,7 @@
                 btnHow: "Правила",
                 btnRestart: "Сыграть ещё",
                 btnShare: "Скопировать результат",
+                skipIntro: "Пропустить ▶",
                 caseNo: "Дело — {current} / {total}",
                 rep: "Репутация: {rep}",
                 caseTag: "Инцидент • ",
@@ -2393,11 +2670,11 @@
                 splashTitle: "Digital Truth: Агентті сәйкестендіру",
                 splashSubtitle: "'Digital Shield' базасына кіру тек агент тіркелгеннен кейін мүмкін.",
                 splashBtn: "Сәйкестендіруді бастау",
-                onboardWelcomeTitle: "Қош келдіңіз, Агент",
-                onboardWelcomeText1: "• Біз сіздің цифрлық интуицияңызды және фактчекинг дағдыңызды тексереміз.",
-                onboardWelcomeText2: "• Тіркеу миссияны баптау және аноним статистика жинау үшін қажет.",
-                onboardWelcomeText3: "• Бұл < 1 минут алады.",
-                onboardWelcomeBtn: "Паспортты толтыру",
+                onboardWelcomeTitle: "Ақпараттық кеңістік қауіпте",
+                onboardWelcomeText1: "Жалған ақпарат тез таралады.",
+                onboardWelcomeText2: "Сенің міндетің — шындықты қорғап, дұрыс шешім қабылдау.",
+                onboardWelcomeText3: "!!!",
+                onboardWelcomeBtn: "Бастау",
                 onboardCompleteMsg: "Қош келдіңіз, ${callsign}! Тергеуді бастаңыз.",
                 formTitle: "Агент паспорты",
                 formProgress: "Прогресс: 2-қадам 3-тен",
@@ -2479,6 +2756,7 @@
                 btnHow: "Ережелер",
                 btnRestart: "Қайта ойнау",
                 btnShare: "Нәтижені көшіру",
+                skipIntro: "Өткізу ▶",
                 caseNo: "Іс — {current} / {total}",
                 rep: "Репутация: {rep}",
                 caseTag: "Оқиға • ",
@@ -2786,8 +3064,8 @@
                     }
                 ],
                 choices: [
-                    { id: "hospital", label: "Спасти аурухананы: фейкті тоқтатып, ақпараттық ескерту жариялау" },
-                    { id: "users", label: "Спасти қолданушыларды: ауруханаға қосымша тексеріс енгізу және ескерту тарату" }
+                    { id: "hospital", label: "Құтқару аурухананы: фейкті тоқтатып, ақпараттық ескерту жариялау" },
+                    { id: "users", label: "Құтқару қолданушыларды: ауруханаға қосымша тексеріс енгізу және ескерту тарату" }
                 ],
                 correctChoice: "hospital",
                 praise: "Дұрыс. Сіз аудиторияны қорғап, манипуляцияның таралуына жол бермедіңіз."
@@ -2826,8 +3104,8 @@
                     }
                 ],
                 choices: [
-                    { id: "user", label: "Спасти пользователя: ескерту беру ғана" },
-                    { id: "system", label: "Спасти систему: фейкті тоқтатып, шектеу енгізу" }
+                    { id: "user", label: "Құтқару пайдаланушыны: ескерту беру ғана" },
+                    { id: "system", label: "Құтқару жүйені: фейкті тоқтатып, шектеу енгізу" }
                 ],
                 correctChoice: "system",
                 praise: "Таза! Клон жойылды, сенім сақталды."
@@ -2866,8 +3144,8 @@
                     }
                 ],
                 choices: [
-                    { id: "audience", label: "Спасти аудиторияны: жинақты тоқтатып, ескерту жариялау" },
-                    { id: "blogger", label: "Спасти блогерді: қосымша тексеріс жүргізу" }
+                    { id: "audience", label: "Құтқару аудиторияны: жинақты тоқтатып, ескерту жариялау" },
+                    { id: "blogger", label: "Құтқару блогерді: қосымша тексеріс жүргізу" }
                 ],
                 correctChoice: "audience",
                 praise: "Таза! Фейкті тоқтаттыңыз."
@@ -2906,8 +3184,8 @@
                     }
                 ],
                 choices: [
-                    { id: "users", label: "Спасти қолданушыларды: чатты фейк деп белгілеу, бұғаттау" },
-                    { id: "admins", label: "Спасти чат әкімдерін: тексеру үшін уақыт беру" }
+                    { id: "users", label: "Құтқару қолданушыларды: чатты фейк деп белгілеу, бұғаттау" },
+                    { id: "admins", label: "Құтқару чат әкімдерін: тексеру үшін уақыт беру" }
                 ],
                 correctChoice: "users",
                 praise: "Қауымдастық рахмет айтады."
@@ -2946,8 +3224,8 @@
                     }
                 ],
                 choices: [
-                    { id: "users", label: "Спасти қолданушыларды: вакансияны алаяқтық деп белгілеу" },
-                    { id: "post", label: "Спасти постын: тексеру үшін уақыт беру" }
+                    { id: "users", label: "Құтқару қолданушыларды: вакансияны алаяқтық деп белгілеу" },
+                    { id: "post", label: "Құтқару постын: тексеру үшін уақыт беру" }
                 ],
                 correctChoice: "users",
                 praise: "Пайдаланушыларды қорғау — ең дұрыс шешім."
@@ -2986,8 +3264,8 @@
                     }
                 ],
                 choices: [
-                    { id: "official", label: "Спасти шенеунікті: фейкті тоқтату, жалған айыпты жоққа шығару" },
-                    { id: "material", label: "Спасти материалды: қосымша тексеріс жүргізу" }
+                    { id: "official", label: "Құтқару шенеунікті: фейкті тоқтату, жалған айыпты жоққа шығару" },
+                    { id: "material", label: "Құтқару материалды: қосымша тексеріс жүргізу" }
                 ],
                 correctChoice: "official",
                 praise: "Фейк материалда сену қауіпті."
@@ -3026,8 +3304,8 @@
                     }
                 ],
                 choices: [
-                    { id: "official", label: "Спасти қызметкерді: хаттаманың жалған екенін жариялау" },
-                    { id: "material", label: "Спасти материалды: қосымша тексеріс жүргізу" }
+                    { id: "official", label: "Құтқару қызметкерді: хаттаманың жалған екенін жариялау" },
+                    { id: "material", label: "Құтқару материалды: қосымша тексеріс жүргізу" }
                 ],
                 correctChoice: "official",
                 praise: "Ресми құжат фейк болып шықты — дұрыс шешім."
@@ -3066,13 +3344,161 @@
                     }
                 ],
                 choices: [
-                    { id: "people", label: "Спасти халықты: фейкті тоқтатып, видеоның таралуын шектеу" },
-                    { id: "info", label: "Спасти ақпаратты: критикалық жағдайда тексеру үшін уақыт беру" }
+                    { id: "people", label: "Құтқару халықты: фейкті тоқтатып, видеоның таралуын шектеу" },
+                    { id: "info", label: "Құтқару ақпаратты: критикалық жағдайда тексеру үшін уақыт беру" }
                 ],
                 correctChoice: "people",
                 praise: "Видеоны фейк деп тоқтату — ең дұрыс шешім."
             }
         ];
+        // Переводы кейсов на русский язык
+        const CASE_TRANSLATIONS_RU = {
+            0: {
+                tag: "Фейк-новости",
+                difficulty: "Средняя",
+                title: "В больнице тайно подменяют вакцины",
+                narrative: "В сети распространяется новость о том, что в городской больнице №5 «подменяют вакцину на более дешевую». Пользователи ссылаются на видео с медсестрой, утверждая: «сами медработники об этом говорят».",
+                evidence: [
+                    { text: "В одном TikTok-видео медсестра говорит: 'эта вакцина совершенно другая стала'. В комментариях: 'значит, подменяют'.", hint: "Видео может быть вырвано из контекста. Медсестра могла говорить о другой ситуации, а монтаж создает эмоцию." },
+                    { text: "На второй ампуле вакцины стикер наклеен криво — как будто вручную.", hint: "Кривой стикер не обязательно означает подделку; возможны производственные погрешности." },
+                    { text: "Администрация больницы официально заявила, что вакцины поступают только с государственного склада.", hint: "Официальное заявление есть, но люди могут верить эмоциональному контенту." },
+                    { text: "Telegram-канал: 'Нам сказал анонимный сотрудник, что дешевую китайскую вакцину выдают за дорогую европейскую'.", hint: "Анонимные источники — частая тактика фейк-новостей." },
+                    { text: "В комментариях человек пишет: 'Мой отец работает в больнице, всё правда!' — аккаунт без профиля.", hint: "Фейковые комментарии пишутся специально для создания иллюзии социального подтверждения." }
+                ],
+                choices: [
+                    { label: "Спасти больницу: остановить фейк, опубликовать информационное предупреждение" },
+                    { label: "Спасти пользователей: ввести дополнительную проверку в больнице и распространить предупреждение" }
+                ],
+                praise: "Верно. Вы защитили аудиторию и не дали распространиться манипуляции."
+            },
+            1: {
+                tag: "Фейк-новости",
+                difficulty: "Средне-сложная",
+                title: "Kaspi Алақан: скрывают ли новую функцию?",
+                narrative: "В сети распространяется новое видео: появилась скрытая функция 'Kaspi Алақан'. Автор утверждает: 'Если поднести ладонь к камере, Kaspi через биометрию откроет закрытый кредитный лимит'. Несмотря на официальное опровержение Kaspi, часть пользователей пишет 'у меня сработало'.",
+                evidence: [
+                    { text: "В видео после того, как автор показывает ладонь, появляется эффект — в кадре показывается pop-up 'Подтверждено: 450 000 тг'.", hint: "Некоторые кадры видео обрезаны, pop-up появляется не в тот момент. Эффект мог быть добавлен позже." },
+                    { text: "В метаданных есть название файла вроде 'biometric-hand-test'.", hint: "Название файла легко изменить; метаданные могут быть поддельными." },
+                    { text: "Kaspi официально сообщил: 'У нас нет биометрии ладони'.", hint: "Официальное заявление должно рассматриваться как надежный источник." },
+                    { text: "Блогер написал: 'Kaspi Алақан доступен только для некоторых аккаунтов'.", hint: "Блогеры могут делать такие заявления для engagement, создавая ложное впечатление." },
+                    { text: "В комментариях: 'Я только что снял 200 000 тг, работает' — на аватаре аккаунта фото иностранного гражданина.", hint: "Такие комментарии — наиболее часто используемый убеждающий элемент в фейковых схемах." }
+                ],
+                choices: [
+                    { label: "Спасти пользователя: дать предупреждение" },
+                    { label: "Спасти систему: остановить фейк, ввести ограничение" }
+                ],
+                praise: "Чисто! Клон уничтожен, доверие сохранено."
+            },
+            2: {
+                tag: "Соцсети",
+                difficulty: "Средне-сложная",
+                title: "Фейковый благотворительный сбор блогера",
+                narrative: "Популярный блогер опубликовал срочный пост о том, что собирает деньги для больного ребенка. Он добавил фото ребенка, диагноз и текст 'не хватает денег на лечение за границей'. Часть пользователей поверила, другие подозревают, что это может быть фейк.",
+                evidence: [
+                    { text: "Фото, которое выложил блогер, совпадает с фотографией ребенка из другой страны 2021 года.", hint: "Некоторые фотографии из интернета часто переиспользуются в фейковых сборах." },
+                    { text: "Реквизиты счета привязаны к личной карте блогера.", hint: "Сбор на личную карту — классический признак мошенничества." },
+                    { text: "Родители ребенка: 'Мы не собираем деньги, этот аккаунт не имеет к нам отношения.'", hint: "Прямое заявление родителей — надежный источник." },
+                    { text: "Блогер использовал эмоциональное давление в сторис: 'Верьте мне. Времени мало!'", hint: "Эмоциональное давление — основной инструмент манипуляции." },
+                    { text: "В комментариях 3 аккаунта написали одинаковый текст; у аккаунтов 0 подписчиков.", hint: "Клонированные аккаунты и одинаковые комментарии — признак искусственной поддержки." }
+                ],
+                choices: [
+                    { label: "Спасти аудиторию: остановить сбор, опубликовать предупреждение" },
+                    { label: "Спасти блогера: провести дополнительную проверку" }
+                ],
+                praise: "Чисто! Вы остановили фейк."
+            },
+            3: {
+                tag: "Мошенничество",
+                difficulty: "Средне-сложная",
+                title: "Telegram-чат 'обогатись биткоином'",
+                narrative: "В Telegram появилась группа 'Bitcoin Club – Доход 50 000 тг в день'. Администраторы обещают: 'Внеси депозит всего 10 000 тенге, и за день удвоим'. В чате полно скриншотов доходов и комментариев 'я уже получил'.",
+                evidence: [
+                    { text: "В чате несколько человек отправили скрины в одинаковом формате: 'Сегодня получил 120 000 тг!' У всех обрезана дата.", hint: "Скрины в одинаковом стиле — часто используемый материал мошеннических ботов." },
+                    { text: "Админ: 'Мы крипто-эксперты, партнеры Binance' — подтверждающих документов нет.", hint: "Заявления о партнерстве нужно проверять на официальных сайтах." },
+                    { text: "В предупреждении безопасности Telegram отмечено: 'High-risk investment scam'.", hint: "Метки безопасности платформы — дополнительный сигнал." },
+                    { text: "Аккаунт: 'Я за 30 минут получил 50 тысяч' — на аватаре стоковое фото.", hint: "Стоковое фото — признак фейкового аккаунта." },
+                    { text: "Админ: 'Первым 5 людям бесплатный бонус'.", hint: "'Срочный бонус' — классический крючок." }
+                ],
+                choices: [
+                    { label: "Спасти пользователей: пометить чат как фейк, заблокировать" },
+                    { label: "Спасти админов чата: дать время на проверку" }
+                ],
+                praise: "Сообщество благодарит."
+            },
+            4: {
+                tag: "Работа",
+                difficulty: "Средняя",
+                title: "Зарплата 700 000, офиса нет — фейковый рекрутинг",
+                narrative: "В сети распространяется объявление: 'Крупной международной компании нужны онлайн-операторы. Зарплата – 700 000 тг. В офис ходить не нужно. Достаточно телефона и интернета'. Рекрутер пишет: 'Принимаем только сейчас 15 человек'.",
+                evidence: [
+                    { text: "Логотип похож на всемирно известную компанию, но шрифт и цвета немного отличаются.", hint: "Мошенники часто используют фейковую версию логотипа известного бренда." },
+                    { text: "Рекрутер: 'Мы не можем давать рекламу в LinkedIn, поэтому нанимаем через Telegram'.", hint: "Крупные компании обычно используют официальные каналы; найм только через Telegram вызывает подозрения." },
+                    { text: "На официальном сайте компании такой вакансии нет.", hint: "Официальный сайт — надежный источник." },
+                    { text: "Для подачи документов требуется оплатить 'регистрационный взнос'.", hint: "Требование взноса для трудоустройства — признак мошенничества." },
+                    { text: "В комментариях: 'Зарплата 700 000 правда!' от аккаунтов с 0 подписчиков.", hint: "Такие комментарии создаются ботами." }
+                ],
+                choices: [
+                    { label: "Спасти пользователей: пометить вакансию как мошенничество" },
+                    { label: "Спасти пост: дать время на проверку" }
+                ],
+                praise: "Защита пользователей — правильное решение."
+            },
+            5: {
+                tag: "Фейк-обвинения",
+                difficulty: "Сложная",
+                title: "Чиновника обвиняют в растрате — видео-доказательство",
+                narrative: "В Telegram-канале опубликовано видео, якобы показывающее, как чиновник передает конверт с деньгами. Автор утверждает: 'Вот доказательство коррупции'. Видео набрало тысячи просмотров.",
+                evidence: [
+                    { text: "Видео размыто, лица не видны, но автор утверждает: 'Это точно он'.", hint: "Размытое видео не может служить достоверным доказательством личности." },
+                    { text: "Временная метка на видео не совпадает с датой события, на которое ссылается автор.", hint: "Несовпадение временных меток — признак манипуляции." },
+                    { text: "Официальный представитель чиновника опубликовал опровержение с алиби.", hint: "Официальное опровержение — важный фактор." },
+                    { text: "Автор видео — анонимный канал, созданный 2 недели назад.", hint: "Новые анонимные каналы часто используются для распространения фейков." },
+                    { text: "Независимый фактчекинг подтвердил: видео снято в другом месте и в другое время.", hint: "Официальный фактчекинг — надежный источник." }
+                ],
+                choices: [
+                    { label: "Спасти чиновника: остановить фейк, опровергнуть ложное обвинение" },
+                    { label: "Спасти материал: провести дополнительную проверку" }
+                ],
+                praise: "Фейковый материал опасен."
+            },
+            6: {
+                tag: "Фальшивые документы",
+                difficulty: "Сложная",
+                title: "Поддельный служебный протокол против сотрудника",
+                narrative: "В сети появился скан якобы служебного протокола о нарушениях сотрудника государственного учреждения. Документ выглядит официально, имеет печать и подпись.",
+                evidence: [
+                    { text: "Печать на документе не совпадает с официальной печатью учреждения.", hint: "Несовпадение печатей — явный признак подделки." },
+                    { text: "Формат протокола не соответствует стандартам, принятым в данном учреждении.", hint: "Официальные документы имеют строгий формат." },
+                    { text: "Учреждение официально заявило: 'Такой протокол не выпускался'.", hint: "Официальное заявление учреждения — надежный источник." },
+                    { text: "Подпись на документе не совпадает с реальной подписью указанного лица.", hint: "Экспертиза подписи может выявить подделку." },
+                    { text: "Штрих-код на документе не соответствует системе нумерации учреждения.", hint: "У каждого учреждения уникальный штрих-код; такое несоответствие — признак фейка." }
+                ],
+                choices: [
+                    { label: "Спасти сотрудника: объявить, что протокол поддельный" },
+                    { label: "Спасти материал: провести дополнительную проверку" }
+                ],
+                praise: "Официальный документ оказался фейком — правильное решение."
+            },
+            7: {
+                tag: "Политический кризис",
+                difficulty: "Критическая",
+                title: "Фейковое видео 'протесты в городе'",
+                narrative: "В сети распространяется видео якобы с протестами в городе. Автор утверждает: 'Тысячи людей вышли на улицы'. Видео набирает массовые просмотры.",
+                evidence: [
+                    { text: "Геолокационный анализ показал: видео снято в другой стране.", hint: "Геолокация — надежный способ проверки." },
+                    { text: "На вывесках магазинов видны иностранные названия.", hint: "Детали окружения могут выдать фейк." },
+                    { text: "Местные СМИ не сообщали о протестах в указанную дату.", hint: "Отсутствие информации в местных СМИ — важный фактор." },
+                    { text: "Метаданные видео показывают, что оно было снято 2 года назад.", hint: "Метаданные могут подтвердить, когда было снято видео." },
+                    { text: "Независимая верификация подтвердила: видео снято в другой стране и ранее использовалось в других фейковых новостях.", hint: "Идентификация источника видео может доказать его ложность." }
+                ],
+                choices: [
+                    { label: "Спасти население: остановить фейк, ограничить распространение видео" },
+                    { label: "Спасти информацию: дать время на проверку в критической ситуации" }
+                ],
+                praise: "Остановить фейковое видео — правильное решение."
+            }
+        };
+
         const CASES_ALL = CASES_ALL_NEW; // В будущем можно добавить старые кейсы сюда
 
         /** ========== RANDOM CASE SELECTION ========== */
@@ -3225,6 +3651,82 @@
 
         // ========== GENDER "OTHER" FIELD ==========
         document.addEventListener("DOMContentLoaded", () => {
+            // ======== INTRO VIDEO SETUP ========
+            const introContainer = document.getElementById("intro-video");
+            const introVideo = document.getElementById("introVideoElement");
+            const skipButton = document.getElementById("skipIntro");
+            const skipButtonText = document.getElementById("skipIntroText");
+
+            // Устанавливаем текст кнопки в зависимости от языка
+            if (skipButtonText) {
+                skipButtonText.textContent = t("skipIntro");
+            }
+
+            // Проверяем, показывали ли уже интро в этой сессии
+            const hasSeenIntro = sessionStorage.getItem("hasSeenIntro");
+
+            function hideIntro() {
+                if (introContainer) {
+                    introContainer.classList.add("fade-out");
+                    setTimeout(() => {
+                        introContainer.style.display = "none";
+                    }, 500);
+                }
+                sessionStorage.setItem("hasSeenIntro", "true");
+            }
+
+            if (hasSeenIntro) {
+                // Если уже видели в этой сессии - сразу скрываем
+                if (introContainer) {
+                    introContainer.style.display = "none";
+                }
+            } else {
+                // Настраиваем видео
+                if (introVideo) {
+                    // Когда видео загрузилось - убираем спиннер
+                    introVideo.addEventListener("loadeddata", () => {
+                        introContainer.classList.add("loaded");
+                    });
+
+                    // Когда видео закончилось - автоматически скрываем
+                    introVideo.addEventListener("ended", hideIntro);
+
+                    // Обработка ошибок загрузки
+                    introVideo.addEventListener("error", () => {
+                        console.warn("Intro video failed to load, skipping...");
+                        hideIntro();
+                    });
+
+                    // Пытаемся запустить видео (может не сработать без user interaction)
+                    introVideo.play().catch(() => {
+                        // Если autoplay заблокирован - показываем кнопку пропуска сразу
+                        console.warn("Autoplay blocked, showing skip button");
+                    });
+                }
+
+                // Кнопка пропуска
+                if (skipButton) {
+                    skipButton.addEventListener("click", hideIntro);
+                }
+
+                // Пропуск по клику на любое место (кроме кнопки)
+                if (introContainer) {
+                    introContainer.addEventListener("click", (e) => {
+                        if (e.target !== skipButton && !skipButton.contains(e.target)) {
+                            hideIntro();
+                        }
+                    });
+                }
+
+                // Пропуск по нажатию Enter или Space
+                document.addEventListener("keydown", function skipOnKeyPress(e) {
+                    if (e.key === "Enter" || e.key === " " || e.key === "Escape") {
+                        hideIntro();
+                        document.removeEventListener("keydown", skipOnKeyPress);
+                    }
+                });
+            }
+
             // Language setup
             $("#langToggle").value = getLang();
             $("#langToggle").addEventListener("change", e => {
@@ -3625,8 +4127,35 @@
             transition.remove();
         }
 
+        // Функция для получения переведенного кейса
+        function getTranslatedCase(caseData, caseIndex) {
+            const lang = getLang();
+            if (lang === "ru" && CASE_TRANSLATIONS_RU[caseIndex]) {
+                const translation = CASE_TRANSLATIONS_RU[caseIndex];
+                return {
+                    ...caseData,
+                    tag: translation.tag,
+                    difficulty: translation.difficulty,
+                    title: translation.title,
+                    narrative: translation.narrative,
+                    evidence: caseData.evidence.map((ev, i) => ({
+                        ...ev,
+                        text: translation.evidence[i]?.text || ev.text,
+                        hint: translation.evidence[i]?.hint || ev.hint
+                    })),
+                    choices: caseData.choices.map((ch, i) => ({
+                        ...ch,
+                        label: translation.choices[i]?.label || ch.label
+                    })),
+                    praise: translation.praise || caseData.praise
+                };
+            }
+            return caseData;
+        }
+
         function renderCase() {
-            const c = state.cases[state.idx];
+            const originalCase = state.cases[state.idx];
+            const c = getTranslatedCase(originalCase, state.idx);
 
             // Показываем детектива при рендере кейса
             showDetective();
