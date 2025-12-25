@@ -29,6 +29,7 @@
             background: radial-gradient(1200px 700px at 70% -10%, #132033 0%, #0b0f14 45%);
             color: var(--ink);
             position: relative;
+            min-height: 100vh;
         }
 
         /* Декоративный фоновый паттерн */
@@ -96,7 +97,7 @@
         main {
             max-width: 980px;
             margin: 24px auto;
-            padding: 0 16px 48px
+            padding: 0 16px 48px;
         }
 
         .panel {
@@ -752,15 +753,22 @@
 
         /* Fullscreen Intro Video Styles */
         #intro-video {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 99999;
             background: #0b0f14;
-            display: flex;
+            display: none; /* По умолчанию скрыто - покажем через JS */
             align-items: center;
             justify-content: center;
             opacity: 1;
             transition: opacity 0.5s ease;
+        }
+
+        #intro-video.show {
+            display: flex;
         }
 
         #intro-video.fade-out {
@@ -769,9 +777,23 @@
         }
 
         #introVideoElement {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        /* Полностью скрываем весь контент под видео */
+        body.intro-playing {
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        body.intro-playing > *:not(#intro-video) {
+            visibility: hidden !important;
+            opacity: 0 !important;
         }
 
         #skipIntro {
@@ -919,8 +941,6 @@
                                 id="genderFemaleEl"></span></label>
                         <label class="opt-radio"><input type="radio" name="gender" value="male" required> <span
                                 id="genderMaleEl"></span></label>
-                        <label class="opt-radio"><input type="radio" name="gender" value="nonbinary" required> <span
-                                id="genderNonbinaryEl"></span></label>
                         <label class="opt-radio"><input type="radio" name="gender" value="skip" required> <span
                                 id="genderSkipEl"></span></label>
                         <label class="opt-radio" style="position:relative">
@@ -952,7 +972,7 @@
                 </div>
 
                 <!-- Регион -->
-                <div>
+                <!-- <div>
                     <label style="display:block; font-weight:600; margin-bottom:6px">
                         <span id="formRegionEl"></span> <span style="color:var(--warn)">*</span>
                     </label>
@@ -982,7 +1002,7 @@
                         <option value="zhezkazgan" id="regionZhezkazganEl"></option>
                         <option value="karatau" id="regionKaratauEl"></option>
                     </select>
-                </div>
+                </div> -->
 
 
                 <div class="footerRow" style="margin-top:20px; justify-content:space-between">
@@ -3669,18 +3689,25 @@
                 if (introContainer) {
                     introContainer.classList.add("fade-out");
                     setTimeout(() => {
-                        introContainer.style.display = "none";
+                        introContainer.classList.remove("show");
+                        introContainer.classList.remove("fade-out");
+                        // Убираем класс intro-playing с body
+                        document.body.classList.remove("intro-playing");
                     }, 500);
                 }
                 sessionStorage.setItem("hasSeenIntro", "true");
             }
 
             if (hasSeenIntro) {
-                // Если уже видели в этой сессии - сразу скрываем
-                if (introContainer) {
-                    introContainer.style.display = "none";
-                }
+                // Если уже видели в этой сессии - интро остается скрытым
+                // Ничего не делаем, интро по умолчанию display: none
             } else {
+                // Показываем интро БЕЗ задержки
+                if (introContainer) {
+                    introContainer.classList.add("show");
+                }
+                // Добавляем класс intro-playing к body
+                document.body.classList.add("intro-playing");
                 // Настраиваем видео
                 if (introVideo) {
                     // Когда видео загрузилось - убираем спиннер
